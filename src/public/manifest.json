@@ -1,0 +1,13 @@
+{
+  "name": "FinanceCaster",
+  "short_name": "FinanceCaster",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#000",
+  "description": "Get a Forecast for your Finanaces",
+  "icons": [{
+    "src": "images/financecaster.png",
+    "sizes": "256x256",
+    "type": "image/png"
+  }]
+}
