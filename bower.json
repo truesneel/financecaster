@@ -1,0 +1,21 @@
+{
+  "name": "FinanceCaster",
+  "version": "0.0.0",
+  "authors": [
+    "Scott Neel <scott@neel.net>"
+  ],
+  "description": "FinanceCaster",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "static/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-ui-router": "^0.3.1"
+  }
+}

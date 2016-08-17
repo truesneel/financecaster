@@ -1,0 +1,57 @@
+var format = require('string-template');
+var messages = {};
+
+messages.get = function (key, vars) {
+	if (! messages[key] ) {
+		return {
+			'code': 'FC00000',
+			'message': format('A message of type {key} was requested but no message was defined', {'key': key}),
+			'http_code': 500,
+		}
+	}
+
+	return {
+		'code': messages[key].code,
+		'message': format(messages[key].message, vars),
+		'http_code': 500,
+		'trace': stack = new Error().stack,
+	}
+};
+
+messages.CONFIG_NOT_FOUND = {
+	'code': 'FC00001',
+	'message': 'Config could not be found and/or read ({config_path})',
+	'http_code': 500,
+};
+messages.CONFIG_NOT_PARSED = {
+	'code': 'FC00002',
+	'message': 'Config could not be parsed: {reason}',
+	'http_code': 500,
+};
+messages.SCHEMA_SYNC = {
+	'code': 'FC00003',
+	'message': 'Syncing database schema {schema} (force: {force})',
+	'http_code': 200,
+};
+messages.DEFAULT_USER_CREATED = {
+	'code': 'FC00004',
+	'message': 'Default user has been created',
+	'http_code': 200,
+};
+messages.API_WELCOME = {
+	'code': 'FC00005',
+	'message': 'Welcome to the FinanceCaster API',
+	'http_code': 200,
+};
+messages.ACCESS_DENIED = {
+	'code': 'FC00006',
+	'message': 'Acess Denied',
+	'http_code': 403,
+};
+messages.RECORD_NOT_FOUND = {
+	'code': 'FC00007',
+	'message': 'Record Not Found',
+	'http_code': 404,
+};
+
+module.exports = messages;

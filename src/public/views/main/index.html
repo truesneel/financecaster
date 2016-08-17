@@ -1,0 +1,44 @@
+  <div class="navigation navigation-mobile visible-xs" ng-show="showMenu == 1">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-10">
+        &nbsp;
+        </div>
+        <div class="col-xs-2 pointer" ng-click="showMenu=0">
+          &times;
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <ul>
+            <li ui-sref="main.forecast" ng-click="showMenu=0" ui-sref-active="active" class="pointer"><i class="icon-sun-day"></i> Forecast</li>
+            <li ui-sref="main.accounts" ng-click="showMenu=0" ui-sref-active="active" class="pointer"><i class="icon-piggybank"></i> Accounts</li>
+            <li ui-sref="main.transactions" ng-click="showMenu=0" ui-sref-active="active" class="pointer"><i class="icon-money-cash"></i> Transactions</li>
+            <li ui-sref="main.settings" ng-click="showMenu=0" ui-sref-active="active" class="pointer"><i class="icon-settingsfour-gearsalt"></i> Settings</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="navigation navigation-full hidden-xs">
+    <ul>
+      <li ui-sref="main.forecast" ui-sref-active="active" class="pointer"><i class="icon-sun-day"></i> Forecast</li>
+      <li ui-sref="main.accounts" ui-sref-active="active" class="pointer"><i class="icon-piggybank"></i> Accounts</li>
+      <li ui-sref="main.transactions" ui-sref-active="active" class="pointer"><i class="icon-money-cash"></i> Transactions</li>
+      <li ui-sref="main.settings" ui-sref-active="active" class="pointer"><i class="icon-settingsfour-gearsalt"></i> Settings</li>
+    </ul>
+  </div>
+  <div class="navigation-shade  visible-xs" ng-click="showMenu=0" ng-show="showMenu == 1"></div>
+  <div class="loading-shade" ng-show="loading">
+    <div class="loading-shade-message">
+    Loading...
+    </div>
+  </div>
+  <div class="header">
+    <div class="header-item visible-xs-inline-block pointer" ng-click="showMenu=1">
+      <span class="glyphicon glyphicon-menu-hamburger"></span>
+    </div>
+    <div class="header-item">FinanceCaster</div>
+  </div>
+  <div class="content" ui-view>
+  </div>
