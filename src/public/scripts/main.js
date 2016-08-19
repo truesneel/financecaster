@@ -37,13 +37,17 @@ financecaster.provider('financecaster', function () {
 	};
 });
 
-financecaster.controller('welcomeController', ['$scope', '$state', 'financecaster', function ($scope, $state, financecaster) {
+financecaster.controller('welcomeController', ['$scope', '$state', '$http', 'financecaster', function ($scope, $state, $http, financecaster) {
+
+	$scope.username = '';
+	$scope.password = '';
 
 	$scope.login = function () {
-		financecaster.config.auth = {};
-		financecaster.save();
-
-		$state.go('main.forecast');
+		$http.post('/api/auth', {'username': $scope.username, 'password': $scope.password}).then(function (response) {
+			financecaster.config.auth = response.data;
+			financecaster.save();
+			$state.go('main.forecast');
+		});
 	}
 }]);
 
