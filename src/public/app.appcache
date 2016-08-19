@@ -1,0 +1,17 @@
+CACHE MANIFEST
+
+CACHE:
+#index.html
+#scripts/main.js
+#views/main/accounts.html
+#views/main/forecast.html
+#views/main/index.html
+#views/main/settings.html
+#views/main/transactions.html
+#views/welcome.html
+
+NETWORK:
+*
+
+SETTINGS:
+prefer-online
