@@ -69,6 +69,25 @@ router.get('/', function (req, res) {
 	res.status(msg.http_code).send({'message': msg.message});
 });
 
+/**
+* @api {get} /users List Users
+* @apiVersion 0.0.1
+* @apiGroup Users
+* @apiPermission admin
+*
+* @apiDescription List all users
+*
+* @apiSuccess {String} name Name of the User.
+* @apiSuccess {String} username Username of the User
+*
+* @apiSuccessExample Success-Response:
+*   HTTP/1.1 200 OK
+*   {
+*     "name": "Admin",
+*     "username": "admin"
+*   }
+*/
+
 router.get('/users', isAdmin, function (req, res) {
 
 	query('users', req, res, {'include': [fc.schemas.tokens]}).then(function (results) {
@@ -81,6 +100,25 @@ router.get('/users', isAdmin, function (req, res) {
 
 });
 
+/**
+ * @api {get} /users/:id Get User
+ * @apiVersion 0.0.1
+ * @apiGroup Users
+ * @apiPermissions admin
+ *
+ * @apiDescription Get details for a specific user by id
+ * @apiSuccess {Integer} id Internal ID of the User
+ * @apiSuccess {String} username Username of the user
+ * @apiSuccess {String} username
+ *
+ * @apiSuccessExample Success-Response:
+ *   HTTP/1.1 200 OK
+ *   {
+ *     "id": 1,
+ *     "username": "admin
+ *   }
+ */
+ 
 router.get('/users/:id', isAdmin, function (req, res) {
 
 
@@ -94,6 +132,15 @@ router.get('/users/:id', isAdmin, function (req, res) {
 
 });
 
+/**
+ * @api {get} /users/:id/tokens Get User Tokens
+ * @apiVersion 0.0.1
+ * @apiGroup Users
+ * @apiPermissions admin
+ * @apiDescription Get all active tokens for a specific user.
+ *
+ * @apiSuccess {Integer} id Internal ID of the User
+ */
 router.get('/users/:id/tokens', isAdmin, function (req, res) {
 
 
@@ -107,6 +154,13 @@ router.get('/users/:id/tokens', isAdmin, function (req, res) {
 
 });
 
+/**
+ * @api {get} /users/:id/tokens List Tokens for a User
+ * @apiVersion 0.0.1
+ * @apiGroup Users
+ * @apiPermissions admin
+ * @apiDescription List all tokens for a specific user
+ */
 router.get('/users/:id/tokens/:tokenid', isAdmin, function (req, res) {
 
 
@@ -120,7 +174,25 @@ router.get('/users/:id/tokens/:tokenid', isAdmin, function (req, res) {
 	});
 
 });
+/**
+ * @api {get} /users/:id/tokens/:tokenid Get Token details
+ * @apiVersion 0.0.1
+ * @apiGroup Users
+ */
 
+/**
+ * @api {delete} /users/:id/tokens/:tokenid Delete Token
+ * @apiVersion 0.0.1
+ * @apiGroup Users
+ */
+
+/**
+ * @api {post} /users Create User
+ * @apiVersion 0.0.1
+ * @apiGroup Users
+ * @apiPermissions admin
+ * @apiDescription Create new User
+ */
 router.post('/users', isAdmin, function (req, res) {
 
 	if (req.body.password) {
@@ -135,6 +207,25 @@ router.post('/users', isAdmin, function (req, res) {
 
 });
 
+/**
+ * @api {delete} /users/:id Delete User
+ * @apiVersion 0.0.1
+ * @apiGroup Users
+ */
+
+/**
+ * @api {put} /users/:id Update User
+ * @apiVersion 0.0.1
+ * @apiGroup Users
+ */
+
+/**
+ * @api {get} /tokens List all Tokens
+ * @apiVersion 0.0.1
+ * @apiGroup Tokens
+ * @apiPermissions admin
+ * @apiDescription List all Tokens
+ */
 router.get('/tokens', isAdmin, function (req, res) {
 
 
@@ -144,6 +235,10 @@ router.get('/tokens', isAdmin, function (req, res) {
 
 });
 
+/**
+ * @api {get} /accounts Get Accounts
+ * @apiGroup Accounts
+ */
 router.get('/accounts', isAdmin, function (req, res) {
 
 	var where = {
@@ -159,6 +254,10 @@ router.get('/accounts', isAdmin, function (req, res) {
 
 });
 
+/**
+ * @api {get} /transactions Get Accounts
+ * @apiGroup Transactions
+ */
 router.get('/tansactions', isAdmin, function (req, res) {
 
 	query('tansactions', req).then(function (results) {
@@ -167,6 +266,10 @@ router.get('/tansactions', isAdmin, function (req, res) {
 
 });
 
+/**
+ * @api {get} /permissions Get Permissions
+ * @apiGroup Permissions
+ */
 router.get('/permissions', isAdmin, function (req, res) {
 
 	query('permissions', req).then(function (results) {
@@ -175,12 +278,20 @@ router.get('/permissions', isAdmin, function (req, res) {
 
 });
 
+/**
+ * @api {get} /auth Get Auth Status
+ * @apiGroup Authentication
+ */
 router.get('/auth', isAuth, function (req, res) {
 
 	res.send(req.auth);
 
 });
 
+/**
+ * @api {delete} /auth Log Out
+ * @apiGroup Authentication
+ */
 router.delete('/auth', isAuth, function (req, res) {
 
 	remove('tokens', {'where': {'id': req.auth.token_id}}).then(function (response) {
@@ -189,6 +300,10 @@ router.delete('/auth', isAuth, function (req, res) {
 
 });
 
+/**
+ * @api {get} /auth/tokens Get Current Tokens
+ * @apiGroup Authentication
+ */
 router.get('/auth/tokens', isAuth, function (req, res) {
 
 	query('tokens', req, {'where': {'userId': req.auth.userId}}).then(function (results) {
@@ -202,6 +317,10 @@ router.get('/auth/tokens', isAuth, function (req, res) {
 
 });
 
+/**
+ * @api {post} /auth Log In
+ * @apiGroup Authentication
+ */
 router.post('/auth', function (req, res) {
 
 	fc.schemas.users.find({'where': {

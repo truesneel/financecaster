@@ -7,6 +7,7 @@
   "license": "ISC",
   "devDependencies": {
     "grunt": "^0.4.5",
+    "grunt-apidoc": "^0.11.0",
     "grunt-contrib-connect": "^1.0.2"
   },
   "dependencies": {
@@ -23,5 +24,10 @@
   "scripts": {
     "postinstall": "touch src/config.ini && bower install  && cd src/public/vendor && wget -nc -O whhg-font.zip http://www.webhostinghub.com/glyphs/resources/whhg-font.zip && unzip -o whhg-font.zip && rm whhg-font.zip",
     "start": "cd src && node server.js"
+  },
+  "apidoc": {
+    "title": "FinanceCaster API Documentation",
+    "description": "API Documentation",
+    "version": "0.0.1"
   }
 }
