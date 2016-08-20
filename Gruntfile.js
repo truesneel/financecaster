@@ -37,11 +37,27 @@ module.exports = function(grunt) {
           cwd: 'src',
           watch: ['app/**/*.js', 'server.js'],
         }
+      },
+      syncdb: {
+        script: 'server.js',
+        options: {
+          cwd: 'src',
+          env: {
+            'FC_DB_FORCE_SYNC': '1'
+          },
+          watch: ['app/**/*.js', 'server.js'],
+        }
       }
     },
     concurrent: {
       dev: {
         tasks: ['watch', 'nodemon:dev'],
+        options: {
+          logConcurrentOutput: true
+        }
+      },
+      syncdb: {
+        tasks: ['watch', 'nodemon:syncdb'],
         options: {
           logConcurrentOutput: true
         }
@@ -56,4 +72,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-nodemon');
 
   grunt.registerTask('default', ['jshint', 'exec', 'concurrent:dev']);
+  grunt.registerTask('syncdb', ['jshint', 'exec', 'concurrent:syncdb']);
 };
