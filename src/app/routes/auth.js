@@ -96,10 +96,10 @@ router.post('/', function (req, res) {
         'expires': token_expiration,
         'userId': record.id
       }).then(function (token) {
-        res.status(200).send({'message': 'success', 'client_token': token.client_token, 'auth_token': token.auth_token, 'expires': token_expiration})
+        res.status(200).send({'message': 'success', 'client_token': token.client_token, 'auth_token': token.auth_token, 'expires': token_expiration});
       }, function (err) {
         res.status(400).send({'message': 'Authentication succeeded but an authentication token could not be obtained'});
-      })
+      });
 
     } else {
       var msg = messages('LOGIN_FAILED');
@@ -240,12 +240,14 @@ router.get('/tokens/:id', fc.isAuth, function (req, res) {
 router.delete('/tokens/:id', fc.isAuth, function (req, res) {
 
   fc.remove('tokens', req, {'where': {'userId': req.auth.userId, 'id': req.params.id}}).then(function (results) {
+    var msg;
+
     if (results) {
-      var msg = messages('TOKEN_DELETED');
+      msg = messages('TOKEN_DELETED');
       res.status(msg.http_code).send({'message': msg.message});
       res.send(results);
     } else {
-      var msg = messages('RECORD_NOT_FOUND');
+      msg = messages('RECORD_NOT_FOUND');
       res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
     }
   });

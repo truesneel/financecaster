@@ -48,7 +48,8 @@ financecaster.controller('welcomeController', ['$scope', '$state', '$http', 'fin
 			financecaster.save();
 			$state.go('main.forecast');
 		});
-	}
+	};
+
 }]);
 
 financecaster.controller('settingsController', ['$scope', '$state', 'financecaster', function ($scope, $state, financecaster) {
@@ -56,9 +57,10 @@ financecaster.controller('settingsController', ['$scope', '$state', 'financecast
 	$scope.logout = function () {
 		delete financecaster.config.auth;
 		financecaster.save();
-		
+
 		$state.go('welcome');
-	}
+	};
+
 }]);
 
 financecaster.config(function($stateProvider, $urlRouterProvider, financecasterProvider) {
@@ -82,7 +84,7 @@ financecaster.config(function($stateProvider, $urlRouterProvider, financecasterP
 					var defer = $q.defer();
 
 					if (!financecaster.is_authed()) {
-						defer.reject({state: 'welcome'})
+						defer.reject({state: 'welcome'});
 					} else {
 						defer.resolve(financecaster.auth);
 					}
@@ -107,7 +109,7 @@ financecaster.config(function($stateProvider, $urlRouterProvider, financecasterP
 			url: '/Settings',
 			templateUrl: 'views/main/settings.html',
 			controller: 'settingsController',
-		})
+		});
 
 });
 

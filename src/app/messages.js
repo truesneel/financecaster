@@ -7,7 +7,7 @@ messages.get = function (key, vars) {
 			'code': 'FC00000',
 			'message': format('A message of type {key} was requested but no message was defined', {'key': key}),
 			'http_code': 500,
-		}
+		};
 	}
 
 	return {
@@ -15,9 +15,9 @@ messages.get = function (key, vars) {
 		'message': format(messages[key].message, vars),
 		'http_code': messages[key].http_code,
 		'trace': stack = new Error().stack,
-	}
+	};
 };
-//
+
 messages.CONFIG_NOT_FOUND = {
 	'code': 'FC00001',
 	'message': 'Config could not be found and/or read ({config_path})',

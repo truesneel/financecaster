@@ -102,10 +102,10 @@ schemas.tokens = fc.db.define('tokens', {
 	},
 });
 
-schemas.accounts.hasOne(schemas.transactions)
-schemas.accounts.hasOne(schemas.permissions)
-schemas.users.hasOne(schemas.permissions)
-schemas.users.hasOne(schemas.accounts, { foreignKey: 'owner_id' })
+schemas.accounts.hasOne(schemas.transactions);
+schemas.accounts.hasOne(schemas.permissions);
+schemas.users.hasOne(schemas.permissions);
+schemas.users.hasOne(schemas.accounts, { foreignKey: 'owner_id' });
 schemas.tokens.belongsTo(schemas.users);
 schemas.users.hasMany(schemas.tokens);
 
@@ -127,6 +127,6 @@ module.exports = function (force) {
 
 	q.allSettled(sync_defers).then(function () {
 		defer.resolve(schemas);
-	})
+	});
 	return defer.promise;
 };

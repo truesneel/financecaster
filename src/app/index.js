@@ -8,7 +8,7 @@ var Sequelize = require('sequelize');
 var bodyParser = require('body-parser');
 var messages = require('./messages').get;
 
-var fc = {}
+var fc = {};
 
 fc.init  = function () {
 	var defer = q.defer();
@@ -75,7 +75,7 @@ fc.init  = function () {
 			}
 
 			try {
-				fc.config = ini.parse(fs.readFileSync(fc.config_path, 'utf-8'))
+				fc.config = ini.parse(fs.readFileSync(fc.config_path, 'utf-8'));
 			} catch (e) {
 				defer.reject(messages('CONFIG_NOT_PARSED', {'reason': e}));
 				return;
@@ -119,7 +119,7 @@ fc.start = function () {
 						'client_token': record.dataValues.client_token,
 						'name': record.dataValues.user.dataValues.email,
 						'admin': record.dataValues.user.dataValues.admin,
-					}
+					};
 
 				}
 				console.log(req.auth);
@@ -132,7 +132,7 @@ fc.start = function () {
 	fc.app.use('/api', require('./routes'));
 
 	fc.app.listen(fc.config.web.port, fc.config.web.address, function () {
-		fc.log.info('Listening on %s:%s', fc.config.web.address, fc.config.web.port)
+		fc.log.info('Listening on %s:%s', fc.config.web.address, fc.config.web.port);
 	});
 };
 
@@ -174,7 +174,7 @@ fc.create = function (schema, data) {
   var defer = q.defer();
 
   fc.schemas[schema].create(data).then(function (record) {
-    defer.resolve(record)
+    defer.resolve(record);
   }, function (err) {
     delete err.name;
 

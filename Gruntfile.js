@@ -1,3 +1,4 @@
+/*jslint node: true */
 'use strict';
 
 module.exports = function(grunt) {
@@ -48,11 +49,11 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-concurrent');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-nodemon');
-  grunt.loadNpmTasks('grunt-concurrent');
 
   grunt.registerTask('default', ['jshint', 'exec', 'concurrent:dev']);
 };
