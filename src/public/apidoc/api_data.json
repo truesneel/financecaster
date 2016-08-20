@@ -1,6 +1,63 @@
 [
   {
     "type": "delete",
+    "url": "/accounts/:id",
+    "title": "Delete Account",
+    "group": "Accounts",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n  {\n    \"message\": \"Record Deleted Successfully\"\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n   \"error\": \"Record Not Found\",\n   \"code\": \"FC00007\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "groupTitle": "Accounts",
+    "name": "DeleteAccountsId"
+  },
+  {
+    "type": "delete",
     "url": "/accounts/:id/transactions/:transactionid",
     "title": "Delete Account Transaction",
     "group": "Accounts",
@@ -14,6 +71,89 @@
     "url": "/accounts",
     "title": "List Accounts",
     "group": "Accounts",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "array",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.userId",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.name",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.forecast",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Float",
+            "optional": false,
+            "field": "array.balance",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Float",
+            "optional": false,
+            "field": "array.limit",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.updatedAt",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Account List",
+          "content": "[\n  {\n    \"id\": 1,\n    \"userId\": 2,\n    \"name\": \"checking\",\n    \"forecast\": 365,\n    \"balance\": 0,\n    \"limit\": 0,\n    \"createdAt\": \"2016-08-20T18:20:36.373Z\",\n    \"updatedAt\": \"2016-08-20T18:20:36.373Z\"\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
     "version": "0.0.0",
     "filename": "./src/app/routes/accounts.js",
     "groupTitle": "Accounts",
@@ -24,6 +164,109 @@
     "url": "/accounts/:id",
     "title": "Get Account",
     "group": "Accounts",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "userId",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "forecast",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Float",
+            "optional": false,
+            "field": "balance",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Float",
+            "optional": false,
+            "field": "limit",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "updatedAt",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n  \"id\": 1,\n  \"userId\": 2,\n  \"name\": \"checking\",\n  \"forecast\": 365,\n  \"balance\": 0,\n  \"limit\": 0,\n  \"createdAt\": \"2016-08-20T18:20:36.373Z\",\n  \"updatedAt\": \"2016-08-20T18:20:36.373Z\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n   \"error\": \"Record Not Found\",\n   \"code\": \"FC00007\"\n}s",
+          "type": "json"
+        }
+      ]
+    },
     "version": "0.0.0",
     "filename": "./src/app/routes/accounts.js",
     "groupTitle": "Accounts",
@@ -34,6 +277,103 @@
     "url": "/accounts/:id/transactions",
     "title": "List Account Transactions",
     "group": "Accounts",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "array",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.accountId",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.name",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Float",
+            "optional": false,
+            "field": "array.amount",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.every_num",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.every_type",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.num_tansactions",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.start",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.updatedAt",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Account List",
+          "content": "[\n  {\n    \"id\": 1,\n    \"accountId\": 2,\n    \"name\": \"Pay Check\",\n    \"amount\": 2838.28,\n    \"every_num\": 2,\n    \"every_type\": \"weeks\",\n    \"num_tansactions\": 0,\n    \"start\": \"2016-08-20T18:20:36.373Z\",\n    \"createdAt\": \"2016-08-20T18:20:36.373Z\",\n    \"updatedAt\": \"2016-08-20T18:20:36.373Z\"\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
     "version": "0.0.0",
     "filename": "./src/app/routes/accounts.js",
     "groupTitle": "Accounts",
@@ -54,6 +394,146 @@
     "url": "/accounts",
     "title": "Create Account",
     "group": "Accounts",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Request Data": [
+          {
+            "group": "Request Data",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "Integer",
+            "optional": false,
+            "field": "forecast",
+            "defaultValue": "365",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "Float",
+            "optional": false,
+            "field": "balance",
+            "defaultValue": "0",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "Float",
+            "optional": false,
+            "field": "limit",
+            "defaultValue": "0",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request Data Example",
+          "content": "{\n  \"name\" \"Checking\",\n  \"forecast\" \"60\",\n  \"balance\" \"100.28\",\n  \"limit\" \"0\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success Example",
+          "content": "{\n    \"id\"\n    \"message\": \"Record Created Successfully\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Field Validation Error": [
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "Array",
+            "optional": false,
+            "field": "fields",
+            "description": ""
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "fields.message",
+            "description": ""
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "fields.type",
+            "description": ""
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "fields.path",
+            "description": ""
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "fields.value",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Field Validation Error Example",
+          "content": "{\n  \"error\": \"Field Validation Error\",\n  \"code\": \"FC00010\",\n  \"fields\":\n  [\n    {\n      \"message\": \"email must be unique\",\n      \"type\": \"unique violation\",\n      \"path\": \"email\",\n      \"value\": \"email@localhost\"\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
     "version": "0.0.0",
     "filename": "./src/app/routes/accounts.js",
     "groupTitle": "Accounts",
@@ -72,18 +552,152 @@
   {
     "type": "put",
     "url": "/accounts/:id",
-    "title": "Delete Account",
-    "group": "Accounts",
-    "version": "0.0.0",
-    "filename": "./src/app/routes/accounts.js",
-    "groupTitle": "Accounts",
-    "name": "PutAccountsId"
-  },
-  {
-    "type": "put",
-    "url": "/accounts/:id",
     "title": "Update Account",
     "group": "Accounts",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Request Data": [
+          {
+            "group": "Request Data",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "Integer",
+            "optional": false,
+            "field": "forecast",
+            "defaultValue": "365",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "Float",
+            "optional": false,
+            "field": "balance",
+            "defaultValue": "0",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "Float",
+            "optional": false,
+            "field": "limit",
+            "defaultValue": "0",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request Data Example",
+          "content": "{\n  \"name\" \"Checking\",\n  \"forecast\" \"60\",\n  \"balance\" \"100.28\",\n  \"limit\" \"0\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success Example",
+          "content": "{\n    \"id\"\n    \"message\": \"Record Updated Successfully\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Array",
+            "optional": false,
+            "field": "fields",
+            "description": ""
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "String",
+            "description": "<p>} fields.message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "fields.type",
+            "description": ""
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "fields.path",
+            "description": ""
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "fields.value",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Field Validation Error Example",
+          "content": "HTTP/1.1 400 Bad Request\n {\n   \"error\": \"Field Validation Error\",\n   \"code\": \"FC00010\",\n   \"fields\":\n   [\n     {\n       \"message\": \"name must be unique\",\n       \"type\": \"unique violation\",\n       \"path\": \"name\",\n       \"value\": \"Checking\"\n     }\n   ]\n }",
+          "type": "json"
+        },
+        {
+          "title": "Record Not Found Example",
+          "content": "HTTP/1.1 404 Not Found\n {\n    \"error\": \"Record Not Found\",\n    \"code\": \"FC00007\"\n }",
+          "type": "json"
+        }
+      ]
+    },
     "version": "0.0.0",
     "filename": "./src/app/routes/accounts.js",
     "groupTitle": "Accounts",
@@ -104,6 +718,13 @@
     "url": "/auth",
     "title": "Log Out",
     "group": "Authentication",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
     "success": {
       "examples": [
         {
@@ -134,6 +755,13 @@
     "url": "/auth/tokens/:id",
     "title": "Delete Token",
     "group": "Authentication",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
@@ -164,6 +792,13 @@
     "url": "/auth",
     "title": "Get Auth Status",
     "group": "Authentication",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
@@ -256,6 +891,13 @@
     "url": "/auth/tokens",
     "title": "List Current Tokens",
     "group": "Authentication",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
@@ -342,6 +984,13 @@
     "url": "/auth/tokens/:id",
     "title": "Get Token",
     "group": "Authentication",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
@@ -448,6 +1097,11 @@
     "url": "/auth",
     "title": "Log In",
     "group": "Authentication",
+    "permission": [
+      {
+        "name": "any"
+      }
+    ],
     "parameter": {
       "fields": {
         "Post Data": [
@@ -589,12 +1243,187 @@
     "name": "PutPermissionsId"
   },
   {
+    "type": "delete",
+    "url": "/tokens/:id",
+    "title": "Delete Token",
+    "group": "Tokens",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n{\n  \"message\": \"Token Deleted\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./src/app/routes/tokens.js",
+    "groupTitle": "Tokens",
+    "name": "DeleteTokensId"
+  },
+  {
     "type": "get",
     "url": "/tokens",
-    "title": "List all Tokens",
+    "title": "List All Tokens",
     "version": "0.0.1",
     "group": "Tokens",
-    "description": "<p>List all Tokens</p>",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "array",
+            "description": "<p>Array of Tokens</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.userId",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.client_token",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.ip",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.agent",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.expires",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.updatedAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "array.user",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.user.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.user.name",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.user.username",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.user.email",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "array.user.admin",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.user.createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.user.updatedAt",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n[\n  {\n    \"id\": 4,\n    \"client_token\": \"jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=\",\n    \"auth_token\": \"936b05f45b6e9d34d1c249297dba0793\",\n    \"ip\": \"127.0.0.1\",\n    \"agent\": \"Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:48.0) Gecko/20100101 Firefox/48.0\",\n    \"expires\": \"2016-08-21T02:10:33.132Z\",\n    \"createdAt\": \"2016-08-20T02:10:33.134Z\",\n    \"updatedAt\": \"2016-08-20T02:10:33.134Z\",\n    \"userId\": 1,\n    \"user\":\n    {\n      \"id\": 1,\n      \"name\": \"Admin\",\n      \"username\": \"admin\",\n      \"password\": \"RqrvnsJN9qy7RZg9roxra5gsJ/AmE0wlJqvkZOkHF5WslGYv7m1o6+Omv9+78OfVI7z70jw4lb5f29kXtA2MpA==\",\n      \"email\": \"admin@localhost\",\n      \"admin\": true,\n      \"createdAt\": \"2016-08-19T02:35:06.298Z\",\n      \"updatedAt\": \"2016-08-19T02:35:06.298Z\"\n    }\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "./src/app/routes/tokens.js",
     "groupTitle": "Tokens",
     "name": "GetTokens"
@@ -602,8 +1431,167 @@
   {
     "type": "get",
     "url": "/tokens/:id",
-    "title": "Get Tokens",
+    "title": "Get Token",
     "group": "Tokens",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "userId",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "client_token",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "ip",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "agent",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "expires",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "updatedAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "user",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "user.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "user.name",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "user.username",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "user.email",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "user.admin",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "user.createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "user.updatedAt",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n  {\n    \"id\": 4,\n    \"client_token\": \"jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=\",\n    \"auth_token\": \"936b05f45b6e9d34d1c249297dba0793\",\n    \"ip\": \"127.0.0.1\",\n    \"agent\": \"Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:48.0) Gecko/20100101 Firefox/48.0\",\n    \"expires\": \"2016-08-21T02:10:33.132Z\",\n    \"createdAt\": \"2016-08-20T02:10:33.134Z\",\n    \"updatedAt\": \"2016-08-20T02:10:33.134Z\",\n    \"userId\": 1,\n    \"user\":\n    {\n      \"id\": 1,\n      \"name\": \"Admin\",\n      \"username\": \"admin\",\n      \"password\": \"RqrvnsJN9qy7RZg9roxra5gsJ/AmE0wlJqvkZOkHF5WslGYv7m1o6+Omv9+78OfVI7z70jw4lb5f29kXtA2MpA==\",\n      \"email\": \"admin@localhost\",\n      \"admin\": true,\n      \"createdAt\": \"2016-08-19T02:35:06.298Z\",\n      \"updatedAt\": \"2016-08-19T02:35:06.298Z\"\n    }\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Token Not Found": [
+          {
+            "group": "Token Not Found",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Token Not Found",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n   \"error\": \"Record Not Found\",\n   \"code\": \"FC00007\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "version": "0.0.0",
     "filename": "./src/app/routes/tokens.js",
     "groupTitle": "Tokens",
@@ -614,6 +1602,13 @@
     "url": "/tokens",
     "title": "Create Tokens",
     "group": "Tokens",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
     "version": "0.0.0",
     "filename": "./src/app/routes/tokens.js",
     "groupTitle": "Tokens",
@@ -622,12 +1617,76 @@
   {
     "type": "put",
     "url": "/tokens/:id",
-    "title": "Delete Tokens",
+    "title": "Update Token",
     "group": "Tokens",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
     "version": "0.0.0",
     "filename": "./src/app/routes/tokens.js",
     "groupTitle": "Tokens",
     "name": "PutTokensId"
+  },
+  {
+    "type": "delete",
+    "url": "/transactions/:id",
+    "title": "Delete Transaction",
+    "version": "0.0.1",
+    "group": "Transactions",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n  {\n    \"message\": \"Record Deleted Successfully\"\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n   \"error\": \"Record Not Found\",\n   \"code\": \"FC00007\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "./src/app/routes/transactions.js",
+    "groupTitle": "Transactions",
+    "name": "DeleteTransactionsId"
   },
   {
     "type": "get",
@@ -675,6 +1734,53 @@
     "title": "Delete User",
     "version": "0.0.1",
     "group": "Users",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n  {\n    \"message\": \"Record Deleted Successfully\"\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n   \"error\": \"Record Not Found\",\n   \"code\": \"FC00007\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "./src/app/routes/users.js",
     "groupTitle": "Users",
     "name": "DeleteUsersId"
@@ -682,9 +1788,63 @@
   {
     "type": "delete",
     "url": "/users/:id/tokens/:tokenid",
-    "title": "Delete Token",
+    "title": "Delete User Token",
     "version": "0.0.1",
     "group": "Users",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n  {\n    \"message\": \"Record Deleted Successfully\",\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n   \"error\": \"Record Not Found\",\n   \"code\": \"FC00007\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "./src/app/routes/users.js",
     "groupTitle": "Users",
     "name": "DeleteUsersIdTokensTokenid"
@@ -697,33 +1857,97 @@
     "group": "Users",
     "permission": [
       {
-        "name": "admin"
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
       }
     ],
-    "description": "<p>List all users</p>",
     "success": {
       "fields": {
         "Success 200": [
           {
             "group": "Success 200",
-            "type": "String",
+            "type": "Array",
             "optional": false,
-            "field": "name",
-            "description": "<p>Name of the User.</p>"
+            "field": "array",
+            "description": "<p>Array of Users</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.id",
+            "description": ""
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "username",
+            "field": "array.name",
+            "description": "<p>Name of the User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.username",
             "description": "<p>Username of the User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.email",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "array.admin",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "array.changepw",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "array.disabled",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.verification",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.updatedAt",
+            "description": ""
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"name\": \"Admin\",\n  \"username\": \"admin\"\n}",
+          "content": " HTTP/1.1 200 OK\n[\n  {\n    \"id\": 1,\n    \"name\": \"Admin\",\n    \"username\": \"admin\",\n    \"email\": \"admin@localhost\",\n    \"admin\": true,\n    \"changepw\": false,\n    \"disabled\": false,\n    \"verification\": \"\",\n    \"createdAt\": \"2016-08-19T02:35:06.298Z\",\n    \"updatedAt\": \"2016-08-19T02:35:06.298Z\"\n  }\n]",
           "type": "json"
         }
       ]
@@ -738,7 +1962,6 @@
     "title": "Get User",
     "version": "0.0.1",
     "group": "Users",
-    "description": "<p>Get details for a specific user by id</p>",
     "success": {
       "fields": {
         "Success 200": [
@@ -747,21 +1970,104 @@
             "type": "Integer",
             "optional": false,
             "field": "id",
-            "description": "<p>Internal ID of the User</p>"
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Name of the User</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
             "optional": false,
             "field": "username",
-            "description": "<p>Username of the user</p>"
+            "description": "<p>Username of the User</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "admin",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "changepw",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "optional": false,
+            "field": "disabled",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "verification",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "updatedAt",
+            "description": ""
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"id\": 1,\n  \"username\": \"admin\n}",
+          "content": "HTTP/1.1 200 OK\n {\n   \"id\": 1,\n   \"name\": \"Admin\",\n   \"username\": \"admin\",\n   \"email\": \"admin@localhost\",\n   \"admin\": true,\n   \"changepw\": false,\n   \"disabled\": false,\n   \"verification\": \"\",\n   \"createdAt\": \"2016-08-19T02:35:06.298Z\",\n   \"updatedAt\": \"2016-08-19T02:35:06.298Z\"\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n   \"error\": \"Record Not Found\",\n   \"code\": \"FC00007\"\n}",
           "type": "json"
         }
       ]
@@ -773,33 +2079,118 @@
   {
     "type": "get",
     "url": "/users/:id/tokens",
-    "title": "List Tokens for a User",
+    "title": "List User Tokens",
     "version": "0.0.1",
     "group": "Users",
-    "description": "<p>List all tokens for a specific user</p>",
-    "filename": "./src/app/routes/users.js",
-    "groupTitle": "Users",
-    "name": "GetUsersIdTokens"
-  },
-  {
-    "type": "get",
-    "url": "/users/:id/tokens",
-    "title": "Get User Tokens",
-    "version": "0.0.1",
-    "group": "Users",
-    "description": "<p>Get all active tokens for a specific user.</p>",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
           {
             "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "array",
+            "description": "<p>Array of Tokens</p>"
+          },
+          {
+            "group": "Success 200",
             "type": "Integer",
             "optional": false,
-            "field": "id",
-            "description": "<p>Internal ID of the User</p>"
+            "field": "array.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "array.userId",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.client_token",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.ip",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "array.agent",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.expires",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.updatedAt",
+            "description": ""
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n[\n  {\n    \"id\": 4,\n    \"client_token\": \"jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=\",\n    \"ip\": \"127.0.0.1\",\n    \"agent\": \"Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:48.0) Gecko/20100101 Firefox/48.0\",\n    \"expires\": \"2016-08-21T02:10:33.132Z\",\n    \"createdAt\": \"2016-08-20T02:10:33.134Z\",\n    \"updatedAt\": \"2016-08-20T02:10:33.134Z\",\n    \"userId\": 1\n  }\n]",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n   \"error\": \"Record Not Found\",\n   \"code\": \"FC00007\"\n}",
+          "type": "json"
+        }
+      ]
     },
     "filename": "./src/app/routes/users.js",
     "groupTitle": "Users",
@@ -808,9 +2199,105 @@
   {
     "type": "get",
     "url": "/users/:id/tokens/:tokenid",
-    "title": "Get Token details",
+    "title": "Get User Token",
     "version": "0.0.1",
     "group": "Users",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "userId",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "client_token",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "ip",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "agent",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "expires",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "createdAt",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "updatedAt",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n  {\n    \"id\": 4,\n    \"client_token\": \"jGl25bVBBBW96Qi9Te4V37Fnqchz/Eu4qB9vKrRIqRg=\",\n    \"ip\": \"127.0.0.1\",\n    \"agent\": \"Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:48.0) Gecko/20100101 Firefox/48.0\",\n    \"expires\": \"2016-08-21T02:10:33.132Z\",\n    \"createdAt\": \"2016-08-20T02:10:33.134Z\",\n    \"updatedAt\": \"2016-08-20T02:10:33.134Z\",\n    \"userId\": 1\n  }",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 404 Not Found",
+          "content": "HTTP/1.1 404 Not Found\n{\n   \"error\": \"Record Not Found\",\n   \"code\": \"FC00007\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "./src/app/routes/users.js",
     "groupTitle": "Users",
     "name": "GetUsersIdTokensTokenid"
@@ -821,7 +2308,175 @@
     "title": "Create User",
     "version": "0.0.1",
     "group": "Users",
-    "description": "<p>Create new User</p>",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Request Data": [
+          {
+            "group": "Request Data",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Name of the User</p>"
+          },
+          {
+            "group": "Request Data",
+            "type": "String",
+            "optional": false,
+            "field": "username",
+            "description": "<p>Username of the User</p>"
+          },
+          {
+            "group": "Request Data",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "Boolean",
+            "optional": false,
+            "field": "admin",
+            "defaultValue": "false",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "Boolean",
+            "optional": false,
+            "field": "changepw",
+            "defaultValue": "false",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "Boolean",
+            "optional": false,
+            "field": "disabled",
+            "defaultValue": "false",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
+            "type": "String",
+            "optional": false,
+            "field": "verification",
+            "defaultValue": "[none]",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request Data Example",
+          "content": "{\n  \"name\" \"User\",\n  \"username\" \"user\",\n  \"email\" \"user@localhost\",\n  \"password\" \"super_password\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Integer",
+            "optional": false,
+            "field": "id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success Example",
+          "content": "{\n    \"message\": \"Record Created Successfully\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Field Validation Error": [
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "Array",
+            "optional": false,
+            "field": "fields",
+            "description": ""
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "fields.message",
+            "description": ""
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "fields.type",
+            "description": ""
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "fields.path",
+            "description": ""
+          },
+          {
+            "group": "Field Validation Error",
+            "type": "String",
+            "optional": false,
+            "field": "fields.value",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Field Validation Error Example",
+          "content": "{\n  \"error\": \"Field Validation Error\",\n  \"code\": \"FC00010\",\n  \"fields\":\n  [\n    {\n      \"message\": \"email must be unique\",\n      \"type\": \"unique violation\",\n      \"path\": \"email\",\n      \"value\": \"email@localhost\"\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "./src/app/routes/users.js",
     "groupTitle": "Users",
     "name": "PostUsers"
@@ -832,6 +2487,73 @@
     "title": "Update User",
     "version": "0.0.1",
     "group": "Users",
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "error",
+            "description": "<p>Error Message</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Error Code</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "type": "Array",
+            "optional": false,
+            "field": "fields",
+            "description": ""
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "fields.message",
+            "description": ""
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "fields.type",
+            "description": ""
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "fields.path",
+            "description": ""
+          },
+          {
+            "group": "Error 4xx",
+            "type": "String",
+            "optional": false,
+            "field": "fields.value",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Field Validation Error",
+          "content": "{\n  \"error\": \"Field Validation Error\",\n  \"code\": \"FC00010\",\n  \"fields\":\n  [\n    {\n      \"message\": \"email must be unique\",\n      \"type\": \"unique violation\",\n      \"path\": \"email\",\n      \"value\": \"email@localhost\"\n    }\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Record Not Found",
+          "content": "{\n   \"error\": \"Record Not Found\",\n   \"code\": \"FC00007\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "./src/app/routes/users.js",
     "groupTitle": "Users",
     "name": "PutUsersId"
