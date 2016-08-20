@@ -3,4 +3,3 @@ src/node_modules/*
 src/public/vendor*
 config.ini
 src/*.sqlite
-src/public/apidoc/*
