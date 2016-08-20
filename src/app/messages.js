@@ -13,11 +13,11 @@ messages.get = function (key, vars) {
 	return {
 		'code': messages[key].code,
 		'message': format(messages[key].message, vars),
-		'http_code': 500,
+		'http_code': messages[key].http_code,
 		'trace': stack = new Error().stack,
 	}
 };
-
+//
 messages.CONFIG_NOT_FOUND = {
 	'code': 'FC00001',
 	'message': 'Config could not be found and/or read ({config_path})',
@@ -52,6 +52,16 @@ messages.RECORD_NOT_FOUND = {
 	'code': 'FC00007',
 	'message': 'Record Not Found',
 	'http_code': 404,
+};
+messages.LOGIN_FAILED = {
+  'code': 'FC00008',
+  'message': 'Login Failed',
+  'http_code': 400,
+};
+messages.TOKEN_DELETED = {
+  'code': 'FC00009',
+  'message': 'Token Deleted',
+  'http_code': 200,
 };
 
 module.exports = messages;
