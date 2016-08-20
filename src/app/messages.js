@@ -63,5 +63,26 @@ messages.TOKEN_DELETED = {
   'message': 'Token Deleted',
   'http_code': 200,
 };
+messages.FIELD_VALIDATION_ERROR = {
+  'code': 'FC00010',
+  'message': 'Field Validation Error',
+  'http_code': 400,
+};
+messages.RECORD_CREATED = {
+  'code': 'FC00011',
+  'message': 'Record Created Successfully',
+  'http_code': 201,
+};
+messages.RECORD_DELETED = {
+  'code': 'FC00012',
+  'message': 'Record Deleted Successfully',
+  'http_code': 200,
+};
+messages.RECORD_UPDATED = {
+  'code': 'FC00013',
+  'message': 'Record Updated Successfully',
+  'http_code': 200,
+};
+
 
 module.exports = messages;
