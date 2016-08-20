@@ -120,7 +120,7 @@ fc.start = function () {
 						'name': record.dataValues.user.dataValues.email,
 						'admin': record.dataValues.user.dataValues.admin,
 					}
-					
+
 				}
 				console.log(req.auth);
 				next();
@@ -136,5 +136,62 @@ fc.start = function () {
 	});
 };
 
+fc.isAdmin = function (req, res, next) {
+  var now = new Date();
+
+  if (req.auth && req.auth.admin && now < req.auth.expires) {
+    next();
+  } else {
+    var msg = messages('ACCESS_DENIED');
+    res.status(msg.http_code).send({'error': msg.message});
+  }
+};
+
+fc.isAuth = function (req, res, next) {
+  var now = new Date();
+
+  if (req.auth && req.auth.admin && now < req.auth.expires) {
+    next();
+  } else {
+    var msg = messages('ACCESS_DENIED');
+    res.status(msg.http_code).send({'error': msg.message});
+  }
+};
+
+fc.query = function (schema, req, options) {
+
+  return fc.schemas[schema].findAll(options);
+
+};
+
+fc.get = function (schema, req, options) {
+
+  return fc.schemas[schema].find(options);
+
+};
+
+fc.create = function (schema, data) {
+  var defer = q.defer();
+
+  fc.schemas[schema].create(data).then(function (record) {
+    defer.resolve(record)
+  }, function (err) {
+    delete err.name;
+
+    defer.reject(err);
+  });
+
+  return defer.promise;
+};
+
+fc.remove = function (schema, req, options) {
+  var defer = q.defer();
+
+  fc.schemas[schema].destroy(options).then(function (response) {
+    defer.resolve(response);
+  });
+
+  return defer.promise;
+};
 
 module.exports = fc;
