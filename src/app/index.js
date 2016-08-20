@@ -29,12 +29,12 @@ fc.init  = function () {
 
 			if (!user) {
 				var pwd = process.env.FC_ADMIN_PASS || 'admin';
-				var hash = crypto.createHmac('sha512', fc.config.salt).update(pwd).digest('base64');
+				//var hash = crypto.createHmac('sha512', fc.config.salt).update(pwd).digest('base64');
 
 				fc.schemas.users.create({
 					'username': 'admin',
 					'email': 'admin@localhost',
-					'password': hash,
+					'password': pwd,
 					'name': 'Admin',
 					'admin': true
 				})
@@ -102,38 +102,47 @@ fc.start = function () {
 	fc.app.use(log4js.connectLogger(fc.log, { level: log4js.levels.INFO }));
 	fc.app.use(express.static('public'));
 	fc.app.use(bodyParser.json());
-	fc.app.use(function (req, res, next) {
-		if (req.headers.client_token && req.headers.auth_token) {
-			fc.schemas.tokens.find({
-				'include': [fc.schemas.users],
-				'where': {
-					'client_token': req.headers.client_token,
-					'auth_token': req.headers.auth_token,
-				}
-			}).then(function (record) {
-				if (record) {
-					req.auth = {
-						'token_id': record.dataValues.id,
-						'expires': record.dataValues.expires,
-						'userId': record.dataValues.userId,
-						'client_token': record.dataValues.client_token,
-						'name': record.dataValues.user.dataValues.email,
-						'admin': record.dataValues.user.dataValues.admin,
-					};
-
-				}
-				console.log(req.auth);
-				next();
-			});
-		} else {
-			next();
-		}
-	});
+	fc.app.use(fc.check_token);
 	fc.app.use('/api', require('./routes'));
+
+  fc.expire_tokens();
+
+  fc.expire_tokens();
+  fc.token_cleaner = setInterval(fc.expire_tokens, 1000 * 60);
 
 	fc.app.listen(fc.config.web.port, fc.config.web.address, function () {
 		fc.log.info('Listening on %s:%s', fc.config.web.address, fc.config.web.port);
 	});
+};
+
+fc.check_token = function (req, res, next) {
+  if (req.headers.client_token && req.headers.auth_token) {
+
+    fc.get('tokens', {
+      'include': [fc.schemas.users],
+      'where': {
+        'client_token': req.headers.client_token,
+        'auth_token': req.headers.auth_token,
+      }
+    }).then(function (record) {
+      if (record) {
+        req.auth = {
+          'userId': record.dataValues.userId,
+          'tokenId': record.dataValues.id,
+          'name': record.dataValues.user.dataValues.name,
+          'expires': record.dataValues.expires,
+          'client_token': record.dataValues.client_token,
+          'admin': record.dataValues.user.dataValues.admin,
+        };
+
+        fc.update('tokens', {'expire': new Date()}, {'where': {'id': record.dataValues.id}});
+
+      }
+      next();
+    });
+  } else {
+    next();
+  }
 };
 
 fc.isAdmin = function (req, res, next) {
@@ -150,7 +159,7 @@ fc.isAdmin = function (req, res, next) {
 fc.isAuth = function (req, res, next) {
   var now = new Date();
 
-  if (req.auth && req.auth.admin && now < req.auth.expires) {
+  if (req.auth && now < req.auth.expires) {
     next();
   } else {
     var msg = messages('ACCESS_DENIED');
@@ -158,13 +167,13 @@ fc.isAuth = function (req, res, next) {
   }
 };
 
-fc.query = function (schema, req, options) {
+fc.query = function (schema, options, req) {
 
   return fc.schemas[schema].findAll(options);
 
 };
 
-fc.get = function (schema, req, options) {
+fc.get = function (schema, options, req) {
 
   return fc.schemas[schema].find(options);
 
@@ -184,7 +193,12 @@ fc.create = function (schema, data) {
   return defer.promise;
 };
 
-fc.remove = function (schema, req, options) {
+fc.update = function (schema, data, options, req, res) {
+
+  return fc.schemas[schema].update(data, options);
+};
+
+fc.remove = function (schema, options, req) {
   var defer = q.defer();
 
   fc.schemas[schema].destroy(options).then(function (response) {
@@ -192,6 +206,20 @@ fc.remove = function (schema, req, options) {
   });
 
   return defer.promise;
+};
+
+fc.expire_tokens = function () {
+  fc.remove('tokens',  {
+    'where': {
+      'expires': {
+        $lt: new Date()
+      }
+    }
+  }).then(function (response) {
+    if (response > 0) {
+      fc.log.info('Cleaned %s expired tokens', response);
+    }
+  });
 };
 
 module.exports = fc;
