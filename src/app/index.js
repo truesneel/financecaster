@@ -208,6 +208,23 @@ fc.remove = function (schema, options, req) {
   return defer.promise;
 };
 
+fc.AuthObject = function (schema) {
+
+  return function (req, res, next) {
+    fc.get(schema, {'where': {'id': req.params.id, 'userId': req.auth.userId}}).then(function (results) {
+
+      console.log(results);
+      if (results) {
+        next();
+      } else {
+        var msg = messages('RECORD_NOT_FOUND');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+      }
+
+    });
+  };
+};
+
 fc.expire_tokens = function () {
   fc.remove('tokens',  {
     'where': {

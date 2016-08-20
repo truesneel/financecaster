@@ -16,6 +16,7 @@ router.get('/', fc.isAuth, function (req, res) {
     'include': [{
       'model': fc.schemas.accounts,
       'attributes': ['id', 'name'],
+      'where': {'userId': req.auth.userId}
     }]
   }).then(function (results) {
     res.send(results);
@@ -29,13 +30,28 @@ router.get('/', fc.isAuth, function (req, res) {
  */
 router.post('/', fc.isAuth, function (req, res) {
 
-  fc.create('transactions', req.body, res).then(function (records) {
-    msg = messages('RECORD_CREATED');
 
-    res.status(msg.http_code).send({'id': records.id, 'message': msg.message});
-  }, function (err) {
-    var msg = messages('FIELD_VALIDATION_ERROR');
-    res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
+  fc.get('accounts', {
+    'where': {
+      'id': req.body.accountId,
+      'userId': req.auth.userId,
+    }
+  }).then(function (results) {
+    if (results) {
+
+      fc.create('transactions', req.body, res).then(function (records) {
+        msg = messages('RECORD_CREATED');
+
+        res.status(msg.http_code).send({'id': records.id, 'message': msg.message});
+      }, function (err) {
+        var msg = messages('FIELD_VALIDATION_ERROR');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
+      });
+
+    } else {
+      msg = messages('RECORD_NOT_FOUND');
+      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+    }
   });
 
 });
@@ -44,7 +60,7 @@ router.post('/', fc.isAuth, function (req, res) {
  * @api {get} /tansactions/:id Get Transactions
  * @apiGroup Transactions
  */
-router.get('/:id', fc.isAdmin, function (req, res) {
+router.get('/:id', fc.isAuth, function (req, res) {
 
   fc.get('transactions', {
       'include': [{
@@ -69,21 +85,41 @@ router.get('/:id', fc.isAdmin, function (req, res) {
  * @apiGroup Transactions
  */
 router.put('/:id', fc.isAuth, function (req, res) {
+  var msg;
 
-  fc.update('transactions', req.body, {'where': {'id': req.params.id}}).then(function (results) {
-    var msg;
+  delete req.body.accountId;
 
-    if (results > 0) {
-      msg = messages('RECORD_UPDATED');
-      res.status(msg.http_code).send({'message': msg.message});
-      res.send(results);
+  fc.get('transactions', {
+    'where': {
+      'id': req.params.id
+    },
+    'include': [{
+      'model': fc.schemas.accounts,
+      'where': {
+        'userId': req.auth.userId,
+      }
+    }]
+  }).then(function (results) {
+    if (results) {
+
+      fc.update('transactions', req.body, {'where': {'id': req.params.id}}).then(function (results) {
+
+        if (results > 0) {
+          msg = messages('RECORD_UPDATED');
+          res.status(msg.http_code).send({'message': msg.message});
+        } else {
+          msg = messages('RECORD_NOT_FOUND');
+          res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+        }
+      }, function (err) {
+        var msg = messages('FIELD_VALIDATION_ERROR');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
+      });
+
     } else {
       msg = messages('RECORD_NOT_FOUND');
       res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
     }
-  }, function (err) {
-    var msg = messages('FIELD_VALIDATION_ERROR');
-    res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
   });
 
 });
@@ -110,15 +146,35 @@ router.put('/:id', fc.isAuth, function (req, res) {
  *     "code": "FC00007"
  *  }
  */
-router.delete('/:id', fc.isAdmin, function (req, res) {
+router.delete('/:id', fc.isAuth, function (req, res) {
 
-  fc.remove('transactions', {'where': {'id': req.params.id}}).then(function (results) {
-    var msg;
 
-    if (results > 0) {
-      msg = messages('RECORD_DELETED');
-      res.status(msg.http_code).send({'message': msg.message});
-      res.send(results);
+  fc.get('transactions', {
+    'where': {
+      'id': req.params.id
+    },
+    'include': [{
+      'model': fc.schemas.accounts,
+      'where': {
+        'userId': req.auth.userId,
+      }
+    }]
+  }).then(function (results) {
+    if (results) {
+
+      fc.remove('transactions', {'where': {'id': req.params.id}}).then(function (results) {
+        var msg;
+
+        if (results > 0) {
+          msg = messages('RECORD_DELETED');
+          res.status(msg.http_code).send({'message': msg.message});
+          res.send(results);
+        } else {
+          msg = messages('RECORD_NOT_FOUND');
+          res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+        }
+      });
+
     } else {
       msg = messages('RECORD_NOT_FOUND');
       res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});

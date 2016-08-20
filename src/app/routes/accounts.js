@@ -318,7 +318,13 @@ router.get('/:id/transactions', fc.isAuth, function (req, res) {
     }],
     'where': {'accountId': req.params.id},
   }).then(function (results) {
-    res.send(results);
+
+    if (results.length > 0) {
+      res.send(results);
+    } else {
+      msg = messages('RECORD_NOT_FOUND');
+      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+    }
   });
 
 });
@@ -327,10 +333,9 @@ router.get('/:id/transactions', fc.isAuth, function (req, res) {
  * @api {post} /accounts/:id/transactions Create Account Transaction
  * @apiGroup Accounts
  */
-router.post('/:id/transactions', fc.isAuth, function (req, res) {
+router.post('/:id/transactions', fc.isAuth, fc.AuthObject('accounts'), function (req, res) {
 
   req.body.accountId = req.params.id;
-  console.log(req.body);
 
   fc.create('transactions', req.body, res).then(function (records) {
     msg = messages('RECORD_CREATED');
@@ -373,7 +378,7 @@ router.get('/:id/transactions/:transactionid', fc.isAuth, function (req, res) {
  * @api {put} /accounts/:id/transactions/:transactionid Update Account Transaction
  * @apiGroup Accounts
  */
-router.put('/:id/transactions/:transactionid', fc.isAuth, function (req, res) {
+router.put('/:id/transactions/:transactionid', fc.isAuth, fc.AuthObject('accounts'), function (req, res) {
 
   fc.update('transactions', req.body, {'where': {'id': req.params.transactionid}}).then(function (results) {
     var msg;
@@ -397,7 +402,7 @@ router.put('/:id/transactions/:transactionid', fc.isAuth, function (req, res) {
  * @api {delete} /accounts/:id/transactions/:transactionid Delete Account Transaction
  * @apiGroup Accounts
  */
-router.delete('/:id/transactions/:transactionid', fc.isAuth, function (req, res) {
+router.delete('/:id/transactions/:transactionid', fc.AuthObject('accounts'), fc.isAuth, function (req, res) {
 
   fc.remove('transactions', {'where': {'id': req.params.transactionid}}).then(function (results) {
     if (results > 0) {
