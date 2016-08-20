@@ -1,5 +1,4 @@
 var q = require('q');
-var hat = require('hat');
 var fc = require('../../app');
 var crypto = require('crypto');
 var express = require('express');
@@ -7,8 +6,20 @@ var router = express.Router();
 var messages = require('../messages').get;
 
 /**
+ * @apiDefine user User Access Required
+ * Access is restricted to an standard authorized user
+ */
+
+/**
+ * @apiDefine admin Admin Access Required
+ * Access is restricted to an authorized user with admin rights
+ */
+
+/**
  * @api {get} /auth Get Auth Status
  * @apiGroup Authentication
+ * @apiPermission user
+ *
  *
  * @apiSuccess {Integer} token_id Internal ID of the Token
  * @apiSuccess {DateTime} expires Date and Time that the token will expire
@@ -45,6 +56,8 @@ router.get('/', fc.isAuth, function (req, res) {
 /**
  * @api {post} /auth Log In
  * @apiGroup Authentication
+ * @apiPermission any
+ *
  *
  * @apiParam (Post Data) {String} username Username to attempt a log in with
  * @apiParam (Post Data) {String} password Password to attempt a log in with
@@ -89,8 +102,8 @@ router.post('/', function (req, res) {
       token_expiration.setDate(token_expiration.getDate() + 1);
 
       fc.schemas.tokens.create({
-        'client_token': crypto.createHash('sha256').update(req.body.username).digest('base64'),
-        'auth_token': hat(),
+        'client_token': 'GENERATE',
+        'auth_token': 'GENERATE',
         'ip': req.connection.remoteAddress,
         'agent': req.headers['user-agent'],
         'expires': token_expiration,
@@ -112,6 +125,8 @@ router.post('/', function (req, res) {
 /**
  * @api {delete} /auth Log Out
  * @apiGroup Authentication
+ * @apiPermission user
+ *
  *
  * @apiSuccessExample
  *   HTTP/1.1 200 OK
@@ -131,6 +146,8 @@ router.delete('/', fc.isAuth, function (req, res) {
 /**
  * @api {get} /auth/tokens List Current Tokens
  * @apiGroup Authentication
+ * @apiPermission user
+ *
  * @apiSuccess {Array[]} array
  * @apiSuccess {Integer} array.id
  * @apiSuccess {Integer} array.userId
@@ -169,7 +186,7 @@ router.delete('/', fc.isAuth, function (req, res) {
  */
 router.get('/tokens', fc.isAuth, function (req, res) {
 
-  fc.query('tokens', req, {'where': {'userId': req.auth.userId}, 'attributes': ['id', 'userId', 'client_token', 'ip', 'agent', 'expires', 'createdAt', 'updatedAt']}).then(function (results) {
+  fc.query('tokens', {'where': {'userId': req.auth.userId}, 'attributes': ['id', 'userId', 'client_token', 'ip', 'agent', 'expires', 'createdAt', 'updatedAt']}).then(function (results) {
     if (results) {
       res.send(results);
     } else {
@@ -183,6 +200,8 @@ router.get('/tokens', fc.isAuth, function (req, res) {
 /**
  * @api {get} /auth/tokens/:id Get Token
  * @apiGroup Authentication
+ * @apiPermission user
+ *
  * @apiSuccess {Integer} id
  * @apiSuccess {Integer} userId
  * @apiSuccess {String} client_token
@@ -216,7 +235,7 @@ router.get('/tokens', fc.isAuth, function (req, res) {
  */
 router.get('/tokens/:id', fc.isAuth, function (req, res) {
 
-  fc.get('tokens', req, {'where': {'userId': req.auth.userId, 'id': req.params.id}, 'attributes': ['id', 'userId', 'client_token', 'ip', 'agent', 'expires', 'createdAt', 'updatedAt']}).then(function (results) {
+  fc.get('tokens', {'where': {'userId': req.auth.userId, 'id': req.params.id}, 'attributes': ['id', 'userId', 'client_token', 'ip', 'agent', 'expires', 'createdAt', 'updatedAt']}).then(function (results) {
     if (results) {
       res.send(results);
     } else {
@@ -230,6 +249,8 @@ router.get('/tokens/:id', fc.isAuth, function (req, res) {
 /**
  * @api {delete} /auth/tokens/:id Delete Token
  * @apiGroup Authentication
+ * @apiPermission user
+ *
  * @apiSuccess {String} message
  * @apiSuccessExample
  * HTTP/1.1 200 OK
@@ -239,7 +260,7 @@ router.get('/tokens/:id', fc.isAuth, function (req, res) {
  */
 router.delete('/tokens/:id', fc.isAuth, function (req, res) {
 
-  fc.remove('tokens', req, {'where': {'userId': req.auth.userId, 'id': req.params.id}}).then(function (results) {
+  fc.remove('tokens', {'where': {'userId': req.auth.userId, 'id': req.params.id}}).then(function (results) {
     var msg;
 
     if (results) {

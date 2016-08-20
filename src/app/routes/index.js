@@ -15,6 +15,7 @@ router.use('/users', require('./users'));
 router.use('/accounts', require('./accounts'));
 router.use('/transactions', require('./transactions'));
 router.use('/permissions', require('./permissions'));
+router.use('/tokens', require('./tokens'));
 router.use('/auth', require('./auth'));
 
 module.exports = router;
