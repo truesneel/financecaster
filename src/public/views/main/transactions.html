@@ -1,1 +1,18 @@
-<div>Transactions</div>
+<h1>Transactions
+<button class="btn btn-success btn pull-right hidden-xs"><span class="glyphicon glyphicon-plus-sign"></span> Add</button>
+</h1>
+
+<div class="list-group">
+  <button type="button" class="list-group-item" ng-repeat="transaction in transactions">
+
+    <span class="badge ">
+      <div>{{transaction.amount | currency}}</div>
+      <small><i class="icon-repeatone"></i> {{transaction.every_num}} {{transaction.every_type}}[s]</small>
+    </span>
+    <div>{{transaction.name}}</div>
+    <small class="text-muted">{{transaction.account.name}}</small>
+  </button>
+</div>
+
+<div class="visible-xs" style="font-size: 1.5em; height: 4em;">&nbsp;</div>
+<button class="btn btn-success btn-lg visible-xs" style="font-size: 1.25em; border-radius: 1.5em; width: 3em; height: 3em; position: fixed; right: 1em; bottom: 1em;"><span class="glyphicon glyphicon-plus"></span></button>

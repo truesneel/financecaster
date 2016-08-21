@@ -81,7 +81,7 @@ messages.RECORD_DELETED = {
 messages.RECORD_UPDATED = {
   'code': 'FC00013',
   'message': 'Record Updated Successfully',
-  'http_code': 200,
+  'http_code': 204,
 };
 
 

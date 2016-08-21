@@ -1,11 +1,54 @@
 
-var financecaster = angular.module('financecaster', ['ui.router']);
+var financecaster = angular.module('financecaster', [
+  'ui.router',
+  'financecaster.welcome',
+  'financecaster.forecast',
+  'financecaster.accounts',
+  'financecaster.transactions',
+  'financecaster.settings',
+]);
 
+financecaster.directive('currency', function() {
+  var currency = /^-?\d+(\.\d\d)?$/;
 
-financecaster.provider('financecaster', function () {
+  return {
+    require: 'ngModel',
+    link: function(scope, elm, attrs, ctrl) {
+      ctrl.$validators.currency = function(modelValue, viewValue) {
+        if (ctrl.$isEmpty(modelValue)) {
+          // consider empty models to be valid
+          return true;
+        }
+
+        return currency.test(modelValue);
+      };
+    }
+  };
+});
+
+financecaster.directive('unsignedint', function() {
+  var unsignedint = /^\d+$/;
+
+  return {
+    require: 'ngModel',
+    link: function(scope, elm, attrs, ctrl) {
+      ctrl.$validators.unsignedint = function(modelValue, viewValue) {
+        if (ctrl.$isEmpty(modelValue)) {
+          // consider empty models to be valid
+          return true;
+        }
+
+        return unsignedint.test(modelValue);
+      };
+    }
+  };
+});
+
+financecaster.provider('financecaster', function ($httpProvider) {
   var initInjector = angular.injector(['ng']);
   var $http = initInjector.get('$http');
   var $q = initInjector.get('$q');
+  var headers = {};
 
   this.config = {};
 
@@ -13,18 +56,77 @@ financecaster.provider('financecaster', function () {
     try {
       this.config = JSON.parse(localStorage.getItem('financecaster'));
       this.config = this.config || {};
+
+      if (this.config.auth) {
+        $httpProvider.defaults.headers.common.client_token = this.config.auth.client_token;
+        $httpProvider.defaults.headers.common.auth_token = this.config.auth.auth_token;
+      }
     } catch (e) {
       this.config = {};
     }
 	};
 
   this.save = function () {
+
     localStorage.setItem('financecaster', JSON.stringify(this.config));
+
   };
 
-  this.is_authed = function () {
-    return (this.config && this.config.auth);
+  this.is_authed = ['$q', '$http', 'financecaster', function ($q, $http, financecaster) {
+    var defer = $q.defer();
+
+    if (financecaster.config.auth) {
+      $http.get('/api/auth').then(function (response) {
+        defer.resolve(financecaster.config.auth);
+      }, function (err) {
+        financecaster.config = {};
+        financecaster.save();
+        defer.reject({state: 'welcome'});
+      });
+    } else {
+      defer.reject({state: 'welcome'});
+    }
+
+    return defer.promise;
+  }];
+
+  this.login = function (username, password) {
+    var self = this,
+      defer = $q.defer();
+
+    $http.post('/api/auth', {'username': username, 'password': password}).then(function (response) {
+      self.config.auth = response.data;
+
+      $httpProvider.defaults.headers.common.client_token = self.config.auth.client_token;
+      $httpProvider.defaults.headers.common.auth_token = self.config.auth.auth_token;
+
+      self.save();
+      defer.resolve();
+    }, function (err) {
+      defer.reject(err);
+    });
+
+    return defer.promise;
   };
+
+  this.logout = function () {
+    var self = this,
+      defer = $q.defer();
+
+    $http.delete('/api/auth', {headers: headers}).then(function (response) {
+
+      delete self.config.auth;
+      self.save();
+
+      defer.resolve();
+
+    }, function (err) {
+      defer.reject(err);
+    });
+
+    return defer.promise;
+  };
+
 
 	this.$get = function () {
 		var self = this;
@@ -33,35 +135,11 @@ financecaster.provider('financecaster', function () {
       save: self.save,
       config: self.config,
       is_authed: self.is_authed,
+      login: self.login,
+      logout: self.logout,
 		};
 	};
 });
-
-financecaster.controller('welcomeController', ['$scope', '$state', '$http', 'financecaster', function ($scope, $state, $http, financecaster) {
-
-	$scope.username = '';
-	$scope.password = '';
-
-	$scope.login = function () {
-		$http.post('/api/auth', {'username': $scope.username, 'password': $scope.password}).then(function (response) {
-			financecaster.config.auth = response.data;
-			financecaster.save();
-			$state.go('main.forecast');
-		});
-	};
-
-}]);
-
-financecaster.controller('settingsController', ['$scope', '$state', 'financecaster', function ($scope, $state, financecaster) {
-
-	$scope.logout = function () {
-		delete financecaster.config.auth;
-		financecaster.save();
-
-		$state.go('welcome');
-	};
-
-}]);
 
 financecaster.config(function($stateProvider, $urlRouterProvider, financecasterProvider) {
 
@@ -71,55 +149,17 @@ financecaster.config(function($stateProvider, $urlRouterProvider, financecasterP
 	$urlRouterProvider.when('', '/Forecast');
 
 	$stateProvider
-		.state('welcome', {
-			url: '/Welcome',
-			templateUrl: 'views/welcome.html',
-			controller: 'welcomeController',
-		})
 		.state('main', {
 			url: '',
 			templateUrl: "views/main/index.html",
 			resolve: {
-				auth: ['$q', 'financecaster', function ($q, financecaster) {
-					var defer = $q.defer();
-
-					if (!financecaster.is_authed()) {
-						defer.reject({state: 'welcome'});
-					} else {
-						defer.resolve(financecaster.auth);
-					}
-
-					return defer.promise;
-				}]
+				auth: financecasterProvider.is_authed
 			}
 		})
-		.state('main.forecast', {
-			url: '/Forecast',
-			templateUrl: 'views/main/forecast.html',
-		})
-		.state('main.accounts', {
-			url: '/Accounts',
-			templateUrl: 'views/main/accounts.html',
-		})
-		.state('main.transactions', {
-			url: '/Transactions',
-			templateUrl: 'views/main/transactions.html',
-		})
-		.state('main.settings', {
-			url: '/Settings',
-			templateUrl: 'views/main/settings.html',
-			controller: 'settingsController',
-		});
 
 });
 
-
 financecaster.controller('rootController', ['$rootScope', '$state', 'financecaster', function ($rootScope, $state, financecaster) {
-
-	 if ( !financecaster.is_authed() && $state.current.name !== 'welcome') {
-	 	console.log('here');
-    $state.go('welcome');
-  }
 
 	$rootScope.loading = false;
 

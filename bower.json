@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "angular-ui-router": "^0.3.1",
-    "bootstrap": "^3.3.7"
+    "bootstrap": "^3.3.7",
+    "angular-resource": "^1.5.8"
   }
 }

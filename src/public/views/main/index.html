@@ -38,7 +38,10 @@
     <div class="header-item visible-xs-inline-block pointer" ng-click="showMenu=1">
       <span class="glyphicon glyphicon-menu-hamburger"></span>
     </div>
-    <div class="header-item"><img src="images/financecaster.png" style="height: 2em;">&nbsp;FinanceCaster</div>
+    <div class="header-item"><img src="images/financecaster.png" style="height: 1em; margin-bottom: .25em;">&nbsp;FinanceCaster</div>
   </div>
-  <div class="content" ui-view>
+  <div class="content container-fluid" style="padding-top: 1em;">
+    <div class="row">
+      <div class="col-sm-10 col-sm-offset-1" ui-view></div>
+    </div>
   </div>

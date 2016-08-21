@@ -1,0 +1,47 @@
+<h1>
+  Edit Account
+  <button class="btn btn-default btn-lg pull-right hidden-xs" style="border: 0px;" ui-sref="main.accounts"><span class="glyphicon glyphicon-arrow-left"></span></button>
+</h1>
+
+<div class="alert alert-danger" ng-class="{'alert-danger': response.error, 'alert-success': response.message}" role="alert" ng-show="response.message || response.error">
+  {{response.message}}{{response.error}}
+</div>
+
+<form name="addAccount">
+  <div class="form-group has-feedback" ng-class="{'has-success': addAccount.name.$valid, 'has-error': addAccount.name.$invalid && addAccount.name.$dirty}">
+    <label for="name">Account Name</label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="Name" ng-model="account.name" required>
+    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="addAccount.name.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.name.$invalid && addAccount.name.$dirty"></span>
+    <span id="helpBlock2" class="help-block" ng-show="addAccount.name.$invalid && addAccount.name.$dirty">Account name must be unique across all your accounts</span>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': addAccount.balance.$valid, 'has-error': addAccount.balance.$invalid && addAccount.balance.$dirty}">
+    <label for="balance">Balance</label>
+    <input type="number" class="form-control" id="balance" name="balance" placeholder="Balance" currency ng-model="account.balance" step="0.01" required>
+    <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="addAccount.balance.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.balance.$invalid && addAccount.balance.$dirty"></span>
+    <span id="helpBlock2" class="help-block" ng-show="addAccount.balance.$invalid && addAccount.balance.$dirty">Balance should be a dollar amount either positive or negative</span>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': addAccount.limit.$valid && account.limit, 'has-error': addAccount.limit.$invalid && addAccount.limit.$dirty}">
+    <label for="limit">Limit</label>
+    <input type="number" class="form-control" id="limit" name="limit" placeholder="Limit" currency ng-model="account.limit" step="0.01">
+    <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="addAccount.limit.$valid && account.limit"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.limit.$invalid && addAccount.limit.$dirty"></span>
+    <span id="helpBlock2" class="help-block" ng-show="addAccount.limit.$invalid && addAccount.limit.$dirty">Limit should be a dollar amount either positive or negative</span>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': addAccount.forecast.$valid, 'has-error': addAccount.forecast.$invalid && addAccount.forecast.$dirty}">
+    <label for="forecast">Forecast</label>
+    <input type="number" class="form-control" id="forecast" name="forecast" placeholder="Forecast" ng-model="account.forecast" step="1" min="1" max="1825" unsignedint required>
+    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="addAccount.forecast.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.forecast.$invalid && addAccount.forecast.$dirty"></span>
+    <span id="helpBlock2" class="help-block" ng-show="addAccount.forecast.$invalid && addAccount.forecast.$dirty">Forecast should be a number from 1 to 1825</span>
+  </div>
+
+  <div class="visible-xs" style="font-size: 1.5em; height: 4em;">&nbsp;</div>
+  <button class="btn btn-default btn-lg visible-xs" style="border: 0px; font-size: 1.25em; border-radius: 1.5em; width: 3em; height: 3em; position: fixed; left: 1em; bottom: 1em;" ui-sref="main.accounts"><span class="glyphicon glyphicon-arrow-left"></span></button>
+  <button class="btn btn-primary btn-lg visible-xs" style="font-size: 1.25em; position: fixed; right: 1em; bottom: 1em;" ng-click="save(addAccount)" ng-disabled="addAccount.$invalid"><i class="icon-save-floppy"></i></button>
+  <button class="btn btn-danger btn-lg visible-xs" style="font-size: 1.25em; position: fixed; left: 1em; bottom: 1em;" ng-click="delete(addAccount)" ng-disabled="addAccount.$invalid"><i class="icon-deletefile"></i></button>
+
+  <button class="btn btn-primary hidden-xs pull-right" ng-disabled="addAccount.$invalid" ng-click="save(addAccount)"><i class="icon-save-floppy"></i> Save</button>
+  <button class="btn btn-danger hidden-xs pull-left" ng-disabled="addAccount.$invalid" ng-click="delete(addAccount)"><i class="icon-deletefile"></i> Delete</button>
+</form>
