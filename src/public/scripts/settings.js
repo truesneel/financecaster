@@ -18,6 +18,8 @@ accounts.controller('settingsController', ['$scope', '$state', 'financecaster', 
 
     financecaster.logout().then(function () {
       $state.go('welcome');
+    }, function () {
+      $state.go('welcome');
     });
 
   };

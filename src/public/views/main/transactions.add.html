@@ -1,0 +1,82 @@
+<h1>
+  Add Transaction
+  <button class="btn btn-default btn-lg pull-right hidden-xs" style="border: 0px;" ui-sref="main.transactions"><span class="glyphicon glyphicon-arrow-left"></span></button>
+</h1>
+
+<div class="alert alert-danger" ng-class="{'alert-danger': response.error, 'alert-success': response.message}" role="alert" ng-show="response.message || response.error">
+  {{response.message}}{{response.error}}
+</div>
+
+<form name="record">
+  <div class="form-group has-feedback" ng-class="{'has-success': record.name.$valid, 'has-error': record.name.$invalid && record.name.$dirty}">
+    <label for="name">Account</label>
+    <select class="form-control" name="accountId" id="accountId" ng-model="transaction.accountId" required ng-options="account.id as account.name for account in accounts"></select>
+    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="record.name.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.name.$invalid && record.name.$dirty"></span>
+    <span id="helpBlock2" class="help-block" ng-show="record.name.$invalid && record.name.$dirty">Account name must be unique across all your transactions</span>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': record.name.$valid, 'has-error': record.name.$invalid && record.name.$dirty}">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="Transaction Name" ng-model="transaction.name" required>
+    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="record.name.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.name.$invalid && record.name.$dirty"></span>
+    <span id="helpBlock2" class="help-block" ng-show="record.name.$invalid && record.name.$dirty">Account name must be unique across all your transactions</span>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': record.amount.$valid, 'has-error': record.amount.$invalid && record.amount.$dirty}">
+    <label for="amount">Amount</label>
+    <input type="number" class="form-control" id="amount" name="amount" placeholder="Balance" currency ng-model="transaction.amount" step="0.01" required>
+    <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="record.amount.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.amount.$invalid && record.amount.$dirty"></span>
+    <span id="helpBlock2" class="help-block" ng-show="record.amount.$invalid && record.amount.$dirty">Amount should be a dollar amount either positive or negative</span>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': record.start.$valid, 'has-error': record.start.$invalid && record.amount.$dirty}">
+    <label for="start"><span ng-show="transaction.num_transactions > 0">Start</span> Date</label>
+    <p class="input-group">
+
+      <input type="text" class="form-control" uib-datepicker-popup ng-model="transaction.start" is-open="popup.opened" ng-required="true" close-text="Close" />
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="popup.opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+      </span>
+    </p>
+    <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="record.start.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.start.$invalid && record.start.$dirty"></span>
+    <span id="helpBlock2" class="help-block" ng-show="record.start.$invalid && record.start.$dirty">Amount should be a dollar amount either positive or negative</span>
+  </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="form-group" ng-class="{'has-success': record.every_num.$valid, 'has-error': record.every_num.$invalid && record.every_num.$dirty}">
+        <label for="every_num">Every</label>
+        <input type="number" class="form-control" id="every_num" name="every_num" placeholder="Balance"  min=0 step=1 unsignedint ng-model="transaction.every_num" required>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="form-group has-feedback" ng-class="{'has-success': record.every_type.$valid, 'has-error': record.every_type.$invalid && record.every_type.$dirty}" >
+        <label for="every_type">&nbsp;</label>
+        <select  class="form-control" id="every_type" name="every_type" ng-model="transaction.every_type" required>
+          <option value="day">Day[s]</option>
+          <option value="week">Weeks[s]</option>
+          <option value="month">Month[s]</option>
+          <option value="year">Year[s]</option>
+        </select>
+        <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="record.every_type.$valid && record.every_num.$valid"></span>
+        <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.every_type.$invalid || record.every_type.$invalid"></span>
+      </div>
+    </div>
+  </div>
+  <div class="form-group " ng-class="{'has-success': record.every_num.$valid, 'has-error': record.every_num.$invalid && record.every_num.$dirty}" ng-show="transaction.num_transactions > 0">
+    <span id="helpBlock2" class="help-block" ng-show="record.every_num.$invalid && record.amount.$dirty">Amount should be a dollar amount either positive or negative</span>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': record.num_transactions.$valid, 'has-error': record.num_transactions.$invalid && record.num_transactions.$dirty}">
+    <label for="num_transactions">Number of Transactions</label>
+    <input type="number" class="form-control" id="num_transactions" name="num_transactions" placeholder="Number of Transactions" min=0 step=1 unsignedint ng-model="transaction.num_transactions" required>
+    <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="record.num_transactions.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.num_transactions.$invalid && record.amount.$dirty"></span>
+    <span id="helpBlock2" class="help-block" ng-show="record.num_transactions.$invalid && record.num_transactions.$dirty">Amount should be a dollar amount either positive or negative</span>
+  </div>
+
+  <button class="btn btn-primary btn-lg visible-xs pull-right" style="font-size: 1.25em; " ng-click="save(record)" ng-disabled="record.$invalid"><i class="icon-save-floppy"></i></button>
+  <button class="btn btn-default btn-lg visible-xs" style="border: 0px; font-size: 1.25em; border-radius: 1.5em; width: 3em; height: 3em; " ui-sref="main.transactions"><span class="glyphicon glyphicon-arrow-left"></span></button>
+
+  <button class="btn btn-primary hidden-xs pull-right" ng-disabled="record.$invalid" ng-click="save(record)"><i class="icon-save-floppy"></i> Save</button>
+</form>
+{{transaction}}

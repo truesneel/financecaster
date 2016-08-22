@@ -10,6 +10,7 @@
     <script src="vendor/angular/angular.js"></script>
     <script src="vendor/angular-resource/angular-resource.js"></script>
     <script src="vendor/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="scripts/main.js"></script>
     <script src="scripts/welcome.js"></script>
     <script src="scripts/accounts.js"></script>
@@ -36,6 +37,7 @@
     color: white;
     padding: 0em .5em;
     margin-top: -3em;
+    z-index: 990;
   }
   .header-item {
     display: inline-block;
@@ -45,7 +47,7 @@
     font-size: 2em;
   }
   .navigation-mobile {
-    position: absolute;
+    position: fixed;
     top: 0em;
     bottom: 0em;
     left: 0em;
@@ -60,7 +62,7 @@
     padding-top: 1em;
   }
   .navigation-shade {
-    position: absolute;
+    position: fixed;
     top: 0em;
     bottom: 0em;
     left: 0em;
@@ -110,6 +112,7 @@
     right: 0em;
     bottom: 0em;
     background-color: white;
+    z-index: 980;
   }
   .loading-shade-message {
     position: absolute;

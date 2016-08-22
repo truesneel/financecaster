@@ -96,7 +96,7 @@ schemas.transactions = fc.db.define('transactions', {
     },
     'allowNull': false,
 	},
-	'num_tansactions': {
+	'num_transactions': {
 		'type': Sequelize.INTEGER,
     'allowNull': false,
 	},

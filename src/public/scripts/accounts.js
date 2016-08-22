@@ -59,18 +59,15 @@ accounts.controller('accountsAddController', ['$scope', '$http', 'financecaster'
       form.$setUntouched();
 
       $scope.response = response
-      console.dir(response);
     }, function (err) {
       $scope.response = err.data;
       if (err.data.fields) {
         err.data.fields.forEach(function (field) {
           if (form[field.path]) {
-            console.log(form[field.path]);
             form[field.path].$setValidity('uniqueness', false);
           }
         });
       }
-      console.dir(err);
     });
   }
 }]);

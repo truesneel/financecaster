@@ -1,6 +1,7 @@
 
 var financecaster = angular.module('financecaster', [
   'ui.router',
+  'ui.bootstrap',
   'financecaster.welcome',
   'financecaster.forecast',
   'financecaster.accounts',
