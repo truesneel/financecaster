@@ -319,12 +319,7 @@ router.get('/:id/transactions', fc.isAuth, function (req, res) {
     'where': {'accountId': req.params.id},
   }).then(function (results) {
 
-    if (results.length > 0) {
-      res.send(results);
-    } else {
-      msg = messages('RECORD_NOT_FOUND');
-      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
-    }
+    res.send(results);
   });
 
 });

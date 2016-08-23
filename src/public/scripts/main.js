@@ -156,7 +156,7 @@ financecaster.config(function($stateProvider, $urlRouterProvider, financecasterP
 			resolve: {
 				auth: financecasterProvider.is_authed
 			}
-		})
+		});
 
 });
 

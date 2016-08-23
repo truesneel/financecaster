@@ -36,6 +36,7 @@ transactions.config(function($stateProvider, $urlRouterProvider) {
             defer = $q.defer();
 
           account = Transactions.get({ id: $stateParams.id}, function () {
+            account.start = new Date(account.start);
             defer.resolve(account);
           });
 
@@ -72,7 +73,7 @@ transactions.controller('transactionsController', ['$scope', '$http', 'financeca
 
 transactions.controller('transactionsAddController', ['$scope', '$http', 'financecaster', 'Transactions', 'myAccounts', function ($scope, $http, financecaster, Transactions, accounts) {
 
-  $scope.response;
+  $scope.response = {};
   $scope.transaction = new Transactions();
   $scope.accounts = accounts;
 
@@ -81,7 +82,7 @@ transactions.controller('transactionsAddController', ['$scope', '$http', 'financ
       form.$setPristine();
       form.$setUntouched();
 
-      $scope.response = response
+      $scope.response = response;
     }, function (err) {
       $scope.response = err.data;
       if (err.data.fields) {
@@ -92,12 +93,13 @@ transactions.controller('transactionsAddController', ['$scope', '$http', 'financ
         });
       }
     });
-  }
+  };
+
 }]);
 
 transactions.controller('transactionsEditController', ['$scope', '$state', '$http', 'financecaster', 'transaction', 'myAccounts', function ($scope, $state, $http, financecaster, transaction, accounts) {
 
-  $scope.response;
+  $scope.response = {};
   $scope.transaction = transaction;
   $scope.accounts = accounts;
 
@@ -114,7 +116,7 @@ transactions.controller('transactionsEditController', ['$scope', '$state', '$htt
             }
           });
         }
-      })
+      });
     }
   };
 
@@ -132,6 +134,7 @@ transactions.controller('transactionsEditController', ['$scope', '$state', '$htt
         });
       }
     });
-  }
+  };
+
 }]);
 

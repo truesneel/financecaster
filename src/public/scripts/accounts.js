@@ -40,6 +40,98 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
           return defer.promise;
         }
       }
+    })
+    .state('main.editaccountTransactions', {
+      url: '/Accounts/:id/Transactions',
+      templateUrl: 'views/main/accounts.edit.transactions.html',
+      controller: 'accountTransactionsController',
+      resolve: {
+        'account': function ($q, $stateParams, Accounts) {
+          var account,
+            defer = $q.defer();
+
+          account = Accounts.get({ id: $stateParams.id}, function () {
+            defer.resolve(account);
+          });
+
+          return defer.promise;
+        },
+        'transactions': function ($q, $stateParams, AccountsTransactions) {
+          var account,
+            defer = $q.defer();
+
+          account = AccountsTransactions.query({ accountId: $stateParams.id}, function () {
+            defer.resolve(account);
+          });
+
+          return defer.promise;
+        }
+      }
+    })
+    .state('main.accountAddTransaction', {
+      url: '/Accounts/:id/Transactions/Add',
+      templateUrl: 'views/main/accounts.edit.transactions.add.html',
+      controller: 'accountTransactionsAddController',
+      resolve: {
+        'myAccounts': function ($q, $stateParams, Accounts) {
+          var account,
+            defer = $q.defer();
+
+          accounts = Accounts.query(function () {
+            defer.resolve(accounts);
+          });
+
+          return defer.promise;
+        },
+        'account': function ($q, $stateParams, Accounts) {
+          var account,
+            defer = $q.defer();
+
+          account = Accounts.get({ id: $stateParams.id}, function () {
+            defer.resolve(account);
+          });
+
+          return defer.promise;
+        }
+      }
+    })
+    .state('main.accountEditTransaction', {
+      url: '/Accounts/:accountId/Transactions/:id',
+      templateUrl: 'views/main/accounts.edit.transactions.edit.html',
+      controller: 'accountTransactionsEditController',
+      resolve: {
+        'myAccounts': function ($q, $stateParams, Accounts) {
+          var account,
+            defer = $q.defer();
+
+          accounts = Accounts.query(function () {
+            defer.resolve(accounts);
+          });
+
+          return defer.promise;
+        },
+        'account': function ($q, $stateParams, Accounts) {
+          var account,
+            defer = $q.defer();
+
+          account = Accounts.get({ id: $stateParams.accountId}, function () {
+            defer.resolve(account);
+          });
+
+          return defer.promise;
+        },
+        'transaction': function ($q, $stateParams, Transactions) {
+          var account,
+            defer = $q.defer();
+
+          account = Transactions.get({ id: $stateParams.id}, function () {
+            account.start = new Date(account.start);
+            defer.resolve(account);
+          });
+
+          return defer.promise;
+        }
+      }
     });
 
 });
@@ -68,7 +160,7 @@ accounts.controller('accountsController', ['$scope', '$http', 'financecaster', '
 
 accounts.controller('accountsAddController', ['$scope', '$http', 'financecaster', 'Accounts', function ($scope, $http, financecaster, Accounts) {
 
-  $scope.response;
+  $scope.response = {};
   $scope.account = new Accounts();
 
   $scope.save = function (form) {
@@ -76,7 +168,7 @@ accounts.controller('accountsAddController', ['$scope', '$http', 'financecaster'
       form.$setPristine();
       form.$setUntouched();
 
-      $scope.response = response
+      $scope.response = response;
     }, function (err) {
       $scope.response = err.data;
       if (err.data.fields) {
@@ -87,12 +179,14 @@ accounts.controller('accountsAddController', ['$scope', '$http', 'financecaster'
         });
       }
     });
-  }
+  };
+
 }]);
 
 accounts.controller('accountsEditController', ['$scope', '$state', '$http', 'financecaster', 'account', 'transactions', function ($scope, $state, $http, financecaster, account, transactions) {
 
-  $scope.response;
+  $scope.state = $state.current;
+  $scope.response = {};
   $scope.account = account;
   $scope.transactions = transactions;
 
@@ -109,7 +203,7 @@ accounts.controller('accountsEditController', ['$scope', '$state', '$http', 'fin
             }
           });
         }
-      })
+      });
     }
   };
 
@@ -127,5 +221,92 @@ accounts.controller('accountsEditController', ['$scope', '$state', '$http', 'fin
         });
       }
     });
-  }
+  };
+
+}]);
+
+accounts.controller('accountTransactionsController', ['$scope', '$state', '$stateParams', '$http', 'financecaster', 'account', 'transactions', function ($scope, $state, $stateParams, $http, financecaster, account, transactions) {
+
+  $scope.state = $stateParams;
+  $scope.account = account;
+  $scope.response = {};
+  $scope.transactions = transactions;
+
+}]);
+
+accounts.controller('accountTransactionsAddController', ['$scope', '$state', '$stateParams', '$http', 'financecaster', 'account', 'Transactions', 'myAccounts', function ($scope, $state, $stateParams, $http, financecaster, account, Transactions, accounts) {
+
+  $scope.accounts = accounts;
+  $scope.transaction = new Transactions({'accountId': account.id});
+
+  $scope.state = $stateParams;
+  $scope.account = account;
+  $scope.response = {};
+
+
+
+  $scope.save = function (form) {
+    $scope.transaction.$save().then(function (response) {
+      form.$setPristine();
+      form.$setUntouched();
+
+      $scope.response = response;
+    }, function (err) {
+      $scope.response = err.data;
+      if (err.data.fields) {
+        err.data.fields.forEach(function (field) {
+          if (form[field.path]) {
+            form[field.path].$setValidity('uniqueness', false);
+          }
+        });
+      }
+    });
+  };
+
+}]);
+
+accounts.controller('accountTransactionsEditController', ['$scope', '$state', '$stateParams', '$http', 'financecaster', 'transaction', 'account', 'myAccounts', function ($scope, $state, $stateParams, $http, financecaster, transaction, account, accounts) {
+
+  $scope.accounts = accounts;
+  $scope.account = account;
+  $scope.transaction = transaction;
+
+  $scope.response = {};
+
+
+  $scope.delete = function (form ) {
+    if (confirm('Are you sure you want to delete this transaction?')) {
+      $scope.transaction.$delete().then(function (response) {
+        $state.go('main.editaccountTransactions', account);
+      }, function (err) {
+      $scope.response = err.data;
+        if (err.data.fields) {
+          err.data.fields.forEach(function (field) {
+            if (form[field.path]) {
+              form[field.path].$setValidity('uniqueness', false);
+            }
+          });
+        }
+      });
+    }
+  };
+
+  $scope.save = function (form) {
+    $scope.transaction.$save().then(function (response) {
+      form.$setPristine();
+      form.$setUntouched();
+
+      $scope.response = response;
+    }, function (err) {
+      $scope.response = err.data;
+      if (err.data.fields) {
+        err.data.fields.forEach(function (field) {
+          if (form[field.path]) {
+            form[field.path].$setValidity('uniqueness', false);
+          }
+        });
+      }
+    });
+  };
+
 }]);

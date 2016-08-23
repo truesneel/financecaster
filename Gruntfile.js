@@ -6,17 +6,21 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     watch: {
-      scripts: {
+      apidoc: {
         files: ['src/app/**/*.js', 'src/server.js', 'Gruntfile.js'],
-        tasks: ['jshint','exec'],
+        tasks: ['exec'],
         options: {
           interrupt: true,
           livereload: true,
         },
       },
-      static: {
-        files: ['src/public/scripts/**/*.js'],
-        tasks: ['jshint'],
+      scripts: {
+        files: ['src/app/**/*.js', 'src/server.js', 'Gruntfile.js', 'src/public/scripts/**/*.js'],
+        tasks: ['jshint','exec'],
+        options: {
+          interrupt: true,
+          livereload: true,
+        },
       },
     },
     jshint: {
@@ -51,13 +55,19 @@ module.exports = function(grunt) {
     },
     concurrent: {
       dev: {
-        tasks: ['watch', 'nodemon:dev'],
+        tasks: ['watch:scripts', 'nodemon:dev'],
         options: {
           logConcurrentOutput: true
         }
       },
       syncdb: {
-        tasks: ['watch', 'nodemon:syncdb'],
+        tasks: ['watch:scripts', 'nodemon:syncdb'],
+        options: {
+          logConcurrentOutput: true
+        }
+      },
+      apidoc: {
+        tasks: ['watch:apidoc', 'nodemon:dev'],
         options: {
           logConcurrentOutput: true
         }
@@ -71,6 +81,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-nodemon');
 
-  grunt.registerTask('default', ['jshint', 'exec', 'concurrent:dev']);
-  grunt.registerTask('syncdb', ['jshint', 'exec', 'concurrent:syncdb']);
+  grunt.registerTask('default', ['jshint', 'concurrent:dev']);
+  grunt.registerTask('syncdb', ['jshint', 'concurrent:syncdb']);
+  grunt.registerTask('apidoc', ['concurrent:apidoc']);
 };

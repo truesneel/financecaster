@@ -1,6 +1,13 @@
+<div class="hidden-xs">
+  <ol class="breadcrumb">
+    <li><a ui-sref="main.accounts">Transactions</a></li>
+    <li class="active">{{transaction.name}}</li>
+  </ol>
+</div>
+
 <h1>
   Edit Transaction
-  <button class="btn btn-default btn-lg pull-right hidden-xs" style="border: 0px;" ui-sref="main.transactions"><span class="glyphicon glyphicon-arrow-left"></span></button>
+  <button class="btn btn-default pull-right hidden-xs" style="border: 0px;" ui-sref="main.transactions"><span class="glyphicon glyphicon-arrow-left"></span></button>
 </h1>
 
 <div class="alert alert-danger" ng-class="{'alert-danger': response.error, 'alert-success': response.message}" role="alert" ng-show="response.message || response.error">
@@ -80,4 +87,3 @@
   <button class="btn btn-primary hidden-xs pull-right" ng-disabled="record.$invalid" ng-click="save(record)"><i class="icon-save-floppy"></i> Save</button>
   <button class="btn btn-danger hidden-xs pull-left" ng-click="delete(record)"><i class="icon-deletefile"></i> Delete</button>
 </form>
-{{transaction}}
