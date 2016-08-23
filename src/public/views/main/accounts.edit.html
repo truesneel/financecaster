@@ -7,40 +7,67 @@
   {{response.message}}{{response.error}}
 </div>
 
-<form name="addAccount">
-  <div class="form-group has-feedback" ng-class="{'has-success': addAccount.name.$valid, 'has-error': addAccount.name.$invalid && addAccount.name.$dirty}">
-    <label for="name">Account Name</label>
-    <input type="text" class="form-control" name="name" id="name" placeholder="Name" ng-model="account.name" required>
-    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="addAccount.name.$valid"></span>
-    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.name.$invalid && addAccount.name.$dirty"></span>
-    <span id="helpBlock2" class="help-block" ng-show="addAccount.name.$invalid && addAccount.name.$dirty">Account name must be unique across all your accounts</span>
-  </div>
-  <div class="form-group has-feedback" ng-class="{'has-success': addAccount.balance.$valid, 'has-error': addAccount.balance.$invalid && addAccount.balance.$dirty}">
-    <label for="balance">Balance</label>
-    <input type="number" class="form-control" id="balance" name="balance" placeholder="Balance" currency ng-model="account.balance" step="0.01" required>
-    <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="addAccount.balance.$valid"></span>
-    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.balance.$invalid && addAccount.balance.$dirty"></span>
-    <span id="helpBlock2" class="help-block" ng-show="addAccount.balance.$invalid && addAccount.balance.$dirty">Balance should be a dollar amount either positive or negative</span>
-  </div>
-  <div class="form-group has-feedback" ng-class="{'has-success': addAccount.limit.$valid && account.limit, 'has-error': addAccount.limit.$invalid && addAccount.limit.$dirty}">
-    <label for="limit">Limit</label>
-    <input type="number" class="form-control" id="limit" name="limit" placeholder="Limit" currency ng-model="account.limit" step="0.01">
-    <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="addAccount.limit.$valid && account.limit"></span>
-    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.limit.$invalid && addAccount.limit.$dirty"></span>
-    <span id="helpBlock2" class="help-block" ng-show="addAccount.limit.$invalid && addAccount.limit.$dirty">Limit should be a dollar amount either positive or negative</span>
-  </div>
-  <div class="form-group has-feedback" ng-class="{'has-success': addAccount.forecast.$valid, 'has-error': addAccount.forecast.$invalid && addAccount.forecast.$dirty}">
-    <label for="forecast">Forecast</label>
-    <input type="number" class="form-control" id="forecast" name="forecast" placeholder="Forecast" ng-model="account.forecast" step="1" min="1" max="1825" unsignedint required>
-    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="addAccount.forecast.$valid"></span>
-    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.forecast.$invalid && addAccount.forecast.$dirty"></span>
-    <span id="helpBlock2" class="help-block" ng-show="addAccount.forecast.$invalid && addAccount.forecast.$dirty">Forecast should be a number from 1 to 1825</span>
-  </div>
+<uib-tabset>
+  <uib-tab index=0 heading="Settings">
 
-  <button class="btn btn-primary btn-lg visible-xs pull-right" style="font-size: 1.25em;" ng-click="save(addAccount)" ng-disabled="addAccount.$invalid"><i class="icon-save-floppy"></i></button>
-  <button class="btn btn-danger btn-lg visible-xs pull-right" style="font-size: 1.25em; margin-right: 5em; " ng-click="delete(addAccount)" ng-disabled="addAccount.$invalid"><i class="icon-deletefile"></i></button>
-  <button class="btn btn-default btn-lg visible-xs" style="border: 0px; font-size: 1.25em; border-radius: 1.5em; width: 3em; height: 3em;" ui-sref="main.accounts"><span class="glyphicon glyphicon-arrow-left"></span></button>
+    <form name="addAccount">
+      <div class="panel panel-default">
+        <div class="panel-body">
 
-  <button class="btn btn-primary hidden-xs pull-right" ng-disabled="addAccount.$invalid" ng-click="save(addAccount)"><i class="icon-save-floppy"></i> Save</button>
-  <button class="btn btn-danger hidden-xs pull-left" ng-click="delete(addAccount)"><i class="icon-deletefile"></i> Delete</button>
-</form>
+        <div class="form-group has-feedback" ng-class="{'has-success': addAccount.name.$valid, 'has-error': addAccount.name.$invalid && addAccount.name.$dirty}">
+          <label for="name">Account Name</label>
+          <input type="text" class="form-control" name="name" id="name" placeholder="Name" ng-model="account.name" required>
+          <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="addAccount.name.$valid"></span>
+          <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.name.$invalid && addAccount.name.$dirty"></span>
+          <span id="helpBlock2" class="help-block" ng-show="addAccount.name.$invalid && addAccount.name.$dirty">Account name must be unique across all your accounts</span>
+        </div>
+        <div class="form-group has-feedback" ng-class="{'has-success': addAccount.balance.$valid, 'has-error': addAccount.balance.$invalid && addAccount.balance.$dirty}">
+          <label for="balance">Balance</label>
+          <input type="number" class="form-control" id="balance" name="balance" placeholder="Balance" currency ng-model="account.balance" step="0.01" required>
+          <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="addAccount.balance.$valid"></span>
+          <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.balance.$invalid && addAccount.balance.$dirty"></span>
+          <span id="helpBlock2" class="help-block" ng-show="addAccount.balance.$invalid && addAccount.balance.$dirty">Balance should be a dollar amount either positive or negative</span>
+        </div>
+        <div class="form-group has-feedback" ng-class="{'has-success': addAccount.limit.$valid && account.limit, 'has-error': addAccount.limit.$invalid && addAccount.limit.$dirty}">
+          <label for="limit">Limit</label>
+          <input type="number" class="form-control" id="limit" name="limit" placeholder="Limit" currency ng-model="account.limit" step="0.01">
+          <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="addAccount.limit.$valid && account.limit"></span>
+          <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.limit.$invalid && addAccount.limit.$dirty"></span>
+          <span id="helpBlock2" class="help-block" ng-show="addAccount.limit.$invalid && addAccount.limit.$dirty">Limit should be a dollar amount either positive or negative</span>
+        </div>
+        <div class="form-group has-feedback" ng-class="{'has-success': addAccount.forecast.$valid, 'has-error': addAccount.forecast.$invalid && addAccount.forecast.$dirty}">
+          <label for="forecast">Forecast</label>
+          <input type="number" class="form-control" id="forecast" name="forecast" placeholder="Forecast" ng-model="account.forecast" step="1" min="1" max="1825" unsignedint required>
+          <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="addAccount.forecast.$valid"></span>
+          <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.forecast.$invalid && addAccount.forecast.$dirty"></span>
+          <span id="helpBlock2" class="help-block" ng-show="addAccount.forecast.$invalid && addAccount.forecast.$dirty">Forecast should be a number from 1 to 1825</span>
+        </div>
+
+        <button class="btn btn-primary btn-lg visible-xs pull-right" style="font-size: 1.25em;" ng-click="save(addAccount)" ng-disabled="addAccount.$invalid"><i class="icon-save-floppy"></i></button>
+        <button class="btn btn-danger btn-lg visible-xs pull-right" style="font-size: 1.25em; margin-right: 3em; " ng-click="delete(addAccount)" ng-disabled="addAccount.$invalid"><i class="icon-deletefile"></i></button>
+        <button class="btn btn-default btn-lg visible-xs" style="border: 0px; font-size: 1.25em; border-radius: 1.5em; width: 3em; height: 3em;" ui-sref="main.accounts"><span class="glyphicon glyphicon-arrow-left"></span></button>
+
+        <button class="btn btn-primary hidden-xs pull-right" ng-disabled="addAccount.$invalid" ng-click="save(addAccount)"><i class="icon-save-floppy"></i> Save</button>
+        <button class="btn btn-danger hidden-xs pull-left" ng-click="delete(addAccount)"><i class="icon-deletefile"></i> Delete</button>
+        </div>
+      </div>
+    </form>
+  </uib-tab>
+  <uib-tab index=1 heading="Transactions">
+
+    <div class="list-group">
+      <button type="button" class="list-group-item" ng-repeat="transaction in transactions" ui-sref="main.edittransactions({ id: transaction.id })">
+
+        <span class="badge ">
+          <div>{{transaction.amount | currency}}</div>
+          <small><i class="icon-repeatone"></i> {{transaction.every_num}} {{transaction.every_type}}[s]</small>
+        </span>
+        <div>{{transaction.name}}</div>
+      </button>
+    </div>
+
+    <div class="visible-xs" style="font-size: 1.5em; height: 4em;">&nbsp;</div>
+    <button class="btn btn-success btn-lg visible-xs" style="box-shadow: .15em .15em .4em .2em rgba(0, 0, 0, 0.2); font-size: 1.25em; border-radius: 1.5em; width: 3em; height: 3em; position: fixed; right: 1em; bottom: 1em;" ui-sref="main.addaccounts"><span class="glyphicon glyphicon-plus"></span></button>
+
+  </uib-tab>
+</uib-tabset>

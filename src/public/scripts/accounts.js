@@ -28,6 +28,16 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
           });
 
           return defer.promise;
+        },
+        'transactions': function ($q, $stateParams, AccountsTransactions) {
+          var account,
+            defer = $q.defer();
+
+          account = AccountsTransactions.query({ accountId: $stateParams.id}, function () {
+            defer.resolve(account);
+          });
+
+          return defer.promise;
         }
       }
     });
@@ -36,6 +46,14 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
 
 accounts.factory('Accounts', ['$resource', function($resource) {
   return $resource('/api/accounts/:id', { id: '@id' }, {
+    update: {
+      method: 'PUT' // this method issues a PUT request
+    }
+  });
+}]);
+
+accounts.factory('AccountsTransactions', ['$resource', function($resource) {
+  return $resource('/api/accounts/:accountId/transactions/:id', { id: '@id' }, {
     update: {
       method: 'PUT' // this method issues a PUT request
     }
@@ -72,10 +90,11 @@ accounts.controller('accountsAddController', ['$scope', '$http', 'financecaster'
   }
 }]);
 
-accounts.controller('accountsEditController', ['$scope', '$state', '$http', 'financecaster', 'account', function ($scope, $state, $http, financecaster, account) {
+accounts.controller('accountsEditController', ['$scope', '$state', '$http', 'financecaster', 'account', 'transactions', function ($scope, $state, $http, financecaster, account, transactions) {
 
   $scope.response;
   $scope.account = account;
+  $scope.transactions = transactions;
 
   $scope.delete = function (form ) {
     if (confirm('Are you sure you want to delete this account?')) {
