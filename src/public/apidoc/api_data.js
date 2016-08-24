@@ -274,6 +274,105 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/accounts/:id/forecast",
+    "title": "View Forecast",
+    "group": "Accounts",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Account ID</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "GET /accounts/2837/forecast HTTP/1.1",
+          "content": "GET /accounts/2837/forecast HTTP/1.1",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "date",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Float",
+            "optional": false,
+            "field": "transactions_total",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Float",
+            "optional": false,
+            "field": "balance",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Array",
+            "optional": false,
+            "field": "transactions",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "id",
+            "optional": false,
+            "field": "transactions.id",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "id",
+            "optional": false,
+            "field": "transactions.name",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "id",
+            "optional": false,
+            "field": "transactions.num_transactions_total",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "id",
+            "optional": false,
+            "field": "transactions.num_transactions_current",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "id",
+            "optional": false,
+            "field": "transactions.amount",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "groupTitle": "Accounts",
+    "name": "GetAccountsIdForecast"
+  },
+  {
+    "type": "get",
     "url": "/accounts/:id/transactions",
     "title": "List Account Transactions",
     "group": "Accounts",

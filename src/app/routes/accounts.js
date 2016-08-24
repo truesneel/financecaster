@@ -412,4 +412,49 @@ router.delete('/:id/transactions/:transactionid', fc.AuthObject('accounts'), fc.
 
 });
 
+/**
+ * @api {get} /accounts/:id/forecast View Forecast
+ * @apiGroup Accounts
+ *
+ * @apiParam {Integer} id Account ID
+ * @apiParamExample
+ * GET /accounts/2837/forecast HTTP/1.1
+ *
+ * @apiSuccess {DateTime} date
+ * @apiSuccess {Float} transactions_total
+ * @apiSuccess {Float} balance
+ * @apiSuccess {Array} transactions
+ * @apiSuccess {id} transactions.id
+ * @apiSuccess {id} transactions.name
+ * @apiSuccess {id} transactions.num_transactions_total
+ * @apiSuccess {id} transactions.num_transactions_current
+ * @apiSuccess {id} transactions.amount
+ */
+
+router.get('/:id/forecast', fc.AuthObject('accounts'), fc.isAuth, function (req, res) {
+  res.send([
+    {
+      'date': new Date(),
+      'trasnactions_total': 283.28,
+      'balance': 2823.92,
+      'transactions': [
+        {
+          'id': 1,
+          'name': 'Paycheck',
+          'num_transactions_total': 60,
+          'num_transactions_current': 23,
+          'amount': 3282.82
+        },
+        {
+          'id': 2,
+          'name': 'CreditCard',
+          'num_transactions_total': 0,
+          'num_transactions_current': 0,
+          'amount': -293.28
+        }
+      ]
+    }
+  ])
+})
+
 module.exports = router;

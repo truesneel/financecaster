@@ -27,7 +27,7 @@ forecast.config(function($stateProvider, $urlRouterProvider) {
     .state('main.viewforecast', {
       url: '/Forecast/:id',
       templateUrl: 'views/main/forecast.view.html',
-      controller: 'forecastController',
+      controller: 'forecastViewController',
       resolve: {
         'myAccounts': function ($q, $stateParams, Accounts) {
           var account,
@@ -54,7 +54,23 @@ forecast.config(function($stateProvider, $urlRouterProvider) {
 
 });
 
+accounts.factory('Forecasts', ['$resource', function($resource) {
+  return $resource('/api/accounts/:id/forecast', { id: '@id' }, {
+    update: {
+      method: 'PUT' // this method issues a PUT request
+    }
+  });
+}]);
+
 forecast.controller('forecastController', ['$scope', 'myAccounts', 'account', function ($scope, accounts, account) {
   $scope.accounts = accounts;
   $scope.account = account;
+}]);
+
+forecast.controller('forecastViewController', ['$scope', 'myAccounts', 'account', 'Forecasts', function ($scope, accounts, account, Forecasts) {
+  $scope.accounts = accounts;
+  $scope.account = account;
+
+  $scope.forecast = Forecasts.query({id: account.id});
+
 }]);
