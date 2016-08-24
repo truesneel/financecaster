@@ -40,7 +40,7 @@ router.get('/', fc.isAuth, function (req, res) {
 
   fc.query('accounts', {
     'where': {'userId': req.auth.userId},
-    'attributes': ['id', 'userId', 'name', 'forecast', 'balance', 'limit', 'createdAt', 'updatedAt']
+    'attributes': ['id', 'userId', 'name', 'forecast', 'balance', 'balance_date', 'limit', 'createdAt', 'updatedAt']
   }).then(function (results) {
     res.send(results);
   });
@@ -153,10 +153,9 @@ router.get('/:id', fc.isAuth, function (req, res) {
 
   fc.get('accounts', {
       'where': {'id': req.params.id, 'userId': req.auth.userId},
-      'attributes': ['id', 'userId', 'name', 'forecast', 'balance', 'limit', 'createdAt', 'updatedAt'],
+      'attributes': ['id', 'userId', 'name', 'forecast', 'balance', 'balance_date', 'limit', 'createdAt', 'updatedAt'],
     }).then(function (results) {
     if (results) {
-      console.log(results);
       res.send(results);
     } else {
       var msg = messages('RECORD_NOT_FOUND');
@@ -227,13 +226,16 @@ router.get('/:id', fc.isAuth, function (req, res) {
  */
 router.put('/:id', fc.isAuth, function (req, res) {
 
+  delete req.body.createdAt;
+  delete req.body.updatedAt;
+
   fc.update('accounts', req.body, {'where': {'id': req.params.id, 'userId': req.auth.userId}}).then(function (results) {
     var msg;
 
+    console.log(results);
     if (results > 0) {
       msg = messages('RECORD_UPDATED');
       res.status(msg.http_code).send({'message': msg.message});
-      res.send(results);
     } else {
       msg = messages('RECORD_NOT_FOUND');
       res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
@@ -384,6 +386,9 @@ router.get('/:id/transactions/:transactionid', fc.isAuth, function (req, res) {
  */
 router.put('/:id/transactions/:transactionid', fc.isAuth, fc.AuthObject('accounts'), function (req, res) {
 
+  delete req.body.createdAt;
+  delete req.body.updatedAt;
+
   fc.update('transactions', req.body, {'where': {'id': req.params.transactionid}}).then(function (results) {
     var msg;
 
@@ -463,7 +468,7 @@ router.get('/:id/forecast', fc.AuthObject('accounts'), fc.isAuth, function (req,
         }
       ]
     }
-  ])
-})
+  ]);
+});
 
 module.exports = router;
