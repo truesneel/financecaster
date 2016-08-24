@@ -156,6 +156,7 @@ router.get('/:id', fc.isAuth, function (req, res) {
       'attributes': ['id', 'userId', 'name', 'forecast', 'balance', 'limit', 'createdAt', 'updatedAt'],
     }).then(function (results) {
     if (results) {
+      console.log(results);
       res.send(results);
     } else {
       var msg = messages('RECORD_NOT_FOUND');

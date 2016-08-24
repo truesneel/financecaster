@@ -35,6 +35,19 @@
           <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.balance.$invalid && addAccount.balance.$dirty"></span>
           <span id="helpBlock2" class="help-block" ng-show="addAccount.balance.$invalid && addAccount.balance.$dirty">Balance should be a dollar amount either positive or negative</span>
         </div>
+        <div class="form-group has-feedback" ng-class="{'has-success': record.start.$valid, 'has-error': record.start.$invalid && record.amount.$dirty}">
+          <label for="start">Balance Date</label>
+          <p class="input-group">
+
+            <input type="text" class="form-control" uib-datepicker-popup ng-model="account.balance_date" is-open="popup.opened" ng-required="true" close-text="Close" />
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="popup.opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </p>
+          <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="record.start.$valid"></span>
+          <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.start.$invalid && record.start.$dirty"></span>
+          <span id="helpBlock2" class="help-block" ng-show="record.start.$invalid && record.start.$dirty">Amount should be a dollar amount either positive or negative</span>
+        </div>
         <div class="form-group has-feedback" ng-class="{'has-success': addAccount.limit.$valid && account.limit, 'has-error': addAccount.limit.$invalid && addAccount.limit.$dirty}">
           <label for="limit">Limit</label>
           <input type="number" class="form-control" id="limit" name="limit" placeholder="Limit" currency ng-model="account.limit" step="0.01">
@@ -63,3 +76,5 @@
   <uib-tab  index="main.editAccount.transactions" heading="Transactions" ui-sref="main.editaccountTransactions(account)">
   </uib-tab>
 </uib-tabset>
+
+{{account}}

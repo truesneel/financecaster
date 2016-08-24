@@ -24,6 +24,7 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
             defer = $q.defer();
 
           account = Accounts.get({ id: $stateParams.id}, function () {
+            account.balance_date = new Date(account.balance_date);
             defer.resolve(account);
           });
 
@@ -162,6 +163,7 @@ accounts.controller('accountsAddController', ['$scope', '$http', 'financecaster'
 
   $scope.response = {};
   $scope.account = new Accounts();
+  $scope.account.balance_date = new Date();
 
   $scope.save = function (form) {
     $scope.account.$save().then(function (response) {
