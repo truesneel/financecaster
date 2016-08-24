@@ -17,6 +17,7 @@ var messages = require('../messages').get;
  * @apiSuccess {String} array.name
  * @apiSuccess {Integer} array.forecast
  * @apiSuccess {Float} array.balance
+ * @apiSuccess {DateTime} array.balance_date
  * @apiSuccess {Float} array.limit
  * @apiSuccess {DateTime} array.createdAt
  * @apiSuccess {DateTime} array.updatedAt
@@ -28,6 +29,7 @@ var messages = require('../messages').get;
  *     "name": "checking",
  *     "forecast": 365,
  *     "balance": 0,
+ *     "balance_date" "2016-08-20T18:20:36.373Z",
  *     "limit": 0,
  *     "createdAt": "2016-08-20T18:20:36.373Z",
  *     "updatedAt": "2016-08-20T18:20:36.373Z"
@@ -53,12 +55,14 @@ router.get('/', fc.isAuth, function (req, res) {
  * @apiParam (Request Data) {String} name
  * @apiParam (Request Data) {Integer} forecast=365
  * @apiParam (Request Data) {Float} balance=0
+ * @apiParam (Request Data) {DateTime} balance_date
  * @apiParam (Request Data) {Float} limit=0
  * @apiParamExample {json} Request Data Example
  * {
  *   "name" "Checking",
  *   "forecast" "60",
  *   "balance" "100.28",
+ *   "balance_date" "2016-08-20T18:20:36.373Z",
  *   "limit" "0",
  * }
  *
@@ -118,6 +122,7 @@ router.post('/', fc.isAuth, function (req, res) {
  * @apiSuccess {String} name
  * @apiSuccess {Integer} forecast
  * @apiSuccess {Float} balance
+ * @apiSuccess {DateTime} balance_date
  * @apiSuccess {Float} limit
  * @apiSuccess {DateTime} createdAt
  * @apiSuccess {DateTime} updatedAt
@@ -128,6 +133,7 @@ router.post('/', fc.isAuth, function (req, res) {
  *     "name": "checking",
  *     "forecast": 365,
  *     "balance": 0,
+ *     "balance_date" "2016-08-20T18:20:36.373Z",
  *     "limit": 0,
  *     "createdAt": "2016-08-20T18:20:36.373Z",
  *     "updatedAt": "2016-08-20T18:20:36.373Z"
@@ -167,12 +173,14 @@ router.get('/:id', fc.isAuth, function (req, res) {
  * @apiParam (Request Data) {String} name
  * @apiParam (Request Data) {Integer} forecast=365
  * @apiParam (Request Data) {Float} balance=0
+ * @apiParam (Request Data) {DateTime} balance_date
  * @apiParam (Request Data) {Float} limit=0
  * @apiParamExample {json} Request Data Example
  * {
  *   "name" "Checking",
  *   "forecast" "60",
  *   "balance" "100.28",
+ *   "balance_date" "2016-08-20T18:20:36.373Z",
  *   "limit" "0",
  * }
  *

@@ -23,9 +23,12 @@
   </div>
 </div>
 
-<div class="panel panel-default" ng-repeat="day in forecast">
-  <div class="panel-body">
-    {{day.date | date:'EEE, MMM d'}}
+<uib-accordion>
+  <div uib-accordion-group class="panel-default">
+    <uib-accordion-heading>
+      <span class="pull-right">$1382.18</span>
+      Estimated Balance
+    </uib-accordion-heading>
     <ul class="list-group">
       <li class="list-group-item" ng-repeat="transaction in day.transactions">
         <span class="pull-right" ng-class="{'text-danger': transaction.amount < 0}"><small>{{transaction.amount | currency}}</small></span>
@@ -33,5 +36,19 @@
       </li>
     </ul>
   </div>
-  <div class="panel-footer text-right">{{day.balance | currency}}</div>
-</div>
+</uib-accordion>
+
+<uib-accordion ng-repeat="day in forecast">
+  <div uib-accordion-group class="panel-default">
+    <uib-accordion-heading>
+      <span class="pull-right" ng-class="{'text-danger': transaction.amount < 0}">{{day.balance | currency}}</span>
+      <small>{{day.date | date:'EEE, MMM d'}}</small>
+    </uib-accordion-heading>
+    <ul class="list-group">
+      <li class="list-group-item" ng-repeat="transaction in day.transactions">
+        <span class="pull-right" ng-class="{'text-danger': transaction.amount < 0}"><small>{{transaction.amount | currency}}</small></span>
+        <small>{{transaction.name}}</small>
+      </li>
+    </ul>
+  </div>
+</uib-accordion>

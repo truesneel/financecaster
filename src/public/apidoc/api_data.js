@@ -125,6 +125,13 @@ define({ "api": [
           },
           {
             "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "array.balance_date",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
             "type": "Float",
             "optional": false,
             "field": "array.limit",
@@ -149,7 +156,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Account List",
-          "content": "[\n  {\n    \"id\": 1,\n    \"userId\": 2,\n    \"name\": \"checking\",\n    \"forecast\": 365,\n    \"balance\": 0,\n    \"limit\": 0,\n    \"createdAt\": \"2016-08-20T18:20:36.373Z\",\n    \"updatedAt\": \"2016-08-20T18:20:36.373Z\"\n  }\n]",
+          "content": "[\n  {\n    \"id\": 1,\n    \"userId\": 2,\n    \"name\": \"checking\",\n    \"forecast\": 365,\n    \"balance\": 0,\n    \"balance_date\" \"2016-08-20T18:20:36.373Z\",\n    \"limit\": 0,\n    \"createdAt\": \"2016-08-20T18:20:36.373Z\",\n    \"updatedAt\": \"2016-08-20T18:20:36.373Z\"\n  }\n]",
           "type": "json"
         }
       ]
@@ -211,6 +218,13 @@ define({ "api": [
           },
           {
             "group": "Success 200",
+            "type": "DateTime",
+            "optional": false,
+            "field": "balance_date",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
             "type": "Float",
             "optional": false,
             "field": "limit",
@@ -235,7 +249,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n  \"id\": 1,\n  \"userId\": 2,\n  \"name\": \"checking\",\n  \"forecast\": 365,\n  \"balance\": 0,\n  \"limit\": 0,\n  \"createdAt\": \"2016-08-20T18:20:36.373Z\",\n  \"updatedAt\": \"2016-08-20T18:20:36.373Z\"\n}",
+          "content": "{\n  \"id\": 1,\n  \"userId\": 2,\n  \"name\": \"checking\",\n  \"forecast\": 365,\n  \"balance\": 0,\n  \"balance_date\" \"2016-08-20T18:20:36.373Z\",\n  \"limit\": 0,\n  \"createdAt\": \"2016-08-20T18:20:36.373Z\",\n  \"updatedAt\": \"2016-08-20T18:20:36.373Z\"\n}",
           "type": "json"
         }
       ]
@@ -528,6 +542,13 @@ define({ "api": [
           },
           {
             "group": "Request Data",
+            "type": "DateTime",
+            "optional": false,
+            "field": "balance_date",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
             "type": "Float",
             "optional": false,
             "field": "limit",
@@ -539,7 +560,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Request Data Example",
-          "content": "{\n  \"name\" \"Checking\",\n  \"forecast\" \"60\",\n  \"balance\" \"100.28\",\n  \"limit\" \"0\",\n}",
+          "content": "{\n  \"name\" \"Checking\",\n  \"forecast\" \"60\",\n  \"balance\" \"100.28\",\n  \"balance_date\" \"2016-08-20T18:20:36.373Z\",\n  \"limit\" \"0\",\n}",
           "type": "json"
         }
       ]
@@ -688,6 +709,13 @@ define({ "api": [
           },
           {
             "group": "Request Data",
+            "type": "DateTime",
+            "optional": false,
+            "field": "balance_date",
+            "description": ""
+          },
+          {
+            "group": "Request Data",
             "type": "Float",
             "optional": false,
             "field": "limit",
@@ -699,7 +727,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Request Data Example",
-          "content": "{\n  \"name\" \"Checking\",\n  \"forecast\" \"60\",\n  \"balance\" \"100.28\",\n  \"limit\" \"0\",\n}",
+          "content": "{\n  \"name\" \"Checking\",\n  \"forecast\" \"60\",\n  \"balance\" \"100.28\",\n  \"balance_date\" \"2016-08-20T18:20:36.373Z\",\n  \"limit\" \"0\",\n}",
           "type": "json"
         }
       ]

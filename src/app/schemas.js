@@ -65,6 +65,10 @@ schemas.accounts = fc.db.define('accounts', {
 		'type': Sequelize.FLOAT,
     'defaultValue': 0
 	},
+  'balance_date': {
+    'type': Sequelize.DATE,
+    'allowNull': false,
+  },
 	'limit': {
 		'type': Sequelize.FLOAT,
     'defaultValue': 0
