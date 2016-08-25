@@ -71,6 +71,6 @@ forecast.controller('forecastViewController', ['$scope', 'myAccounts', 'account'
   $scope.accounts = accounts;
   $scope.account = account;
 
-  $scope.forecast = Forecasts.query({id: account.id});
+  $scope.forecast = Forecasts.get({id: account.id});
 
 }]);

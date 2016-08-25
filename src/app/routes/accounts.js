@@ -232,7 +232,6 @@ router.put('/:id', fc.isAuth, function (req, res) {
   fc.update('accounts', req.body, {'where': {'id': req.params.id, 'userId': req.auth.userId}}).then(function (results) {
     var msg;
 
-    console.log(results);
     if (results > 0) {
       msg = messages('RECORD_UPDATED');
       res.status(msg.http_code).send({'message': msg.message});
@@ -446,29 +445,90 @@ router.delete('/:id/transactions/:transactionid', fc.AuthObject('accounts'), fc.
  */
 
 router.get('/:id/forecast', fc.AuthObject('accounts'), fc.isAuth, function (req, res) {
-  res.send([
-    {
-      'date': new Date(),
-      'trasnactions_total': 283.28,
-      'balance': 2823.92,
-      'transactions': [
-        {
-          'id': 1,
-          'name': 'Paycheck',
-          'num_transactions_total': 60,
-          'num_transactions_current': 23,
-          'amount': 3282.82
-        },
-        {
-          'id': 2,
-          'name': 'CreditCard',
-          'num_transactions_total': 0,
-          'num_transactions_current': 0,
-          'amount': -293.28
-        }
-      ]
+
+  var zero_time = function (date) {
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+  };
+
+  var build_forecast = function (account) {
+
+    var now = new Date();
+    zero_time(now);
+    zero_time(account.balance_date);
+
+    var forecast = {
+      'previous': [],
+      'future': [],
+      'high': {},
+      'low': {},
+      'today': 0.00
     }
-  ]);
+    var days = [];
+
+    var finish = function () {
+      res.send(forecast);
+    };
+
+    var get_day = function (current) {
+      var day = {
+        'date': current,
+        'trasnactions_total': 283.28,
+        'balance': 2823.92,
+        'transactions': [
+          {
+            'id': 1,
+            'name': 'Paycheck',
+            'num_transactions_total': 60,
+            'num_transactions_current': 23,
+            'amount': 3282.82
+          },
+          {
+            'id': 2,
+            'name': 'CreditCard',
+            'num_transactions_total': 0,
+            'num_transactions_current': 0,
+            'amount': -293.28
+          }
+        ]
+      }
+      if (current < now) {
+        forecast.previous.push(day);
+          forecast.today = day.balance;
+      } else {
+        forecast.future.push(day);
+      }
+
+      next = new Date(current.valueOf());
+      next.setDate(next.getDate() + 1);
+
+      if ((next - now) >= (1000*60*60*24 * account.forecast)) {
+        finish();
+      } else {
+        get_day(next)
+      }
+    };
+
+    get_day(account.balance_date);
+  };
+
+  fc.get('accounts', {
+    'where': {'id': req.params.id, 'userId': req.auth.userId},
+    'include': [{
+      'model': fc.schemas.transactions,
+    }]
+  }).then(function (results) {
+    var msg;
+
+    if (results) {
+      build_forecast(results.dataValues);
+    } else {
+      msg = messages('RECORD_NOT_FOUND');
+      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+    }
+  });
 });
 
 module.exports = router;

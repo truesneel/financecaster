@@ -213,7 +213,6 @@ fc.AuthObject = function (schema) {
   return function (req, res, next) {
     fc.get(schema, {'where': {'id': req.params.id, 'userId': req.auth.userId}}).then(function (results) {
 
-      console.log(results);
       if (results) {
         next();
       } else {
