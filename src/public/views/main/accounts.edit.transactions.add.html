@@ -33,7 +33,7 @@
   </div>
   <div class="form-group has-feedback" ng-class="{'has-success': record.amount.$valid, 'has-error': record.amount.$invalid && record.amount.$dirty}">
     <label for="amount">Amount</label>
-    <input type="number" class="form-control" id="amount" name="amount" placeholder="Balance" currency ng-model="transaction.amount" step="0.01" required>
+    <input type="number" class="form-control" id="amount" name="amount" placeholder="Amount" currency ng-model="transaction.amount" step="0.01" required>
     <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="record.amount.$valid"></span>
     <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.amount.$invalid && record.amount.$dirty"></span>
     <span id="helpBlock2" class="help-block" ng-show="record.amount.$invalid && record.amount.$dirty">Amount should be a dollar amount either positive or negative</span>
@@ -42,7 +42,7 @@
     <label for="start"><span ng-show="transaction.num_transactions > 0">Start</span> Date</label>
     <p class="input-group">
 
-      <input type="text" class="form-control" uib-datepicker-popup ng-model="transaction.start" is-open="popup.opened" ng-required="true" close-text="Close" />
+      <input type="text" class="form-control" uib-datepicker-popup ng-model="transaction.start" is-open="popup.opened" ng-required="true" close-text="Close" placeholder="Date" />
       <span class="input-group-btn">
         <button type="button" class="btn btn-default" ng-click="popup.opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
       </span>
@@ -52,7 +52,7 @@
     <span id="helpBlock2" class="help-block" ng-show="record.start.$invalid && record.start.$dirty">Amount should be a dollar amount either positive or negative</span>
   </div>
   <div class="form-group has-feedback" ng-class="{'has-success': record.start.$valid, 'has-error': record.start.$invalid && record.amount.$dirty}">
-    <label for="start"><input type="checkbox" ng-true-value="false" ng-false-value="true" name="one_time" ng-model="transaction.one_time"> Recurring</label>
+    <label for="start"><input type="checkbox" name="one_time" ng-model="transaction.one_time"> One Time</label>
     <span id="helpBlock2" class="help-block" ng-show="record.start.$invalid && record.one_time.$dirty"></span>
   </div>
   <div ng-hide="transaction.one_time">
