@@ -239,7 +239,7 @@ accounts.controller('accountTransactionsController', ['$scope', '$state', '$stat
 accounts.controller('accountTransactionsAddController', ['$scope', '$state', '$stateParams', '$http', 'financecaster', 'account', 'Transactions', 'myAccounts', function ($scope, $state, $stateParams, $http, financecaster, account, Transactions, accounts) {
 
   $scope.accounts = accounts;
-  $scope.transaction = new Transactions({'accountId': account.id});
+  $scope.transaction = new Transactions({'accountId': account.id, 'one_time': true});
 
   $scope.state = $stateParams;
   $scope.account = account;

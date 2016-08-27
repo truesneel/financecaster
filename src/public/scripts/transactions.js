@@ -74,7 +74,7 @@ transactions.controller('transactionsController', ['$scope', '$http', 'financeca
 transactions.controller('transactionsAddController', ['$scope', '$http', 'financecaster', 'Transactions', 'myAccounts', function ($scope, $http, financecaster, Transactions, accounts) {
 
   $scope.response = {};
-  $scope.transaction = new Transactions();
+  $scope.transaction = new Transactions({'one_time': true});
   $scope.accounts = accounts;
 
   $scope.save = function (form) {

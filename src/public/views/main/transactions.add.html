@@ -50,10 +50,10 @@
     <span id="helpBlock2" class="help-block" ng-show="record.start.$invalid && record.start.$dirty">Amount should be a dollar amount either positive or negative</span>
   </div>
   <div class="form-group has-feedback" ng-class="{'has-success': record.start.$valid, 'has-error': record.start.$invalid && record.amount.$dirty}">
-    <label for="start"><input type="checkbox" ng-true-value="true" ng-false-value="false" name="one_time" ng-model="transaction.one_time"> Recurring</label>
+    <label for="start"><input type="checkbox" ng-true-value="false" ng-false-value="false" name="one_time" ng-model="transaction.one_time"> Recurring</label>
     <span id="helpBlock2" class="help-block" ng-show="record.start.$invalid && record.one_time.$dirty"></span>
   </div>
-  <div ng-show="transaction.one_time">
+  <div ng-hide="transaction.one_time">
   <div class="row">
     <div class="col-xs-6">
       <div class="form-group" ng-class="{'has-success': record.every_num.$valid, 'has-error': record.every_num.$invalid && record.every_num.$dirty}">
@@ -92,3 +92,4 @@
 
   <button class="btn btn-primary hidden-xs pull-right" ng-disabled="record.$invalid" ng-click="save(record)"><i class="icon-save-floppy"></i> Save</button>
 </form>
+{{transaction}}
