@@ -83,6 +83,7 @@ transactions.controller('transactionsAddController', ['$scope', '$http', 'financ
       form.$setUntouched();
 
       $scope.response = response;
+      $scope.transaction = new Transactions({'one_time': true});
     }, function (err) {
       $scope.response = err.data;
       if (err.data.fields) {

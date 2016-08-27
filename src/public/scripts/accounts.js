@@ -294,7 +294,7 @@ accounts.controller('accountTransactionsEditController', ['$scope', '$state', '$
   };
 
   $scope.save = function (form) {
-    $scope.transaction.$save().then(function (response) {
+    $scope.transaction.$update().then(function (response) {
       form.$setPristine();
       form.$setUntouched();
 

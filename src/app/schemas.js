@@ -89,7 +89,7 @@ schemas.transactions = fc.db.define('transactions', {
 		'type': Sequelize.INTEGER,
     'validate': {
       every_num: function (value) {
-        if (this.value === undefined) {
+        if (value === undefined) {
           throw new Error('Every Number must be specified if this is not a one time transaction');
         }
       }
@@ -109,7 +109,7 @@ schemas.transactions = fc.db.define('transactions', {
 		'type': Sequelize.INTEGER,
     'validate': {
       num_transactions: function (value) {
-        if (this.value === undefined) {
+        if (value === undefined) {
           throw new Error('Number of Transactions must be specified if this is not a one time transaction');
         }
       }

@@ -39,11 +39,13 @@ router.post('/', fc.isAuth, function (req, res) {
   }).then(function (results) {
     if (results) {
 
+      console.log(req.body);
       fc.create('transactions', req.body, res).then(function (records) {
         msg = messages('RECORD_CREATED');
 
         res.status(msg.http_code).send({'id': records.id, 'message': msg.message});
       }, function (err) {
+        console.log(err);
         var msg = messages('FIELD_VALIDATION_ERROR');
         res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
       });
