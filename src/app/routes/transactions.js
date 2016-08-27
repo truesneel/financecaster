@@ -64,11 +64,15 @@ router.get('/:id', fc.isAuth, function (req, res) {
 
   fc.get('transactions', {
       'include': [{
-        'model': fc.schemas.accounts,
-        'attributes': ['id', 'name'],
-        'where': {'id': req.auth.userId},
-      }],
-      'where': {'id': req.params.id},
+          'model': fc.schemas.accounts,
+          'attributes': [],
+          'where': {
+            'userId': req.auth.userId,
+          },
+        }],
+      'where': {
+        'id': req.params.id,
+      },
     }).then(function (results) {
     if (results) {
       res.send(results);
@@ -88,38 +92,33 @@ router.put('/:id', fc.isAuth, function (req, res) {
   var msg;
 
   delete req.body.accountId;
+  delete req.body.createdAt;
+  delete req.body.updatedAt;
 
   fc.get('transactions', {
-    'where': {
-      'id': req.params.id
-    },
-    'include': [{
-      'model': fc.schemas.accounts,
+      'include': [{
+          'model': fc.schemas.accounts,
+          'attributes': [],
+          'where': {
+            'userId': req.auth.userId,
+          },
+        }],
       'where': {
-        'userId': req.auth.userId,
-      }
-    }]
-  }).then(function (results) {
-    if (results) {
+        'id': req.params.id,
+      },
+    }).then(function (result) {
 
-      fc.update('transactions', req.body, {'where': {'id': req.params.id}}).then(function (results) {
+    result.update(req.body).then(function (result) {
+      msg = messages('RECORD_UPDATED');
+      res.status(msg.http_code).send({'message': msg.message});
+    }, function (err) {
+      var msg = messages('FIELD_VALIDATION_ERROR');
+      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
+    });
 
-        if (results > 0) {
-          msg = messages('RECORD_UPDATED');
-          res.status(msg.http_code).send({'message': msg.message});
-        } else {
-          msg = messages('RECORD_NOT_FOUND');
-          res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
-        }
-      }, function (err) {
-        var msg = messages('FIELD_VALIDATION_ERROR');
-        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
-      });
-
-    } else {
-      msg = messages('RECORD_NOT_FOUND');
-      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
-    }
+  }, function () {
+    msg = messages('RECORD_NOT_FOUND');
+    res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
   });
 
 });

@@ -49,17 +49,22 @@
     </p>
     <span id="helpBlock2" class="help-block" ng-show="record.start.$invalid && record.start.$dirty">Amount should be a dollar amount either positive or negative</span>
   </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': record.start.$valid, 'has-error': record.start.$invalid && record.amount.$dirty}">
+    <label for="start"><input type="checkbox" ng-true-value="true" ng-false-value="false" name="one_time" ng-model="transaction.one_time"> Recurring</label>
+    <span id="helpBlock2" class="help-block" ng-show="record.start.$invalid && record.one_time.$dirty"></span>
+  </div>
+  <div ng-show="transaction.one_time">
   <div class="row">
     <div class="col-xs-6">
       <div class="form-group" ng-class="{'has-success': record.every_num.$valid, 'has-error': record.every_num.$invalid && record.every_num.$dirty}">
         <label for="every_num">Every</label>
-        <input type="number" class="form-control" id="every_num" name="every_num" placeholder="Balance"  min=0 step=1 unsignedint ng-model="transaction.every_num" required>
+        <input type="number" class="form-control" id="every_num" name="every_num" placeholder="Balance"  min=0 step=1 unsignedint ng-model="transaction.every_num">
       </div>
     </div>
     <div class="col-xs-6">
       <div class="form-group has-feedback" ng-class="{'has-success': record.every_type.$valid, 'has-error': record.every_type.$invalid && record.every_type.$dirty}">
         <label for="every_type">&nbsp;</label>
-        <select  class="form-control" id="every_type" name="every_type" ng-model="transaction.every_type" required>
+        <select  class="form-control" id="every_type" name="every_type" ng-model="transaction.every_type">
           <option value="day">Day[s]</option>
           <option value="week">Weeks[s]</option>
           <option value="month">Month[s]</option>
@@ -75,10 +80,11 @@
   </div>
   <div class="form-group has-feedback" ng-class="{'has-success': record.num_transactions.$valid, 'has-error': record.num_transactions.$invalid && record.num_transactions.$dirty}">
     <label for="num_transactions">Number of Transactions</label>
-    <input type="number" class="form-control" id="num_transactions" name="num_transactions" placeholder="Number of Transactions" min=0 step=1 unsignedint ng-model="transaction.num_transactions" required>
+    <input type="number" class="form-control" id="num_transactions" name="num_transactions" placeholder="Number of Transactions" min=0 step=1 unsignedint ng-model="transaction.num_transactions">
     <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="record.num_transactions.$valid"></span>
     <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.num_transactions.$invalid && record.amount.$dirty"></span>
     <span id="helpBlock2" class="help-block" ng-show="record.num_transactions.$invalid && record.num_transactions.$dirty">Amount should be a dollar amount either positive or negative</span>
+  </div>
   </div>
 
 
