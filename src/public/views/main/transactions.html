@@ -7,7 +7,8 @@
 
     <span class="badge ">
       <div>{{transaction.amount | currency}}</div>
-      <small><i class="icon-repeatone"></i> {{transaction.every_num}} {{transaction.every_type}}[s]</small>
+      <small ng-hide="transaction.one_time"><i class="icon-repeatone"></i> {{transaction.every_num}} {{transaction.every_type}}[s]</small>
+      <small ng-show="transaction.one_time">One Time</small>
     </span>
     <div>{{transaction.name}}</div>
     <small class="text-muted">{{transaction.account.name}}</small>

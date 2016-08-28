@@ -2,6 +2,7 @@
 var financecaster = angular.module('financecaster', [
   'ui.router',
   'ui.bootstrap',
+  'googlechart',
   'financecaster.welcome',
   'financecaster.forecast',
   'financecaster.accounts',
@@ -41,6 +42,31 @@ financecaster.directive('unsignedint', function() {
 
         return unsignedint.test(modelValue);
       };
+    }
+  };
+});
+
+financecaster.directive('requiredIf', function() {
+
+  return {
+    require: 'ngModel',
+    scope: {
+      requiredIf: '='
+    },
+    link: function(scope, elm, attrs, ctrl) {
+      ctrl.$validators.requiredIf = function(modelValue, viewValue) {
+        if (ctrl.$isEmpty(modelValue) && scope.requiredIf) {
+          // consider empty models to be valid
+          return false;
+        }
+
+        return true;
+      };
+
+      scope.$watch( 'requiredIf', function() {
+          ctrl.$validate();
+      } );
+
     }
   };
 });

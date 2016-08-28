@@ -477,62 +477,174 @@ router.get('/:id/forecast', fc.AuthObject('accounts'), fc.isAuth, function (req,
 
   var build_forecast = function (account) {
 
+    //Set our current date and zeroout the time
     var now = new Date();
     zero_time(now);
+
+    //Zero out the balance date
     zero_time(account.balance_date);
 
+    //Build our hash structure
     var forecast = {
       'previous': [],
       'future': [],
-      'high': {},
-      'low': {},
+      'high': account.balance,
+      'high_date': account.balance_date,
+      'low': account.balance,
+      'low_date': account.balance_date,
       'today': 0.00
     };
-    var days = [];
 
+    //Once we're done we'll send the results
     var finish = function () {
+
+      forecast.high = Number(forecast.high.toFixed(2));
+      forecast.low = Number(forecast.low.toFixed(2));
       res.send(forecast);
     };
 
+    var increment_transactions = function (date) {
+      account.transactions.forEach(function (transaction) {
+
+        zero_time(transaction.start);
+
+        //Skip one time transactions
+        if (transaction.one_time) {
+          return;
+        }
+
+        //If we have a transaction limit, set our counter to 1
+        if (transaction.num_transactions) {
+          transaction.transaction_num = transaction.transaction_num || 1;
+        }
+
+        //If the transaction date is before now, lets increment it
+        while (transaction.start < date) {
+
+          //If we have a transaction limit, increment our counter
+          if (transaction.num_transactions > 0) {
+            transaction.transaction_num += 1;
+          }
+
+          //Get our transaction date
+          transaction.start = new Date(transaction.start.valueOf());
+
+          //Increment our date based on every_type
+          switch (transaction.every_type) {
+            case 'day':
+              transaction.start.setDate(transaction.start.getDate() + transaction.every_num);
+              break;
+            case 'week':
+              transaction.start.setDate(transaction.start.getDate() + (7 * transaction.every_num));
+              break;
+            case 'month':
+              transaction.start.setMonth(transaction.start.getMonth() + transaction.every_num);
+              break;
+            case 'year':
+              transaction.start.setYear(transaction.start.getYear() +  transaction.every_num);
+              break;
+          }
+        }
+      });
+    };
+
+    //Function to get the transactions for the passed in date
     var get_day = function (current) {
+
+      //Build our base day hash
       var day = {
         'date': current,
-        'trasnactions_total': 283.28,
-        'balance': 2823.92,
-        'transactions': [
-          {
-            'id': 1,
-            'name': 'Paycheck',
-            'num_transactions_total': 60,
-            'num_transactions_current': 23,
-            'amount': 3282.82
-          },
-          {
-            'id': 2,
-            'name': 'CreditCard',
-            'num_transactions_total': 0,
-            'num_transactions_current': 0,
-            'amount': -293.28
-          }
-        ]
+        'transactions_total': 0,
+        'balance': account.balance,
+        'transactions': []
       };
-      if (current < now) {
+
+
+      //Increment Transactions
+      increment_transactions(current);
+
+      //Filter transactions for the current day
+      todays = account.transactions.filter(function (transaction) {
+        if (transaction.num_transactions && transaction.transaction_num > transaction.num_transactions) {
+          return false;
+        }
+        return (transaction.start.valueOf() == current.valueOf());
+      });
+
+      //Lets process each transaction for the current day
+      todays.forEach(function (transaction) {
+        //Increment our balances
+        day.balance = account.balance + transaction.amount;
+        day.transactions_total += transaction.amount;
+        account.balance += transaction.amount;
+
+        //Push the transaction to the days transactions array
+        day.transactions.push({
+          'id': transaction.id,
+          'name': transaction.name,
+          'num_transactions_total': transaction.num_transactions,
+          'num_transactions_current': transaction.transaction_num,
+          'amount': transaction.amount,
+          'every_num': transaction.every_num,
+          'every_type': transaction.every_type,
+          'one_time': transaction.one_time,
+        });
+
+      });
+
+      day.balance = Number(day.balance.toFixed(2));
+      day.transactions_total = Number(day.transactions_total.toFixed(2));
+
+      //Check our high balance stat
+      if (account.balance > forecast.high) {
+        forecast.high = account.balance;
+        forecast.high_date = current;
+      }
+
+      //Check our low balance stat
+      if (account.balance < forecast.low) {
+        forecast.low = account.balance;
+        forecast.low_date = current;
+      }
+
+      //If currently processed date is before now, add to previous key
+      if (day.transactions.length > 0 && current < now) {
         forecast.previous.push(day);
-          forecast.today = day.balance;
-      } else {
+        forecast.today = day.balance;
+      //Otherwise add it for our future key
+      } else if (day.transactions.length > 0) {
         forecast.future.push(day);
       }
 
+      //Increment the day
       next = new Date(current.valueOf());
       next.setDate(next.getDate() + 1);
 
+      //If we've reached our forecast length, finish
       if ((next - now) >= (1000*60*60*24 * account.forecast)) {
         finish();
+
+      //Otherwise get the next day
       } else {
         get_day(next);
       }
     };
 
+    //Sort our transactions
+    account.transactions.sort(function(a, b){
+        var keyA = new Date(a.updated_at),
+            keyB = new Date(b.updated_at);
+        // Compare the 2 dates
+        if(a.amount < b.amount) return -1;
+        if(a.amount > b.amount) return 1;
+        return 0;
+    });
+
+    //Initial Increment of Transactions
+    increment_transactions(account.balance_date);
+
+
+    //Get the details for the first day
     get_day(account.balance_date);
   };
 
@@ -541,11 +653,11 @@ router.get('/:id/forecast', fc.AuthObject('accounts'), fc.isAuth, function (req,
     'include': [{
       'model': fc.schemas.transactions,
     }]
-  }).then(function (results) {
+  }).then(function (result) {
     var msg;
 
-    if (results) {
-      build_forecast(results.dataValues);
+    if (result) {
+      build_forecast(result);
     } else {
       msg = messages('RECORD_NOT_FOUND');
       res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});

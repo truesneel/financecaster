@@ -253,6 +253,7 @@ accounts.controller('accountTransactionsAddController', ['$scope', '$state', '$s
       form.$setUntouched();
 
       $scope.response = response;
+      $scope.transaction = new Transactions({'accountId': account.id, 'one_time': true});
     }, function (err) {
       $scope.response = err.data;
       if (err.data.fields) {

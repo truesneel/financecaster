@@ -120,7 +120,7 @@ schemas.transactions = fc.db.define('transactions', {
     'allowNull': false,
     'validate': {
       amount: function (value) {
-        var currency = /^\d+\.\d\d$/;
+        var currency = /^-?\d+\.\d\d$/;
 
         if (!currency.test(value)) {
           throw new Error('Value must be in currency form');
@@ -150,7 +150,7 @@ schemas.transactions = fc.db.define('transactions', {
 
         if (record.every_type === null || record.every_type === undefined) {
           record.every_type = 0;
-          options.fields.push('every_type');;
+          options.fields.push('every_type');
           options.skip.splice(options.skip.indexOf('every_type'), 1);
         }
         if (record.every_num === null || record.every_num === undefined) {

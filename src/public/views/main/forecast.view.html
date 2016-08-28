@@ -1,8 +1,8 @@
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
-      <div class="jumbotron">
+    <div class="col-xs-12">
+      <div class="jumbotron text-center">
 
         <div class="btn-group" uib-dropdown>
           <button id="split-button" type="button" class="btn btn-default">{{account.name}}</button>
@@ -18,10 +18,12 @@
             <li role="menuitem"><a ui-sref="main.accounts">View Accounts</a></li>
           </ul>
         </div>
-
+        <div>&nbsp;</div>
+        <div ng-show="loading">Loading...</div>
+        <div ng-hide="loading" google-chart chart="forecastChart" style="height:600px; width:100%;"></div>
+      </div>
     </div>
   </div>
-</div>
 </div>
 
 <uib-accordion ng-show="forecast.previous">
@@ -47,15 +49,19 @@
     <uib-accordion-heading>
       <div class="row">
         <div class="col-xs-5"><small>{{day.date | date:'EEE, MMM d'}}</small></div>
-        <div class="col-xs-3 text-right" ><small>{{day.trasnactions_total | currency}}</small></div>
-        <div class="col-xs-4 text-right"><small><span ng-class="{'text-danger': transaction.amount < 0}">{{day.balance | currency}}</span></small></div>
+        <div class="col-xs-3 text-right" ><small ng-class="{'text-danger': day.transactions_total < 0}">{{day.transactions_total | currency}}</small></div>
+        <div class="col-xs-4 text-right"><small><span ng-class="{'text-danger': day.balance < 0}">{{day.balance | currency}}</span></small></div>
       </div>
     </uib-accordion-heading>
     <ul class="list-group">
       <li class="list-group-item" ng-repeat="transaction in day.transactions">
         <span class="pull-right" ng-class="{'text-danger': transaction.amount < 0}"><small>{{transaction.amount | currency}}</small></span>
-        <small>{{transaction.name}}</small>
+        <a ui-sref="main.edittransactions({ id: transaction.id })">{{transaction.name}}</a> <span ng-show="transaction.num_transactions_total"><small>({{transaction.num_transactions_current}} of {{transaction.num_transactions_total}})</small></span>
+        <div ng-show="!transaction.one_time"><small><i class="icon-repeatone"></i> every {{transaction.every_num}} {{transaction.every_type}}[s]</small></div>
       </li>
     </ul>
   </div>
 </uib-accordion>
+
+<div style="font-size: 1.5em; height: 4em;">&nbsp;</div>
+<button class="btn btn-success btn-lg" style="box-shadow: .15em .15em .4em .2em rgba(0, 0, 0, 0.2); font-size: 1.25em; border-radius: 1.5em; width: 3em; height: 3em; position: fixed; right: 1em; bottom: 1em;" ng-click="open()"><span class="glyphicon glyphicon-plus"></span></button>

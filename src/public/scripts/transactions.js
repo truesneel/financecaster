@@ -109,6 +109,7 @@ transactions.controller('transactionsEditController', ['$scope', '$state', '$htt
       $scope.transaction.$delete().then(function (response) {
         $state.go('main.transactions');
       }, function (err) {
+        console.log(err);
       $scope.response = err.data;
         if (err.data.fields) {
           err.data.fields.forEach(function (field) {
