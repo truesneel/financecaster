@@ -203,9 +203,24 @@ schemas.tokens = fc.db.define('tokens', {
 		'type': Sequelize.STRING,
 		'allowNull': false
 	},
+  'geo_country': {
+    'type': Sequelize.STRING
+  },
+  'geo_region': {
+    'type': Sequelize.STRING
+  },
+  'geo_city': {
+    'type': Sequelize.STRING
+  },
 	'agent': {
 		'type': Sequelize.STRING,
 	},
+  'agent_browser': {
+    'type': Sequelize.STRING
+  },
+  'agent_os': {
+    'type': Sequelize.STRING
+  },
 	'expires': {
 		'type': Sequelize.DATE,
 		'allowNull': false

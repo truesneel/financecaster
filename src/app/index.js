@@ -119,21 +119,20 @@ fc.check_token = function (req, res, next) {
   if (req.headers.client_token && req.headers.auth_token) {
 
     fc.get('tokens', {
-      'include': [fc.schemas.users],
+      'include': [
+        {
+          'model': fc.schemas.users,
+          'attributes': ['id', 'name', 'email', 'username']
+        }
+      ],
+      'attributes': ['id', 'client_token', 'ip', 'geo_country', 'geo_region', 'geo_city', 'agent', 'agent_browser', 'agent_os', 'expires', 'userId'],
       'where': {
         'client_token': req.headers.client_token,
         'auth_token': req.headers.auth_token,
       }
     }).then(function (record) {
       if (record) {
-        req.auth = {
-          'userId': record.dataValues.userId,
-          'tokenId': record.dataValues.id,
-          'name': record.dataValues.user.dataValues.name,
-          'expires': record.dataValues.expires,
-          'client_token': record.dataValues.client_token,
-          'admin': record.dataValues.user.dataValues.admin,
-        };
+        req.auth = record;
 
         fc.update('tokens', {'expire': new Date()}, {'where': {'id': record.dataValues.id}});
 

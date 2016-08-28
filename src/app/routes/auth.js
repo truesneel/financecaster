@@ -3,6 +3,8 @@ var fc = require('../../app');
 var crypto = require('crypto');
 var express = require('express');
 var router = express.Router();
+var geoip = require('geoip-lite');
+var useragent = require('useragent');
 var messages = require('../messages').get;
 
 /**
@@ -101,11 +103,22 @@ router.post('/', function (req, res) {
       var token_expiration = new Date();
       token_expiration.setDate(token_expiration.getDate() + 1);
 
+      var geo = geoip.lookup(req.connection.remoteAddress);
+      geo = geo || {};
+
+      var agent = useragent.parse(req.headers['user-agent']);
+
+
       fc.schemas.tokens.create({
         'client_token': 'GENERATE',
         'auth_token': 'GENERATE',
         'ip': req.connection.remoteAddress,
+        'geo_country': geo.country,
+        'geo_region': geo.region,
+        'geo_city': geo.city,
         'agent': req.headers['user-agent'],
+        'agent_os': agent.os.family,
+        'agent_browser': agent.family,
         'expires': token_expiration,
         'userId': record.id
       }).then(function (token) {
@@ -186,7 +199,10 @@ router.delete('/', fc.isAuth, function (req, res) {
  */
 router.get('/tokens', fc.isAuth, function (req, res) {
 
-  fc.query('tokens', {'where': {'userId': req.auth.userId}, 'attributes': ['id', 'userId', 'client_token', 'ip', 'agent', 'expires', 'createdAt', 'updatedAt']}).then(function (results) {
+  fc.query('tokens', {
+    'where': {'userId': req.auth.userId},
+    'attributes': ['id', 'userId', 'client_token', 'ip', 'geo_country', 'geo_region', 'geo_city', 'agent', 'agent_browser', 'agent_os', 'expires', 'updatedAt', 'createdAt']
+  }).then(function (results) {
     if (results) {
       res.send(results);
     } else {
@@ -235,7 +251,10 @@ router.get('/tokens', fc.isAuth, function (req, res) {
  */
 router.get('/tokens/:id', fc.isAuth, function (req, res) {
 
-  fc.get('tokens', {'where': {'userId': req.auth.userId, 'id': req.params.id}, 'attributes': ['id', 'userId', 'client_token', 'ip', 'agent', 'expires', 'createdAt', 'updatedAt']}).then(function (results) {
+  fc.get('tokens', {
+    'where': {'userId': req.auth.userId, 'id': req.params.id},
+    'attributes': ['id', 'client_token', 'ip', 'geo_country', 'geo_region', 'geo_city', 'agent', 'agent_browser', 'agent_os', 'expires', 'userId']
+  }).then(function (results) {
     if (results) {
       res.send(results);
     } else {
@@ -276,7 +295,7 @@ router.delete('/tokens/:id', fc.isAuth, function (req, res) {
 });
 
 /**
- * @api {put} /auth Update User Information
+ * @api {get} /auth/user Get User Information
  * @apiGroup Authentication
  * @apiPermission user
  *
@@ -290,14 +309,74 @@ router.delete('/tokens/:id', fc.isAuth, function (req, res) {
  *   "message": "User Updated Successfully",
  * }
  */
+router.get('/user', fc.isAuth, function (req, res) {
+  fc.get('users', {
+      'where': {'id': req.auth.userId},
+      'attributes': ['id', 'name', 'username', 'email', 'createdAt', 'updatedAt'],
+    }).then(function (results) {
+    if (results) {
+      res.send(results);
+    } else {
+      var msg = messages('RECORD_NOT_FOUND');
+      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+    }
+  });
+
+});
+
+/**
+ * @api {put} /auth/user Update User Information
+ * @apiGroup Authentication
+ * @apiPermission user
+ *
+ * @apiParam {String} name
+ * @apiParam {String} email
+ *
+ * @apiSuccess {String} message
+ * @apiSuccessExample
+ * HTTP/1.1 200 OK
+ * {
+ *   "message": "User Updated Successfully",
+ * }
+ */
+router.put('/user', fc.isAuth, function (req, res) {
+
+  delete req.body.password;
+  delete req.body.admin;
+  delete req.body.disabled;
+  delete req.body.changepw;
+  delete req.body.updatedAt;
+  delete req.body.createdAt;
+
+  fc.get('users', {
+      'where': {'id': req.auth.userId},
+      'attributes': ['id', 'name', 'username', 'email', 'createdAt', 'updatedAt'],
+    }).then(function (user) {
+    if (user) {
+
+      user.update(req.body).then(function (result) {
+        msg = messages('RECORD_UPDATED');
+        res.status(msg.http_code).send({'message': msg.message});
+      }, function (err) {
+        var msg = messages('FIELD_VALIDATION_ERROR');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
+      });
+
+    } else {
+      var msg = messages('RECORD_NOT_FOUND');
+      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+    }
+  });
+
+});
 
 /**
  * @api {post} /auth/changepw Change Password
  * @apiGroup Authentication
  * @apiPermission user
  *
- * @apiParam {String} current_password
- * @apiParam {String} new_password
+ * @apiParam {String} current
+ * @apiParam {String} newpassword
  *
  * @apiSuccess {String} message
  * @apiSuccessExample
@@ -307,4 +386,28 @@ router.delete('/tokens/:id', fc.isAuth, function (req, res) {
  * }
  */
 
+router.post('/changepw', fc.isAuth, function (req, res) {
+
+  console.log(req.body);
+  fc.get('users', {
+      'where': {'id': req.auth.userId, 'password': crypto.createHmac('sha512', fc.config.salt).update(req.body.current).digest('base64')},
+    }).then(function (user) {
+    if (user) {
+
+      user.password = req.body.newpassword;
+      user.save().then(function (result) {
+        msg = messages('RECORD_UPDATED');
+        res.status(msg.http_code).send({'message': msg.message});
+      }, function (err) {
+        var msg = messages('FIELD_VALIDATION_ERROR');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
+      });
+
+    } else {
+      var msg = messages('RECORD_NOT_FOUND');
+      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+    }
+  });
+
+});
 module.exports = router;
