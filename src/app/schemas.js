@@ -120,7 +120,7 @@ schemas.transactions = fc.db.define('transactions', {
     'allowNull': false,
     'validate': {
       amount: function (value) {
-        var currency = /^-?\d+\.\d\d$/;
+        var currency = /^-?\d+(\.\d\d)?$/;
 
         if (!currency.test(value)) {
           throw new Error('Value must be in currency form');

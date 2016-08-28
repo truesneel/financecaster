@@ -12,14 +12,19 @@
   <div class="pull-right">&nbsp;</div>
   <button class="btn btn-default pull-right hidden-xs" style="border: 0px;" ui-sref="main.accounts"><span class="glyphicon glyphicon-arrow-left"></span></button>
 </h1>
-
-<div class="alert alert-danger" ng-class="{'alert-danger': response.error, 'alert-success': response.message}" role="alert" ng-show="response.message || response.error">
+<div class="alert" ng-class="{'alert-danger': response.error, 'alert-success': response.message}" role="alert" ng-show="response.message || response.error">
   {{response.message}}{{response.error}}
 </div>
 <uib-tabset active="1">
   <uib-tab index="0" heading="Settings" ui-sref="main.editaccount(account)">
   </uib-tab>
   <uib-tab  index="1" heading="Transactions" ui-sref="main.editaccountTransactions(account)">
+
+
+    <div class="text-center" ng-show="transactions.length === 0">
+      <h4>You don't seem to have any transactions added.  Why don't you create one now?</h4>
+      <button class="btn btn-success" ui-sref="main.accountAddTransaction(account)"><span class="glyphicon glyphicon-plus"></span> Add Transaction</button>
+    </div>
 
     <div class="list-group">
       <button type="button" class="list-group-item" ng-repeat="transaction in transactions" ui-sref="main.accountEditTransaction( transaction )">
