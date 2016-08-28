@@ -275,4 +275,36 @@ router.delete('/tokens/:id', fc.isAuth, function (req, res) {
 
 });
 
+/**
+ * @api {put} /auth Update User Information
+ * @apiGroup Authentication
+ * @apiPermission user
+ *
+ * @apiParam {String} name
+ * @apiParam {String} email
+ *
+ * @apiSuccess {String} message
+ * @apiSuccessExample
+ * HTTP/1.1 200 OK
+ * {
+ *   "message": "User Updated Successfully",
+ * }
+ */
+
+/**
+ * @api {post} /auth/changepw Change Password
+ * @apiGroup Authentication
+ * @apiPermission user
+ *
+ * @apiParam {String} current_password
+ * @apiParam {String} new_password
+ *
+ * @apiSuccess {String} message
+ * @apiSuccessExample
+ * HTTP/1.1 200 OK
+ * {
+ *   "message": "Password Changed",
+ * }
+ */
+
 module.exports = router;

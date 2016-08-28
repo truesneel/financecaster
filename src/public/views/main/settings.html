@@ -1,3 +1,22 @@
+<div class="panel panel-default">
+  <div class="panel-heading">User Information</div>
+  <div class="panel-body">
+
+    <form>
+      <div class="form-group">
+        <label for="current">Name</label>
+        <input type="name" name="current" class="form-control" ng-model="config.auth.name" required>
+      </div>
+      <div class="form-group">
+        <label for="current">Email</label>
+        <input type="email" name="current" class="form-control" ng-model="config.auth.email" required>
+      </div>
+      <button class="btn btn-primary" ng-click="change()">Change</button>
+    </form>
+
+  </div>
+</div>
+{{config.auth}}
 
 <div class="panel panel-default">
   <div class="panel-heading">Change Password</div>
@@ -6,29 +25,51 @@
     <form>
       <div class="form-group">
         <label for="current">Current Password</label>
-        <input type="password" name="current" class="form-control" ng-model="changepw.current">
+        <input type="password" name="current" class="form-control" ng-model="changepw.current" required>
       </div>
       <div class="form-group">
         <label for="current">New Password</label>
-        <input type="password" name="current" class="form-control" ng-model="changepw.newpassword1">
+        <input type="password" name="current" class="form-control" ng-model="changepw.newpassword1" required>
       </div>
       <div class="form-group">
-        <input type="password" name="current" class="form-control" ng-model="changepw.newpassword2">
+        <input type="password" name="current" class="form-control" ng-model="changepw.newpassword2" required>
       </div>
-      <button class="btn btn-primary" ng-click="change()">Change</button>
+      <button class="btn btn-primary" ng-click="change()" ng-disabled="changepw.newpassword1 !== changepw.newpassword2 || !changepw.newpassword1 || !changepw.current">Change</button>
     </form>
 
   </div>
 </div>
 
 <div class="panel panel-default">
-  <div class="panel-heading">Logout of FinanceCaster</div>
+  <div class="panel-heading">Tokens</div>
   <div class="panel-body">
-    <button class="btn btn-danger" ng-click="logout()">Logout</button>
+
+  <div ng-show="loading">Loading</div>
+    <ul class="list-group">
+      <li class="list-group-item" ng-repeat="token in tokens">
+        <div class="row">
+          <div class="col-sm-8">
+            <div>{{token.agent}}</div>
+            <div><small>IP: {{token.ip}}</small></div>
+          </div>
+          <div class="col-sm-3">
+            <div><small>Last Used: {{token.updatedAt | date: 'medium'}}</small></div>
+            <div><small>Created: {{token.createdAt | date: 'medium'}}</small></div>
+          </div>
+          <div class="col-xs-12 col-sm-1">
+           <button class="btn btn-md btn-danger pull-right" ng-disabled="token.client_token == config.auth.client_token" ng-click="delete_token(token)"><span class="glyphicon glyphicon-trash"></span></button>
+          </div>
+
+        </div>
+      </li>
+    </ul>
+
   </div>
 </div>
 
-  <div class="form-group">
-    <label for="logout">Logout</label>
+<div class="panel panel-default">
+  <div class="panel-heading">Logout of FinanceCaster</div>
+  <div class="panel-body text-center">
+    <button class="btn btn-danger" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</button>
   </div>
-
+</div>

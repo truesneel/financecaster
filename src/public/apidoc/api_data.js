@@ -1330,6 +1330,120 @@ define({ "api": [
     "name": "PostAuth"
   },
   {
+    "type": "post",
+    "url": "/auth/changepw",
+    "title": "Change Password",
+    "group": "Authentication",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "current_password",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "new_password",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n{\n  \"message\": \"Password Changed\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./src/app/routes/auth.js",
+    "groupTitle": "Authentication",
+    "name": "PostAuthChangepw"
+  },
+  {
+    "type": "put",
+    "url": "/auth",
+    "title": "Update User Information",
+    "group": "Authentication",
+    "permission": [
+      {
+        "name": "user",
+        "title": "User Access Required",
+        "description": "<p>Access is restricted to an standard authorized user</p>"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "message",
+            "description": ""
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP/1.1 200 OK",
+          "content": "HTTP/1.1 200 OK\n{\n  \"message\": \"User Updated Successfully\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "./src/app/routes/auth.js",
+    "groupTitle": "Authentication",
+    "name": "PutAuth"
+  },
+  {
     "type": "get",
     "url": "/permissions",
     "title": "Get Permissions",
