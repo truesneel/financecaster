@@ -20,7 +20,7 @@
         </div>
         <div ng-show="loading">&nbsp;</div>
         <div ng-show="loading">Loading...</div>
-        <div ng-hide="loading" google-chart chart="forecastChart" style="height:600px; width:100%;"></div>
+        <div ng-hide="loading" google-chart chart="forecastChart" style="height:400px; width:100%;"></div>
         <div>&nbsp;</div>
         <ul class="list-group text-left" ng-hide="loading">
           <li class="list-group-item" ng-class="{'list-group-item-danger': forecast.today < 0}"><small>Today: {{forecast.today | currency}}</small></li>
