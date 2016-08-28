@@ -55,7 +55,7 @@
   <div uib-accordion-group class="panel-default">
     <uib-accordion-heading>
       <div class="row">
-        <div class="col-xs-5"><small>{{day.date | date:'EEE, MMM d'}}</small></div>
+        <div class="col-xs-5"><small ng-class="{'text-danger': day.balance < 0}">{{day.date | date:'EEE, MMM d'}}</small></div>
         <div class="col-xs-3 text-right" ><small ng-class="{'text-danger': day.transactions_total < 0}">{{day.transactions_total | currency}}</small></div>
         <div class="col-xs-4 text-right"><small><span ng-class="{'text-danger': day.balance < 0}">{{day.balance | currency}}</span></small></div>
       </div>
