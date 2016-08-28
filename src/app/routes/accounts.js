@@ -492,7 +492,7 @@ router.get('/:id/forecast', fc.AuthObject('accounts'), fc.isAuth, function (req,
       'high_date': account.balance_date,
       'low': account.balance,
       'low_date': account.balance_date,
-      'today': 0.00
+      'today': account.balance
     };
 
     //Once we're done we'll send the results
@@ -612,7 +612,7 @@ router.get('/:id/forecast', fc.AuthObject('accounts'), fc.isAuth, function (req,
         forecast.previous.push(day);
         forecast.today = day.balance;
       //Otherwise add it for our future key
-      } else if (day.transactions.length > 0) {
+      } else if (day.transactions.length > 0 || (day.date.valueOf() == now.valueOf()) ) {
         forecast.future.push(day);
       }
 

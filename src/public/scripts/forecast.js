@@ -121,7 +121,7 @@ forecast.controller('forecastViewController', ['$scope', '$uibModal', '$timeout'
 
       $scope.loading = false;
     });
-  }
+  };
 
   $timeout(load, 500);
 
