@@ -103,7 +103,8 @@ router.post('/', function (req, res) {
       var token_expiration = new Date();
       token_expiration.setDate(token_expiration.getDate() + 1);
 
-      var geo = geoip.lookup(req.connection.remoteAddress);
+      var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+      var geo = geoip.lookup(ip);
       geo = geo || {};
 
       var agent = useragent.parse(req.headers['user-agent']);
@@ -112,7 +113,7 @@ router.post('/', function (req, res) {
       fc.schemas.tokens.create({
         'client_token': 'GENERATE',
         'auth_token': 'GENERATE',
-        'ip': req.connection.remoteAddress,
+        'ip': ip,
         'geo_country': geo.country,
         'geo_region': geo.region,
         'geo_city': geo.city,
