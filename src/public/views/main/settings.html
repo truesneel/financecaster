@@ -74,10 +74,11 @@
         <div class="row">
           <div class="col-sm-8">
             <div>{{token.agent_browser}} on {{token.agent_os}} <button uib-popover="{{token.agent}}" type="button" class="btn btn-info btn-xs "><span class="glyphicon glyphicon-question-sign"></span></button></div>
-            <div ng-show="token.city"><small>{{token.city}}, {{token.region}} {{token.country}} ({{token.ip}})</small></div>
-            <div ng-hide="token.city"><small>IP: {{token.ip}}</small></div>
+            <div ng-show="token.geo_city"><small>{{token.geo_city}}, {{token.geo_region}} {{token.geo_country}} ({{token.ip}})</small></div>
+            <div ng-hide="token.geo_city"><small>IP: {{token.ip}}</small></div>
           </div>
           <div class="col-sm-3">
+            <div><small>Expires: {{token.expires | date: 'medium'}}</small></div>
             <div><small>Last Used: {{token.updatedAt | date: 'medium'}}</small></div>
             <div><small>Created: {{token.createdAt | date: 'medium'}}</small></div>
           </div>
