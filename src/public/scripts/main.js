@@ -102,6 +102,7 @@ financecaster.provider('financecaster', function ($httpProvider) {
   var initInjector = angular.injector(['ng']);
   var $http = initInjector.get('$http');
   var $q = initInjector.get('$q');
+  var $timeout = initInjector.get('$timeout');
   var headers = {};
 
   this.config = {};
@@ -181,6 +182,24 @@ financecaster.provider('financecaster', function ($httpProvider) {
     return defer.promise;
   };
 
+  this.set_root = function (scope) {
+    this.rootScope = scope;
+  };
+
+  this.message = function (message, type) {
+    var self = this;
+
+
+    self.rootScope.messages.push({
+      'message': message,
+      'type': type
+    });
+
+    $timeout(function () {
+      self.rootScope.messages.shift();
+      self.rootScope.$digest();
+    }, 5000);
+  };
 
 	this.$get = function () {
 		var self = this;
@@ -191,6 +210,8 @@ financecaster.provider('financecaster', function ($httpProvider) {
       is_authed: self.is_authed,
       login: self.login,
       logout: self.logout,
+      message: self.message,
+      set_root: self.set_root,
 		};
 	};
 });
@@ -213,7 +234,10 @@ financecaster.config(function($stateProvider, $urlRouterProvider, financecasterP
 
 });
 
-financecaster.controller('rootController', ['$rootScope', '$state', 'financecaster', function ($rootScope, $state, financecaster) {
+financecaster.controller('rootController', ['$rootScope', '$scope', '$state', '$timeout', 'financecaster', function ($rootScope, $scope, $state, $timeout, financecaster) {
+  financecaster.set_root($scope);
+
+  $scope.messages = $scope.messages = [];
 
 	$rootScope.loading = false;
 
@@ -226,6 +250,9 @@ financecaster.controller('rootController', ['$rootScope', '$state', 'financecast
 	});
 
 	$rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+
+    financecaster.message('Error Loading Page', 'error');
+
 		$rootScope.loading = false;
 		event.preventDefault();
 		if ( ! error ) {

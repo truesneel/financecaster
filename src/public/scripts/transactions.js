@@ -82,10 +82,10 @@ transactions.controller('transactionsAddController', ['$scope', '$http', 'financ
       form.$setPristine();
       form.$setUntouched();
 
-      $scope.response = response;
+      financecaster.message('Transaction Added');
       $scope.transaction = new Transactions({'one_time': true});
     }, function (err) {
-      $scope.response = err.data;
+      financecaster.message(err.data, 'error');
       if (err.data.fields) {
         err.data.fields.forEach(function (field) {
           if (form[field.path]) {
@@ -107,10 +107,10 @@ transactions.controller('transactionsEditController', ['$scope', '$state', '$htt
   $scope.delete = function (form ) {
     if (confirm('Are you sure you want to delete this transaction?')) {
       $scope.transaction.$delete().then(function (response) {
+        financecaster.message('Transaction Deleted');
         $state.go('main.transactions');
       }, function (err) {
-        console.log(err);
-      $scope.response = err.data;
+        financecaster.message(err.data, 'error');
         if (err.data.fields) {
           err.data.fields.forEach(function (field) {
             if (form[field.path]) {
@@ -125,9 +125,9 @@ transactions.controller('transactionsEditController', ['$scope', '$state', '$htt
   $scope.save = function (form) {
     $scope.transaction.$update().then(function (response) {
 
-      $scope.response = {'message': 'Transaction Saved Successfully'};
+      financecaster.message('Transaction Saved Successfully');
     }, function (err) {
-      $scope.response = err.data;
+      financecaster.message(err.data, 'error');
       if (err.data.fields) {
         err.data.fields.forEach(function (field) {
           if (form[field.path]) {

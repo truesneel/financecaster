@@ -56,9 +56,9 @@ settings.controller('settingsController', ['$scope', '$state', '$timeout', 'fina
   $scope.save = function (form) {
     $scope.user.$update().then(function (response) {
 
-      $scope.response = {'message': 'User Saved Successfully'};
+      financecaster.message('User Saved Successfully');
     }, function (err) {
-      $scope.response = err.data;
+      financecaster.message(err.data, 'error');
       if (err.data.fields) {
         err.data.fields.forEach(function (field) {
           if (form[field.path]) {
@@ -72,9 +72,9 @@ settings.controller('settingsController', ['$scope', '$state', '$timeout', 'fina
   $scope.change = function (form) {
     $scope.changepw.$save().then(function (response) {
 
-      $scope.response = {'message': 'Password Changed Successfully'};
+      financecaster.message('Password Changed Successfully');
     }, function (err) {
-      $scope.response = err.data;
+      financecaster.message(err.data, 'error');
     });
   };
 
@@ -92,6 +92,7 @@ settings.controller('settingsController', ['$scope', '$state', '$timeout', 'fina
   $scope.delete_token = function (record) {
     record.$delete(function (result) {
       $scope.load_tokens();
+      financecaster.message(err.data, 'error');
     });
   };
 

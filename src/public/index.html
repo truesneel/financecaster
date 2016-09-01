@@ -119,6 +119,26 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
+  .messages {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 0em;
+    background-color: #333;
+    border-top: 1px solid #222;
+    font-size: 2em;
+    line-height: 1.6em;
+    padding-left: .25em;
+    text-shadow: 1px 1px 1px black;
+    overflow: hidden;
+    -webkit-transition: height 1s;
+    transition: height .8s ease;
+  }
+
+  .messages.messages_active {
+    height: 1.5em;
+  }
   </style>
   <body ng-controller="rootController" ui-view>
 

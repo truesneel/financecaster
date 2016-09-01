@@ -45,3 +45,10 @@
       <div class="col-sm-10 col-sm-offset-1" ui-view></div>
     </div>
   </div>
+  <div class="messages" ng-class="{'messages_active': messages.length > 0}">
+  <div ng-repeat="message in messages">
+  <i class="icon-erroralt text-danger" ng-show="message.type == 'error'"></i>
+  <i class="icon-ok-circle text-success" ng-show="message.type != 'error'"></i>
+  {{message.message}}
+  </div>
+  </div>

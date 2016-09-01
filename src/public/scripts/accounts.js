@@ -170,9 +170,9 @@ accounts.controller('accountsAddController', ['$scope', '$http', 'financecaster'
       form.$setPristine();
       form.$setUntouched();
 
-      $scope.response = response;
+      financecaster.message('Account Added');
     }, function (err) {
-      $scope.response = err.data;
+        financecaster.message(err.data, 'error');
       if (err.data.fields) {
         err.data.fields.forEach(function (field) {
           if (form[field.path]) {
@@ -195,9 +195,10 @@ accounts.controller('accountsEditController', ['$scope', '$state', '$http', 'fin
   $scope.delete = function (form ) {
     if (confirm('Are you sure you want to delete this account?')) {
       $scope.account.$delete().then(function (response) {
+        financecaster.message('Account Deleted Successfully');
         $state.go('main.accounts');
       }, function (err) {
-      $scope.response = err.data;
+        financecaster.message(err.data, 'error');
         if (err.data.fields) {
           err.data.fields.forEach(function (field) {
             if (form[field.path]) {
@@ -212,9 +213,10 @@ accounts.controller('accountsEditController', ['$scope', '$state', '$http', 'fin
   $scope.save = function (form) {
     $scope.account.$update().then(function (response) {
 
-      $scope.response = {'message': 'Account Saved Successfully'};
+      financecaster.message('Account Saved Successfully');
+
     }, function (err) {
-      $scope.response = err.data;
+      financecaster.message(err.data, 'error');
       if (err.data.fields) {
         err.data.fields.forEach(function (field) {
           if (form[field.path]) {
@@ -252,10 +254,10 @@ accounts.controller('accountTransactionsAddController', ['$scope', '$state', '$s
       form.$setPristine();
       form.$setUntouched();
 
-      $scope.response = response;
+      financecaster.message('Transaction Added');
       $scope.transaction = new Transactions({'accountId': account.id, 'one_time': true});
     }, function (err) {
-      $scope.response = err.data;
+      financecaster.message(err.data, 'error');
       if (err.data.fields) {
         err.data.fields.forEach(function (field) {
           if (form[field.path]) {
@@ -280,9 +282,10 @@ accounts.controller('accountTransactionsEditController', ['$scope', '$state', '$
   $scope.delete = function (form ) {
     if (confirm('Are you sure you want to delete this transaction?')) {
       $scope.transaction.$delete().then(function (response) {
+        financecaster.message('Transaction Deleted');
         $state.go('main.editaccountTransactions', account);
       }, function (err) {
-      $scope.response = err.data;
+        financecaster.message(err.data, 'error');
         if (err.data.fields) {
           err.data.fields.forEach(function (field) {
             if (form[field.path]) {
@@ -300,8 +303,9 @@ accounts.controller('accountTransactionsEditController', ['$scope', '$state', '$
       form.$setUntouched();
 
       $scope.response = response;
+      financecaster.message('Transaction Saved');
     }, function (err) {
-      $scope.response = err.data;
+      financecaster.message(err.data, 'error');
       if (err.data.fields) {
         err.data.fields.forEach(function (field) {
           if (form[field.path]) {
