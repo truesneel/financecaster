@@ -132,10 +132,12 @@ fc.check_token = function (req, res, next) {
       }
     }).then(function (record) {
       if (record) {
+	var token_expiration = new Date();
+	token_expiration.setDate(token_expiration.getDate() + 1);
+
         req.auth = record;
-
-        fc.update('tokens', {'expire': new Date()}, {'where': {'id': record.dataValues.id}});
-
+	record.expires = token_expiration;
+	record.save();
       }
       next();
     });

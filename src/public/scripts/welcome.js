@@ -13,7 +13,8 @@ welcome.config(function($stateProvider, $urlRouterProvider) {
 });
 
 welcome.controller('welcomeController', ['$scope', '$state', '$http', 'financecaster', function ($scope, $state, $http, financecaster) {
-
+  financecaster.set_root($scope);
+  $scope.messages = $scope.messages || [];
   $scope.username = '';
   $scope.password = '';
 
@@ -21,6 +22,8 @@ welcome.controller('welcomeController', ['$scope', '$state', '$http', 'financeca
 
     financecaster.login($scope.username, $scope.password).then(function () {
       $state.go('main.forecast');
+    }, function (err) {
+      financecaster.message('Login Failed', 'error');
     });
 
   };

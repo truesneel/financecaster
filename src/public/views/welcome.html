@@ -21,3 +21,10 @@
 </div>
 
 <div style="font-size: 1.5em; height: 2em;">&nbsp;</div>
+  <div class="messages" ng-class="{'messages_active': messages.length > 0}">
+  <div ng-repeat="message in messages">
+  <i class="icon-erroralt text-danger" ng-show="message.type == 'error'"></i>
+  <i class="icon-ok-circle text-success" ng-show="message.type != 'error'"></i>
+  {{message.message}}
+  </div>
+  </div>
