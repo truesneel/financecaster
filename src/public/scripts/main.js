@@ -11,13 +11,13 @@ var financecaster = angular.module('financecaster', [
 ]);
 
 financecaster.directive('currency', function() {
-  var currency = /^-?\d+(\.\d\d)?$/;
+  var currency = /^-?\d+(\.\d\d?)?$/;
 
   return {
     require: 'ngModel',
     link: function(scope, elm, attrs, ctrl) {
       ctrl.$validators.currency = function(modelValue, viewValue) {
-        if (ctrl.$isEmpty(modelValue)) {
+        if (ctrl.$isEmpty(viewValue)) {
           // consider empty models to be valid
           return true;
         }

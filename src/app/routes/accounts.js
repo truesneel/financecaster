@@ -508,6 +508,7 @@ router.get('/:id/forecast', fc.AuthObject('accounts'), fc.isAuth, function (req,
 
         zero_time(transaction.start);
 
+        console.log(transaction.start);
         //Skip one time transactions
         if (transaction.one_time) {
           return;
