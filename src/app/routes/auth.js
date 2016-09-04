@@ -95,6 +95,7 @@ router.get('/', fc.isAuth, function (req, res) {
  *
  */
 router.post('/', function (req, res) {
+  var msg;
 
   fc.schemas.users.find({'where': {
     'username': req.body.username,
@@ -103,6 +104,12 @@ router.post('/', function (req, res) {
     'verification': '',
   }}).then(function (record) {
     if (record) {
+
+      if (record.changepw) {
+        msg = messages('PASSWORD_CHANGE');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+        return;
+      }
 
       var token_expiration = new Date();
       token_expiration.setDate(token_expiration.getDate() + 1);
@@ -129,11 +136,11 @@ router.post('/', function (req, res) {
       }).then(function (token) {
         res.status(200).send({'message': 'success', 'client_token': token.client_token, 'auth_token': token.auth_token, 'expires': token_expiration});
       }, function (err) {
-        res.status(400).send({'message': 'Authentication succeeded but an authentication token could not be obtained'});
+        res.status(500).send({'message': 'Authentication succeeded but an authentication token could not be obtained'});
       });
 
     } else {
-      var msg = messages('LOGIN_FAILED');
+      msg = messages('LOGIN_FAILED');
       res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
     }
   });
@@ -392,13 +399,25 @@ router.put('/user', fc.isAuth, function (req, res) {
  */
 
 router.post('/changepw', fc.isAuth, function (req, res) {
+  console.log(req.body);
+  var search = {
+    'password': crypto.createHmac('sha512', fc.config.salt).update(req.body.current).digest('base64')
+  }
+
+  if (req.auth) {
+    search.id = req.auth.userId;
+  } else {
+    search.username = req.body.username;
+  }
 
   fc.get('users', {
-      'where': {'id': req.auth.userId, 'password': crypto.createHmac('sha512', fc.config.salt).update(req.body.current).digest('base64')},
+      'where': search,
     }).then(function (user) {
     if (user) {
 
       user.password = req.body.newpassword;
+      user.changepw = false;
+
       user.save().then(function (result) {
         msg = messages('RECORD_UPDATED');
         res.status(msg.http_code).send({'message': msg.message});

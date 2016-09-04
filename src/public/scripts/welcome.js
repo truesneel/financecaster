@@ -83,13 +83,15 @@ welcome.controller('verifyController', ['$scope', 'verified', function ($scope, 
   $scope.verified = verified;
 }]);
 
-welcome.controller('welcomeController', ['$scope', '$state', '$http', 'financecaster', 'NewUser', function ($scope, $state, $http, financecaster, NewUser) {
+welcome.controller('welcomeController', ['$scope', '$state', '$http', 'financecaster', 'NewUser', 'ChangePw', function ($scope, $state, $http, financecaster, NewUser, ChangePw) {
   financecaster.set_root($scope);
   $scope.messages = $scope.messages || [];
   $scope.newuser = new NewUser();
   $scope.login = {};
   $scope.active = 0;
   $scope.creating = false;
+  $scope.changing = false;
+  $scope.changepw = undefined;
 
   $scope.username = '';
   $scope.password = '';
@@ -101,9 +103,35 @@ welcome.controller('welcomeController', ['$scope', '$state', '$http', 'financeca
     financecaster.login($scope.login.username, $scope.login.password).then(function () {
       $state.go('main.forecast');
     }, function (err) {
-      $scope.error = err;
-      financecaster.message('Login Failed', 'error');
-      $scope.$digest();
+      if (err.status === 400) {
+        $scope.changepw = new ChangePw();
+        $scope.changepw.username = $scope.login.username;
+        $scope.changepw.current = $scope.login.password;
+
+        financecaster.message('Password Change Required', 'error');
+        $scope.$digest();
+      } else {
+        $scope.error = err;
+        financecaster.message('Login Failed', 'error');
+        $scope.$digest();
+      }
+    });
+
+  };
+
+  $scope.changepassword = function (form) {
+    $scope.changing = true;
+
+    $scope.changepw.$save().then(function (response) {
+      $scope.changing = false;
+
+      financecaster.login($scope.changepw.username, $scope.changepw.newpassword).then(function () {
+        $state.go('main.forecast');
+      });
+
+    }, function (err) {
+      financecaster.message(err.data, 'error');
+      $scope.changing = false;
     });
 
   };

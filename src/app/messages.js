@@ -56,7 +56,7 @@ messages.RECORD_NOT_FOUND = {
 messages.LOGIN_FAILED = {
   'code': 'FC00008',
   'message': 'Login Failed',
-  'http_code': 400,
+  'http_code': 403,
 };
 messages.TOKEN_DELETED = {
   'code': 'FC00009',
@@ -122,6 +122,11 @@ messages.PASSWORD_RESET = {
   'code': 'FC00019',
   'message': 'Password reset email sent',
   'http_code': 200,
+};
+messages.PASSWORD_CHANGE = {
+  'code': 'FC00020',
+  'message': 'Password Change Required',
+  'http_code': 400,
 };
 
 

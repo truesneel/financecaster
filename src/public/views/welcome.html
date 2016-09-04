@@ -9,7 +9,7 @@
         <uib-tab index="0" heading="Existing User">
 
           <div class="well well-lg">
-            <form>
+            <form ng-show="!changepw">
               <div class="form-group has-feedback" ng-class="{'has-error': error}">
                 <label for="username">Username</label>
                 <input class="form-control" id="username" type="text" placeholder="User" ng-model="login.username">
@@ -22,6 +22,25 @@
               </div>
                 <span id="helpBlock2" class="help-block pull-right"><small><a ui-sref="forgotpassword" style="cursor: pointer">Forgot Password?</a></small></span>
               <button class="btn btn-primary" ng-click="login()"><span class="glyphicon glyphicon-log-in"></span> Login</button>
+            </form>
+
+            <form name="changepwFrm" ng-show="changepw">
+              <h3>Please change your password</h3>
+              <div class="form-group has-feedback" ng-class="{'has-success': changepwFrm.newpassword.$valid && changepwFrm.newpassword.$dirty, 'has-error': changepwFrm.newpassword.$invalid && changepwFrm.newpassword.$dirty}">
+                <label for="newpassword">Password</label>
+                <input class="form-control" id="newpassword" name="newpassword" type="password" placeholder="Password" required ng-model="changepw.newpassword" matches="changepwFrm.password2.$viewValue">
+                <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="changepwFrm.newpassword.$valid && changepwFrm.newpassword.$dirty"></span>
+                <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="changepwFrm.newpassword.$invalid && changepwFrm.newpassword.$dirty"></span>
+              </div>
+              <div class="form-group has-feedback" ng-class="{'has-success': changepwFrm.password2.$valid && changepwFrm.password2.$dirty, 'has-error': changepwFrm.password2.$invalid && changepwFrm.password2.$dirty}">
+                <input class="form-control" id="password" name="password2"  type="password" placeholder="Confirm Password" required ng-model="newuser.password2"matches="changepwFrm.newpassword.$viewValue">
+                <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="changepwFrm.password2.$valid && changepwFrm.password2.$dirty"></span>
+                <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="changepwFrm.password2.$invalid && changepwFrm.password2.$dirty"></span>
+              </div>
+              <span class="help-block" ng-class="{'text-danger': changepwFrm.$error.matches}" ng-show="changepwFrm.$error.matches">Passwords must match</span>
+
+              <button class="btn btn-primary" ng-click="changepassword(changepwFrm)" ng-disabled="changepwFrm.$invalid || changing"><i class="icon-password
+  "></i> Change Password</button>
             </form>
           </div>
 
