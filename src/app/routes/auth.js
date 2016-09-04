@@ -399,10 +399,10 @@ router.put('/user', fc.isAuth, function (req, res) {
  */
 
 router.post('/changepw', fc.isAuth, function (req, res) {
-  console.log(req.body);
+
   var search = {
     'password': crypto.createHmac('sha512', fc.config.salt).update(req.body.current).digest('base64')
-  }
+  };
 
   if (req.auth) {
     search.id = req.auth.userId;
