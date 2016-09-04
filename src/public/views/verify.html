@@ -1,0 +1,24 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+      <div class="jumbotron text-center">
+        <h1>Welcome to FinanceCaster</h1>
+      </div>
+
+      <div class="well well-lg">
+        <div ng-show="verified">
+          <h2 class="text-success">Account Verified Successully</h2>
+          <p>Congratulations! Your account has been verified and you can get started with FinanceCaster.  Click below to login and get Forecasting!</p>
+          <button class="btn btn-primary" ui-sref="welcome">Login</button>
+        </div>
+
+        <div ng-hide="verified">
+          <h2 class="text-danger">Failed to Verify Account</h2>
+          <p>There was an issue verifying your account.  You may need to try creating account again.</p>
+          <button class="btn btn-primary" ui-sref="welcome">Login</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

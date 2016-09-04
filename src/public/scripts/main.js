@@ -251,8 +251,9 @@ financecaster.controller('rootController', ['$rootScope', '$scope', '$state', '$
 
 	$rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
 
-    financecaster.message('Error Loading Page', 'error');
-
+    if (error.state !== 'welcome') {
+      financecaster.message('Error Loading Page', 'error');
+    }
 		$rootScope.loading = false;
 		event.preventDefault();
 		if ( ! error ) {

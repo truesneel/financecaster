@@ -1,9 +1,11 @@
 var q = require('q');
+var hat = require('hat');
 var fc = require('../../app');
 var crypto = require('crypto');
 var express = require('express');
 var router = express.Router();
 var geoip = require('geoip-lite');
+var mailer = require('nodemailer');
 var useragent = require('useragent');
 var messages = require('../messages').get;
 
@@ -96,7 +98,9 @@ router.post('/', function (req, res) {
 
   fc.schemas.users.find({'where': {
     'username': req.body.username,
-    'password': crypto.createHmac('sha512', fc.config.salt).update(req.body.password).digest('base64')
+    'password': crypto.createHmac('sha512', fc.config.salt).update(req.body.password).digest('base64'),
+    'disabled': false,
+    'verification': '',
   }}).then(function (record) {
     if (record) {
 
@@ -389,7 +393,6 @@ router.put('/user', fc.isAuth, function (req, res) {
 
 router.post('/changepw', fc.isAuth, function (req, res) {
 
-  console.log(req.body);
   fc.get('users', {
       'where': {'id': req.auth.userId, 'password': crypto.createHmac('sha512', fc.config.salt).update(req.body.current).digest('base64')},
     }).then(function (user) {
@@ -411,4 +414,176 @@ router.post('/changepw', fc.isAuth, function (req, res) {
   });
 
 });
+
+/**
+ * @api {post} /auth/newuser Create Account
+ * @apiGroup Authentication
+ * @apiPermission any
+ */
+
+router.post('/newuser', function (req, res) {
+
+  if (!fc.config.users.allow_new) {
+    msg = messages('NEW_USERS_DISABLED');
+    res.status(msg.http_code).send({'message': msg.message, 'verification': true});
+    return;
+  }
+
+  fc.get('users', {
+    'where': {
+      '$or': [
+        {'username': req.body.username},
+        {'email': req.body.email}
+      ]
+    }
+  }).then(function (user) {
+    var msg;
+
+    if (user) {
+
+      if (user.username === req.body.username) {
+        msg = messages('USERNAME_ALREADY_EXISTS');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+      } else if (user.email === req.body.email) {
+        msg = messages('EMAIL_ALREADY_EXISTS');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+      } else {
+        msg = messages('FIELD_VALIDATION_ERROR');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+      }
+
+    } else {
+      req.body.admin = false;
+      req.body.changepw = false;
+      req.body.disabled = false;
+      req.body.verification = (fc.config.users.verification) ? hat(bits=256, base=16) : '';
+
+      fc.create('users', req.body, res).then(function (record) {
+
+
+        if (fc.config.users.verification) {
+          var url = fc.config.web.url + '/#/Verify/' + record.verification;
+          fc.email({
+            'email': record.email,
+            'name': record.name,
+            'template': 'VERIFICATION',
+            'vars': {
+              'name': record.name,
+              'url': url
+            }
+          }).then(function () {
+            msg = messages('ACCOUNT_CREATED');
+            res.status(msg.http_code).send({'message': msg.message, 'verification': true});
+          }, function (err) {
+            msg = messages('VERIFY_EMAIL_FAILURE');
+            res.status(msg.http_code).send({'message': msg.message, 'code': msg.code});
+
+            record.delete();
+          });
+
+        } else {
+          msg = messages('ACCOUNT_CREATED');
+          res.status(msg.http_code).send({'message': msg.message, 'verification': false});
+        }
+
+      }, function (err) {
+        msg = messages('FIELD_VALIDATION_ERROR');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
+      });
+    }
+
+  });
+});
+
+/**
+ * @api {post} /auth/verify/:verification Verify User Account
+ * @apiGroup Authentication
+ * @apiPermission any
+ */
+router.post('/newuser/:verification', function (req, res) {
+  var msg;
+
+  fc.get('users', {
+    'where': {'verification': req.params.verification}
+  }).then(function (user) {
+
+    if (user) {
+
+      user.verification = '';
+      user.save().then(function (result) {
+        msg = messages('ACCOUNT_VERIFIED');
+        res.status(msg.http_code).send({'message': msg.message});
+      }, function (err) {
+        var msg = messages('FIELD_VALIDATION_ERROR');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
+      });
+
+    } else {
+      msg = messages('RECORD_NOT_FOUND');
+      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+    }
+
+  }, function (err) {
+    msg = messages('RECORD_NOT_FOUND');
+    res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+  });
+
+});
+
+/**
+ * @api {post} /auth/forgot Request a password reset
+ * @apiGroup Authentication
+ * @apiPermission any
+ */
+
+router.post('/forgot', function (req, res) {
+
+  fc.get('users', {
+    'where': {'email': req.body.email}
+  }).then(function (user) {
+
+    if (user) {
+      var new_password = hat(bits=128, base=16);
+      user.password = new_password;
+      user.changepw = true;
+
+      fc.email({
+        'email': user.email,
+        'name': user.name,
+        'template': 'PASSWORD_RESET',
+        'vars': {
+          'name': user.name,
+          'password': new_password,
+          'url': fc.config.web.url
+        }
+      }).then(function () {
+
+        user.save().then(function (result) {
+          msg = messages('PASSWORD_RESET');
+          res.status(msg.http_code).send({'message': msg.message});
+        }, function (err) {
+          var msg = messages('FIELD_VALIDATION_ERROR');
+          res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
+        });
+
+      }, function (err) {
+        msg = messages('PASSWORD_EMAIL_FAILURE');
+        res.status(msg.http_code).send({'message': msg.message, 'code': msg.code});
+
+        record.delete();
+      });
+
+    } else {
+      msg = messages('RECORD_NOT_FOUND');
+      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+    }
+
+  }, function (err) {
+    msg = messages('RECORD_NOT_FOUND');
+    res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+  });
+
+});
+
+
 module.exports = router;

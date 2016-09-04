@@ -83,6 +83,46 @@ messages.RECORD_UPDATED = {
   'message': 'Record Updated Successfully',
   'http_code': 204,
 };
+messages.USERNAME_ALREADY_EXISTS = {
+  'code': 'FC00014',
+  'message': 'Username already in use',
+  'http_code': 400,
+};
+messages.EMAIL_ALREADY_EXISTS = {
+  'code': 'FC00014',
+  'message': 'Email already in use',
+  'http_code': 400,
+};
+messages.ACCOUNT_CREATED = {
+  'code': 'FC00014',
+  'message': 'Account created successfully',
+  'http_code': 201,
+};
+messages.ACCOUNT_VERIFIED = {
+  'code': 'FC00015',
+  'message': 'Account verified successfully',
+  'http_code': 200,
+};
+messages.VERIFY_EMAIL_FAILURE = {
+  'code': 'FC00016',
+  'message': 'Failed to send verification email',
+  'http_code': 500,
+};
+messages.NEW_USERS_DISABLED = {
+  'code': 'FC00017',
+  'message': 'New user registrations disabled',
+  'http_code': 500,
+};
+messages.PASSWORD_EMAIL_FAILURE = {
+  'code': 'FC00018',
+  'message': 'Failed to send password reset email',
+  'http_code': 500,
+};
+messages.PASSWORD_RESET = {
+  'code': 'FC00019',
+  'message': 'Password reset email sent',
+  'http_code': 200,
+};
 
 
 module.exports = messages;

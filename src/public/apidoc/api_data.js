@@ -1444,6 +1444,51 @@ define({ "api": [
     "name": "PostAuthChangepw"
   },
   {
+    "type": "post",
+    "url": "/auth/forgot",
+    "title": "Request a password reset",
+    "group": "Authentication",
+    "permission": [
+      {
+        "name": "any"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "./src/app/routes/auth.js",
+    "groupTitle": "Authentication",
+    "name": "PostAuthForgot"
+  },
+  {
+    "type": "post",
+    "url": "/auth/newuser",
+    "title": "Create Account",
+    "group": "Authentication",
+    "permission": [
+      {
+        "name": "any"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "./src/app/routes/auth.js",
+    "groupTitle": "Authentication",
+    "name": "PostAuthNewuser"
+  },
+  {
+    "type": "post",
+    "url": "/auth/verify/:verification",
+    "title": "Verify User Account",
+    "group": "Authentication",
+    "permission": [
+      {
+        "name": "any"
+      }
+    ],
+    "version": "0.0.0",
+    "filename": "./src/app/routes/auth.js",
+    "groupTitle": "Authentication",
+    "name": "PostAuthVerifyVerification"
+  },
+  {
     "type": "put",
     "url": "/auth/user",
     "title": "Update User Information",

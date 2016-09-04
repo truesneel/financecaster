@@ -39,7 +39,7 @@ module.exports = function(grunt) {
         script: 'server.js',
         options: {
           cwd: 'src',
-          watch: ['app/**/*.js', 'server.js'],
+          watch: ['app/**/*.js', 'server.js', 'config.ini'],
         }
       },
       syncdb: {
