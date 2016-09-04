@@ -23,6 +23,6 @@ emails.PASSWORD_RESET = {
   'html': '<h1>Hello, {name}!</h1><p>A password reset was requested. Please see your new temporary password below</p><p>{password}</p><p>Visit {url} to login.</p>',
   'text': 'Hello, {name}!\n\nA password reset was requested. Please see your new temporary password below\n\n{password}\n\nVisit {url} to login.',
   'subject': 'Password Reset for FinanceCaster'
-}
+};
 
 module.exports = emails;

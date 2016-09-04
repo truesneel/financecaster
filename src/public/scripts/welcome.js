@@ -9,6 +9,11 @@ welcome.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/welcome.html',
       controller: 'welcomeController',
     })
+    .state('forgotpassword', {
+      url: '/ForgotPassword',
+      templateUrl: 'views/forgotpassword.html',
+      controller: 'forgotController',
+    })
     .state('verify', {
       url: '/Verify/:verification',
       templateUrl: 'views/verify.html',
@@ -32,12 +37,46 @@ welcome.config(function($stateProvider, $urlRouterProvider) {
 
 });
 
+welcome.factory('ForgotPassword', ['$resource', function($resource) {
+  return $resource('/api/auth/forgot');
+}]);
+
 welcome.factory('NewUser', ['$resource', function($resource) {
   return $resource('/api/auth/newuser/:verification', { verification: '@verification' }, {
     activate: {
       method: 'POST' // this method issues a PUT request
     }
   });
+}]);
+
+welcome.controller('forgotController', ['$scope', 'financecaster', 'ForgotPassword', function ($scope, financecaster, ForgotPassword) {
+  financecaster.set_root($scope);
+  $scope.messages = $scope.messages || [];
+  $scope.resetting = false;
+  $scope.reset = new ForgotPassword();
+
+  $scope.resetpassword = function (form) {
+    $scope.resetting = true;
+
+    $scope.reset.$save().then(function () {
+      $scope.resetting = false;
+
+      $scope.active = 0;
+      form.$setPristine();
+      form.$setUntouched();
+      $scope.reset = new ForgotPassword();
+
+      financecaster.message('Password Reset. Check your Email');
+
+    }, function (err) {
+      $scope.resetting = false;
+      err.data = err.data || 'Unknown Error';
+
+      financecaster.message(err.data.message || err.data.error || err.data, 'error');
+    });
+
+  };
+
 }]);
 
 welcome.controller('verifyController', ['$scope', 'verified', function ($scope, verified) {

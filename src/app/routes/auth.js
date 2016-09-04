@@ -539,7 +539,7 @@ router.post('/newuser/:verification', function (req, res) {
 router.post('/forgot', function (req, res) {
 
   fc.get('users', {
-    'where': {'email': req.body.email}
+    'where': {'email': req.body.email, 'verification': ''}
   }).then(function (user) {
 
     if (user) {
