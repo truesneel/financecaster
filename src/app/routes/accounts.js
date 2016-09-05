@@ -637,7 +637,7 @@ router.post('/:accountId/permissions', fc.isAuth, function (req, res) {
 
     if (results) {
       fc.create('permissions', req.body, res).then(function (record) {
-        var url = fc.config.web.url + '/#/Welcome/' + record.token
+        var url = fc.config.web.url + '/#/Welcome/' + record.token;
         fc.email({
           'email': record.email,
           'template': 'ACCOUNT_SHARE',
@@ -653,7 +653,7 @@ router.post('/:accountId/permissions', fc.isAuth, function (req, res) {
           record.destroy();
           msg = messages('PERMISSION_EMAIL_FAILURE');
           res.status(msg.http_code).send({'id': record.id, 'message': msg.message});
-        })
+        });
       }, function (err) {
         var msg = messages('FIELD_VALIDATION_ERROR');
         res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
@@ -1071,7 +1071,7 @@ router.post('/accept/:token', fc.isAuth, function (req, res) {
       res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
     }
 
-  })
+  });
 });
 
 module.exports = router;
