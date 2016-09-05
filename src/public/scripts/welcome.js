@@ -9,6 +9,11 @@ welcome.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/welcome.html',
       controller: 'welcomeController',
     })
+    .state('welcomeshared', {
+      url: '/Welcome/:token',
+      templateUrl: 'views/welcome.html',
+      controller: 'welcomeController',
+    })
     .state('forgotpassword', {
       url: '/ForgotPassword',
       templateUrl: 'views/forgotpassword.html',
@@ -83,30 +88,39 @@ welcome.controller('verifyController', ['$scope', 'verified', function ($scope, 
   $scope.verified = verified;
 }]);
 
-welcome.controller('welcomeController', ['$scope', '$state', '$http', 'financecaster', 'NewUser', 'ChangePw', function ($scope, $state, $http, financecaster, NewUser, ChangePw) {
+welcome.controller('welcomeController', ['$scope', '$state', '$http', '$stateParams', 'financecaster', 'NewUser', 'ChangePw', function ($scope, $state, $http, $stateParams, financecaster, NewUser, ChangePw) {
   financecaster.set_root($scope);
   $scope.messages = $scope.messages || [];
-  $scope.newuser = new NewUser();
-  $scope.login = {};
+  $scope.newuser = new NewUser({'account_token': $stateParams.token});
+  $scope.user = {'account_token': $stateParams.token};
   $scope.active = 0;
   $scope.creating = false;
   $scope.changing = false;
   $scope.changepw = undefined;
+  $scope.auth = financecaster.config.auth;
 
   $scope.username = '';
   $scope.password = '';
     $scope.error = null;
 
+  $scope.accept_share = function () {
+    $http.post('/api/accounts/accept/' + $scope.user.account_token).then(function () {
+      $state.go('main.accounts');
+    }, function (err) {
+      financecaster.message(err.data.error, 'error');
+    });
+  };
+
   $scope.login = function () {
     $scope.error = null;
 
-    financecaster.login($scope.login.username, $scope.login.password).then(function () {
+    financecaster.login($scope.user.username, $scope.user.password).then(function () {
       $state.go('main.forecast');
     }, function (err) {
       if (err.status === 400) {
         $scope.changepw = new ChangePw();
-        $scope.changepw.username = $scope.login.username;
-        $scope.changepw.current = $scope.login.password;
+        $scope.changepw.username = $scope.user.username;
+        $scope.changepw.current = $scope.user.password;
 
         financecaster.message('Password Change Required', 'error');
         $scope.$digest();

@@ -13,10 +13,20 @@ var messages = require('../messages').get;
 router.get('/', fc.isAuth, function (req, res) {
 
   fc.query('transactions', {
+    'where': {
+      '$or': {
+        '$account.userId$': req.auth.userId,
+        '$account.permissions.userId$': req.auth.userId
+      }
+    },
     'include': [{
       'model': fc.schemas.accounts,
       'attributes': ['id', 'name'],
-      'where': {'userId': req.auth.userId}
+      'include': [{
+        'model': fc.schemas.permissions,
+        'attributes': [],
+        'required': false,
+      }]
     }]
   }).then(function (results) {
     res.send(results);
@@ -34,8 +44,19 @@ router.post('/', fc.isAuth, function (req, res) {
   fc.get('accounts', {
     'where': {
       'id': req.body.accountId,
-      'userId': req.auth.userId,
-    }
+      '$or': {
+        'userId': req.auth.userId,
+        '$and': {
+          '$permissions.userId$': req.auth.userId,
+          '$permissions.transactions$': true
+        }
+      }
+    },
+    'include': [{
+      'model': fc.schemas.permissions,
+      'attributes': [],
+      'required': false
+    }]
   }).then(function (results) {
     if (results) {
 
@@ -65,16 +86,22 @@ router.post('/', fc.isAuth, function (req, res) {
 router.get('/:id', fc.isAuth, function (req, res) {
 
   fc.get('transactions', {
-      'include': [{
-          'model': fc.schemas.accounts,
-          'attributes': [],
-          'where': {
-            'userId': req.auth.userId,
-          },
-        }],
       'where': {
         'id': req.params.id,
+        '$or': {
+          '$account.userId$': req.auth.userId,
+          '$account.permissions.userId$': req.auth.userId
+        }
       },
+      'include': [{
+          'model': fc.schemas.accounts,
+          'attributes': ['id', 'name'],
+          'include': [{
+            'model': fc.schemas.permissions,
+            'attributes': [],
+            'required': false
+          }]
+        }],
     }).then(function (results) {
     if (results) {
       res.send(results);
@@ -98,26 +125,40 @@ router.put('/:id', fc.isAuth, function (req, res) {
   delete req.body.updatedAt;
 
   fc.get('transactions', {
+      'where': {
+        'id': req.params.id,
+        '$or': {
+          '$account.userId$': req.auth.userId,
+          '$and': {
+            '$account.permissions.userId$': req.auth.userId,
+            '$account.permissions.transactions$': true
+          }
+        }
+      },
       'include': [{
           'model': fc.schemas.accounts,
           'attributes': [],
-          'where': {
-            'userId': req.auth.userId,
-          },
+          'include': [{
+            'model': fc.schemas.permissions,
+            'attributes': [],
+            'required': false,
+          }]
         }],
-      'where': {
-        'id': req.params.id,
-      },
     }).then(function (result) {
 
-    result.update(req.body).then(function (result) {
-      msg = messages('RECORD_UPDATED');
-      res.status(msg.http_code).send({'message': msg.message});
-    }, function (err) {
-      console.log(err);
-      var msg = messages('FIELD_VALIDATION_ERROR');
-      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
-    });
+      if (result) {
+        result.update(req.body).then(function (result) {
+          msg = messages('RECORD_UPDATED');
+          res.status(msg.http_code).send({'message': msg.message});
+        }, function (err) {
+          console.log(err);
+          var msg = messages('FIELD_VALIDATION_ERROR');
+          res.status(msg.http_code).send({'error': msg.message, 'code': msg.code, 'fields': err.errors});
+        });
+      } else {
+        msg = messages('RECORD_NOT_FOUND');
+        res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+      }
 
   }, function () {
     msg = messages('RECORD_NOT_FOUND');
@@ -152,33 +193,39 @@ router.delete('/:id', fc.isAuth, function (req, res) {
 
 
   fc.get('transactions', {
-    'where': {
-      'id': req.params.id
-    },
-    'include': [{
-      'model': fc.schemas.accounts,
       'where': {
-        'userId': req.auth.userId,
-      }
-    }]
-  }).then(function (results) {
-    if (results) {
-
-      fc.remove('transactions', {'where': {'id': req.params.id}}).then(function (results) {
-        var msg;
-
-        if (results > 0) {
-          msg = messages('RECORD_DELETED');
-          res.status(msg.http_code).send({'message': msg.message});
-          res.send(results);
-        } else {
-          msg = messages('RECORD_NOT_FOUND');
-          res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+        'id': req.params.id,
+        '$or': {
+          '$account.userId$': req.auth.userId,
+          '$and': {
+            '$account.permissions.userId$': req.auth.userId,
+            '$account.permissions.transactions$': true
+          }
         }
-      });
-
+      },
+      'include': [{
+          'model': fc.schemas.accounts,
+          'attributes': [],
+          'include': [{
+            'model': fc.schemas.permissions,
+            'attributes': [],
+            'required': false,
+          }]
+        }],
+  }).then(function (record) {
+    if (record) {
+        record.destroy().then(function (record) {
+          if (record) {
+            msg = messages('RECORD_DELETED');
+            res.status(msg.http_code).send({'message': msg.message});
+            res.send(results);
+          } else {
+            msg = messages('RECORD_NOT_FOUND');
+            res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+          }
+        });
     } else {
-      msg = messages('RECORD_NOT_FOUND');
+      var msg = messages('RECORD_NOT_FOUND');
       res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
     }
   });

@@ -74,6 +74,9 @@ schemas.accounts = fc.db.define('accounts', {
 		'type': Sequelize.FLOAT,
     'defaultValue': 0
 	},
+  'userId': {
+    'type': Sequelize.INTEGER
+  }
 });
 schemas.transactions = fc.db.define('transactions', {
 	'name': {
@@ -172,16 +175,29 @@ schemas.transactions = fc.db.define('transactions', {
 schemas.permissions = fc.db.define('permissions', {
 	'balance': {
 		'type': Sequelize.BOOLEAN,
-		'allowNull': false
+		'allowNull': false,
+    'defaultValue': false,
 	},
-	'tansactions': {
+	'transactions': {
 		'type': Sequelize.BOOLEAN,
-		'allowNull': false
+		'allowNull': false,
+    'defaultValue': false,
 	},
 	'shares': {
 		'type': Sequelize.BOOLEAN,
-		'allowNull': false
-	}
+		'allowNull': false,
+    'defaultValue': false,
+	},
+  'email': {
+    'type': Sequelize.STRING,
+    'allowNull': false
+  },
+  'token': {
+    'type': Sequelize.STRING,
+  },
+  'userId': {
+    'type': Sequelize.INTEGER
+  }
 });
 
 schemas.tokens = fc.db.define('tokens', {
@@ -234,7 +250,8 @@ schemas.accounts.hasMany(schemas.permissions);
 
 schemas.transactions.belongsTo(schemas.accounts);
 
-schemas.users.hasOne(schemas.permissions);
+schemas.permissions.belongsTo(schemas.users);
+schemas.permissions.belongsTo(schemas.accounts);
 schemas.tokens.belongsTo(schemas.users);
 schemas.users.hasMany(schemas.tokens);
 

@@ -1,0 +1,49 @@
+<div class="hidden-xs">
+  <ol class="breadcrumb">
+    <li><a ui-src="main.accounts">Accounts</a></li>
+    <li><a ui-sref="main.editaccount(account)">{{account.name}}</a></li>
+    <li class="active">Permissions</li>
+  </ol>
+</div>
+
+<h1>
+  Edit Account
+  <button class="btn btn-success pull-right hidden-xs" style="border: 0px;" ui-sref="main.accountAddPermission( account )" ng-hide="transactions.length === 0"><span class="glyphicon glyphicon-plus-sign"></span> Add</button>
+  <div class="pull-right">&nbsp;</div>
+  <button class="btn btn-default pull-right hidden-xs" style="border: 0px;" ui-sref="main.accounts"><span class="glyphicon glyphicon-arrow-left"></span></button>
+</h1>
+<div class="alert" ng-class="{'alert-danger': response.error, 'alert-success': response.message}" role="alert" ng-show="response.message || response.error">
+  {{response.message}}{{response.error}}
+</div>
+<uib-tabset active="2">
+  <uib-tab index="0" heading="Settings" ui-sref="main.editaccount(account)">
+  </uib-tab>
+  <uib-tab  index="1" heading="Transactions" ui-sref="main.editaccountTransactions(account)">
+
+  </uib-tab>
+  <uib-tab  index="2" heading="Permissions" ui-sref="main.editaccountPermissions(account)">
+
+    <div class="text-center" ng-show="permissions.length === 0">
+      <h4>You don't seem to have any permissions added.  Why don't you create one now?</h4>
+      <button class="btn btn-success" ui-sref="main.accountAddPermission(account)"><span class="glyphicon glyphicon-plus"></span> Add Permission</button>
+    </div>
+
+    <div class="list-group">
+      <button type="button" class="list-group-item" ng-repeat="permission in permissions" ui-sref="main.accountEditPermission( permission )">
+      <span class="glyphicon glyphicon-time" ng-show="permission.email != ''"></span>
+      <span class="glyphicon glyphicon-ok-circle text-success" ng-show="permission.email == ''"></span>
+      {{permission.user.name}}{{permission.email}}
+      <div><small>
+        <span class="label label-warning" ng-show="permission.balance">Settings</span>
+        <span class="label label-warning" ng-show="permission.transactions">Transactions</span>
+        <span class="label label-warning" ng-show="permission.shares">Permissions</span>
+      </small></div>
+      </button>
+    </div>
+
+
+    <div class="visible-xs" style="font-size: 1.5em; height: 4em;">&nbsp;</div>
+    <button class="btn btn-success btn-lg visible-xs" style="box-shadow: .15em .15em .4em .2em rgba(0, 0, 0, 0.2); font-size: 1.25em; border-radius: 1.5em; width: 3em; height: 3em; position: fixed; right: 1em; bottom: 1em;" ui-sref="main.accountAddPermission( account )" ng-hide="transactions.length === 0"><span class="glyphicon glyphicon-plus"></span></button>
+
+  </uib-tab>
+</uib-tabset>

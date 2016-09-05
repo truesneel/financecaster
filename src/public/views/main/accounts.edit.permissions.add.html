@@ -1,0 +1,43 @@
+<div class="hidden-xs">
+  <ol class="breadcrumb">
+    <li><a ui-src="main.accounts">Accounts</a></li>
+    <li><a ui-sref="main.editaccount(account)">{{account.name}}</a></li>
+    <li><a ui-sref="main.editaccountPermissions(account)">Permissions</a></li>
+    <li class="active">Add</li>
+  </ol>
+</div>
+
+<h1>
+  Add Permission
+  <button class="btn btn-default pull-right hidden-xs" style="border: 0px;" ui-sref="main.editaccountPermissions( account )"><span class="glyphicon glyphicon-arrow-left"></span></button>
+</h1>
+
+<div class="alert" ng-class="{'alert-danger': response.error, 'alert-success': response.message}" role="alert" ng-show="response.message || response.error">
+  {{response.message}}{{response.error}}
+</div>
+
+<form name="record">
+  <div class="form-group has-feedback" ng-class="{'has-success': record.email.$valid, 'has-error': record.email.$invalid && record.email.$dirty}">
+    <label for="email">Email</label>
+    <input type="email" class="form-control" name="email" id="email" placeholder="Email" ng-model="permission.email" required>
+    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="record.email.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.email.$invalid && record.email.$dirty"></span>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': record.balance.$valid, 'has-error': record.balance.$invalid && record.balance.$dirty}">
+    <input type="checkbox" ng-true-value="true" ng-false-value="false" name="balance" id="balance" ng-model="permission.balance">
+    <label for="balance">Edit Account</label>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': record.transactions.$valid, 'has-error': record.transactions.$invalid && record.transactions.$dirty}">
+    <input type="checkbox" ng-true-value="true" ng-false-value="false" name="transactions" id="transactions" ng-model="permission.transactions">
+    <label for="transactions">Edit Transactions</label>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': record.shares.$valid, 'has-error': record.shares.$invalid && record.shares.$dirty}">
+    <input type="checkbox" ng-true-value="true" ng-false-value="false" name="shares" id="shares" ng-model="permission.shares">
+    <label for="shares">Edit Permissions</label>
+  </div>
+
+  <button class="btn btn-primary btn-lg visible-xs pull-right" style="font-size: 1.25em; " ng-click="save(record)" ng-disabled="record.$invalid"><i class="icon-save-floppy"></i></button>
+  <button class="btn btn-default btn-lg visible-xs" style="border: 0px; font-size: 1.25em; border-radius: 1.5em; width: 3em; height: 3em; " ui-sref="main.editaccountPermissions( account )"><span class="glyphicon glyphicon-arrow-left"></span></button>
+
+  <button class="btn btn-primary hidden-xs pull-right" ng-disabled="record.$invalid || sending" ng-click="save(record)"><span class="glyphicon glyphicon-send"></span> Send</button>
+</form>

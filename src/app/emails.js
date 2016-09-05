@@ -25,4 +25,10 @@ emails.PASSWORD_RESET = {
   'subject': 'Password Reset for FinanceCaster'
 };
 
+emails.ACCOUNT_SHARE = {
+  'html': '<h1>Hello from FinanceCaster!</h1><p>An account has been shared with you from {name}</p><p>Visit {url} to begin using this account.</p>',
+  'text': 'Hello!\n\nAn account has been shared with you from {name}\n\nVisit {url} to begin using this account.',
+  'subject': 'Account Sharing Request from FinanceCaster'
+};
+
 module.exports = emails;

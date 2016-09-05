@@ -121,13 +121,84 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
 
           return defer.promise;
         },
-        'transaction': function ($q, $stateParams, Transactions) {
+        'transaction': function ($q, $stateParams, AccountsTransactions) {
           var account,
             defer = $q.defer();
 
-          account = Transactions.get({ id: $stateParams.id}, function () {
+          account = AccountsTransactions.get({ accountId: $stateParams.accountId, id: $stateParams.id}, function () {
             account.start = new Date(account.start);
             defer.resolve(account);
+          });
+
+          return defer.promise;
+        }
+      }
+    })
+    .state('main.editaccountPermissions', {
+      url: '/Accounts/:id/Permissions',
+      templateUrl: 'views/main/accounts.edit.permissions.html',
+      controller: 'accountPermissionsController',
+      resolve: {
+        'account': function ($q, $stateParams, Accounts) {
+          var account,
+            defer = $q.defer();
+
+          account = Accounts.get({ id: $stateParams.id}, function () {
+            defer.resolve(account);
+          });
+
+          return defer.promise;
+        },
+        'permissions': function ($q, $stateParams, AccountsPermissions) {
+          var permissions,
+            defer = $q.defer();
+
+          permissions = AccountsPermissions.query({ accountId: $stateParams.id}, function () {
+            defer.resolve(permissions);
+          });
+
+          return defer.promise;
+        }
+      }
+    })
+    .state('main.accountAddPermission', {
+      url: '/Accounts/:id/Permissions/Add',
+      templateUrl: 'views/main/accounts.edit.permissions.add.html',
+      controller: 'accountPermissionsAddController',
+      resolve: {
+        'account': function ($q, $stateParams, Accounts) {
+          var account,
+            defer = $q.defer();
+
+          account = Accounts.get({ id: $stateParams.id}, function () {
+            defer.resolve(account);
+          });
+
+          return defer.promise;
+        }
+      }
+    })
+    .state('main.accountEditPermission', {
+      url: '/Accounts/:accountId/Permissions/:id',
+      templateUrl: 'views/main/accounts.edit.permissions.edit.html',
+      controller: 'accountPermissionsEditController',
+      resolve: {
+        'account': function ($q, $stateParams, Accounts) {
+          var account,
+            defer = $q.defer();
+
+          account = Accounts.get({ id: $stateParams.accountId}, function () {
+            defer.resolve(account);
+          });
+
+          return defer.promise;
+        },
+        'permission': function ($q, $stateParams, AccountsPermissions) {
+          var account,
+            defer = $q.defer();
+
+          permission = AccountsPermissions.get({ accountId: $stateParams.accountId, id: $stateParams.id}, function () {
+            defer.resolve(permission);
           });
 
           return defer.promise;
@@ -146,7 +217,15 @@ accounts.factory('Accounts', ['$resource', function($resource) {
 }]);
 
 accounts.factory('AccountsTransactions', ['$resource', function($resource) {
-  return $resource('/api/accounts/:accountId/transactions/:id', { id: '@id' }, {
+  return $resource('/api/accounts/:accountId/transactions/:id', { id: '@id' , 'accountId': '@accountId'}, {
+    update: {
+      method: 'PUT' // this method issues a PUT request
+    }
+  });
+}]);
+
+accounts.factory('AccountsPermissions', ['$resource', function($resource) {
+  return $resource('/api/accounts/:accountId/permissions/:id', { id: '@id' , 'accountId': '@accountId'}, {
     update: {
       method: 'PUT' // this method issues a PUT request
     }
@@ -238,7 +317,7 @@ accounts.controller('accountTransactionsController', ['$scope', '$state', '$stat
 
 }]);
 
-accounts.controller('accountTransactionsAddController', ['$scope', '$state', '$stateParams', '$http', 'financecaster', 'account', 'Transactions', 'myAccounts', function ($scope, $state, $stateParams, $http, financecaster, account, Transactions, accounts) {
+accounts.controller('accountTransactionsAddController', ['$scope', '$state', '$stateParams', '$http', 'financecaster', 'account', 'AccountsTransactions', 'myAccounts', function ($scope, $state, $stateParams, $http, financecaster, account, Transactions, accounts) {
 
   $scope.accounts = accounts;
   $scope.transaction = new Transactions({'accountId': account.id, 'one_time': true});
@@ -304,6 +383,97 @@ accounts.controller('accountTransactionsEditController', ['$scope', '$state', '$
 
       $scope.response = response;
       financecaster.message('Transaction Saved');
+    }, function (err) {
+      financecaster.message(err.data, 'error');
+      if (err.data.fields) {
+        err.data.fields.forEach(function (field) {
+          if (form[field.path]) {
+            form[field.path].$setValidity('uniqueness', false);
+          }
+        });
+      }
+    });
+  };
+
+}]);
+
+accounts.controller('accountPermissionsController', ['$scope', '$state', '$stateParams', '$http', 'financecaster', 'account', 'permissions', function ($scope, $state, $stateParams, $http, financecaster, account, permissions) {
+
+  $scope.state = $stateParams;
+  $scope.account = account;
+  $scope.response = {};
+  $scope.permissions = permissions;
+
+}]);
+
+
+accounts.controller('accountPermissionsAddController', ['$scope', '$state', '$stateParams', '$http', 'financecaster', 'account', 'AccountsPermissions', function ($scope, $state, $stateParams, $http, financecaster, account, Permissions) {
+
+  $scope.accounts = accounts;
+  $scope.permission = new Permissions({'accountId': account.id, 'balance': true, 'transactions': true, 'shares': false});
+
+  $scope.state = $stateParams;
+  $scope.account = account;
+  $scope.response = {};
+  $scope.sending = false;
+
+  $scope.save = function (form) {
+    $scope.sending = true;
+    $scope.permission.$save().then(function (response) {
+      $scope.sending = false;
+      form.$setPristine();
+      form.$setUntouched();
+
+      financecaster.message('Permission Added');
+      $scope.permission = new Permissions({'accountId': account.id, 'balance': true, 'transactions': true, 'shares': false});
+    }, function (err) {
+      $scope.sending = false;
+      financecaster.message(err.data, 'error');
+      if (err.data.fields) {
+        err.data.fields.forEach(function (field) {
+          if (form[field.path]) {
+            form[field.path].$setValidity('uniqueness', false);
+          }
+        });
+      }
+    });
+  };
+
+}]);
+
+accounts.controller('accountPermissionsEditController', ['$scope', '$state', '$stateParams', '$http', 'financecaster', 'permission', 'account', function ($scope, $state, $stateParams, $http, financecaster, permission, account) {
+
+  $scope.account = account;
+  $scope.permission = permission;
+
+  $scope.response = {};
+
+
+  $scope.delete = function (form ) {
+    if (confirm('Are you sure you want to delete this permission?')) {
+      $scope.permission.$delete().then(function (response) {
+        financecaster.message('Permission Deleted');
+        $state.go('main.editaccountPermissions', account);
+      }, function (err) {
+        financecaster.message(err.data, 'error');
+        if (err.data.fields) {
+          err.data.fields.forEach(function (field) {
+            if (form[field.path]) {
+              form[field.path].$setValidity('uniqueness', false);
+            }
+          });
+        }
+      });
+    }
+  };
+
+  $scope.save = function (form) {
+    $scope.permission.$update().then(function (response) {
+      form.$setPristine();
+      form.$setUntouched();
+
+      $scope.response = response;
+      financecaster.message('Permission Saved');
     }, function (err) {
       financecaster.message(err.data, 'error');
       if (err.data.fields) {

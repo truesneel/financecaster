@@ -1,6 +1,16 @@
 [
   {
     "type": "delete",
+    "url": "/:accountId/permissions/:id",
+    "title": "Delete Account Permissions",
+    "group": "Accounts",
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "groupTitle": "Accounts",
+    "name": "DeleteAccountidPermissionsId"
+  },
+  {
+    "type": "delete",
     "url": "/accounts/:id",
     "title": "Delete Account",
     "group": "Accounts",
@@ -65,6 +75,26 @@
     "filename": "./src/app/routes/accounts.js",
     "groupTitle": "Accounts",
     "name": "DeleteAccountsIdTransactionsTransactionid"
+  },
+  {
+    "type": "get",
+    "url": "/:accountId/permissions",
+    "title": "List Account Permissions",
+    "group": "Accounts",
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "groupTitle": "Accounts",
+    "name": "GetAccountidPermissions"
+  },
+  {
+    "type": "get",
+    "url": "/:accountId/permissions/:id",
+    "title": "Get Account Permissions",
+    "group": "Accounts",
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "groupTitle": "Accounts",
+    "name": "GetAccountidPermissionsId"
   },
   {
     "type": "get",
@@ -504,6 +534,16 @@
   },
   {
     "type": "post",
+    "url": "/:accountId/permissions",
+    "title": "Create Account Permission",
+    "group": "Accounts",
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "groupTitle": "Accounts",
+    "name": "PostAccountidPermissions"
+  },
+  {
+    "type": "post",
     "url": "/accounts",
     "title": "Create Account",
     "group": "Accounts",
@@ -668,6 +708,16 @@
     "filename": "./src/app/routes/accounts.js",
     "groupTitle": "Accounts",
     "name": "PostAccountsIdTransactions"
+  },
+  {
+    "type": "put",
+    "url": "/:accountId/permissions/:id",
+    "title": "Update Account Permissions",
+    "group": "Accounts",
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "groupTitle": "Accounts",
+    "name": "PutAccountidPermissionsId"
   },
   {
     "type": "put",
@@ -2900,6 +2950,16 @@
     "filename": "./src/app/routes/users.js",
     "groupTitle": "Users",
     "name": "PutUsersId"
+  },
+  {
+    "type": "",
+    "url": "Accounts",
+    "title": "",
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "group": "_home_scott_git_financecaster_new_src_app_routes_accounts_js",
+    "groupTitle": "_home_scott_git_financecaster_new_src_app_routes_accounts_js",
+    "name": "Accounts"
   },
   {
     "success": {

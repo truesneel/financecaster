@@ -1,0 +1,6 @@
+{
+  "development": {
+    "storage": "src/financecaster.sqlite",
+    "dialect": "sqlite"
+  }
+}
