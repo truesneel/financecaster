@@ -2962,6 +2962,16 @@
     "name": "Accounts"
   },
   {
+    "type": "",
+    "url": "Accounts",
+    "title": "",
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "group": "_home_scott_git_financecaster_new_src_app_routes_accounts_js",
+    "groupTitle": "_home_scott_git_financecaster_new_src_app_routes_accounts_js",
+    "name": "Accounts"
+  },
+  {
     "success": {
       "fields": {
         "Success 200": [

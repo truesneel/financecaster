@@ -1,5 +1,6 @@
 
 var financecaster = angular.module('financecaster', [
+  'ng',
   'ui.router',
   'ui.bootstrap',
   'googlechart',
@@ -98,6 +99,10 @@ financecaster.directive('matches', function() {
 
 });
 
+financecaster.factory('Auth', ['$resource', function($resource) {
+  return $resource('/api/auth');
+}]);
+
 financecaster.provider('financecaster', function ($httpProvider) {
   var initInjector = angular.injector(['ng']);
   var $http = initInjector.get('$http');
@@ -145,11 +150,11 @@ financecaster.provider('financecaster', function ($httpProvider) {
     return defer.promise;
   }];
 
-  this.login = function (username, password) {
+  this.login = function (username, password, account_token) {
     var self = this,
       defer = $q.defer();
 
-    $http.post('/api/auth', {'username': username, 'password': password}).then(function (response) {
+    $http.post('/api/auth', {'username': username, 'password': password, 'account_token': account_token}).then(function (response) {
       self.config.auth = response.data;
 
       $httpProvider.defaults.headers.common.client_token = self.config.auth.client_token;
@@ -168,7 +173,9 @@ financecaster.provider('financecaster', function ($httpProvider) {
     var self = this,
       defer = $q.defer();
 
-    $http.delete('/api/auth', {headers: headers}).then(function (response) {
+
+    console.log(self.Auth);
+    auth.delete().then(function (response) {
 
       delete self.config.auth;
       self.save();
@@ -201,15 +208,35 @@ financecaster.provider('financecaster', function ($httpProvider) {
     }, 5000);
   };
 
-	this.$get = function () {
+	this.$get = function (Auth) {
 		var self = this;
+    self.Auth = Auth;
+
 		return {
 			load: self.load,
       save: self.save,
       config: self.config,
       is_authed: self.is_authed,
       login: self.login,
-      logout: self.logout,
+      logout: function () {
+        var self = this,
+          defer = $q.defer();
+
+
+        auth = new Auth();
+        auth.$delete().then(function (response) {
+
+          delete self.config.auth;
+          self.save();
+
+          defer.resolve();
+
+        }, function (err) {
+          defer.reject(err);
+        });
+
+        return defer.promise;
+      },
       message: self.message,
       set_root: self.set_root,
 		};

@@ -1035,6 +1035,38 @@ router.get('/:id/forecast', fc.isAuth, function (req, res) {
 });
 
 /**
+ * @api {get} /shared/:token Get Shared Account Details
+ * @api Accounts
+ */
+router.get('/accept/:token', function (req, res) {
+  var msg;
+
+  fc.get('permissions', {
+    'where': {'token': req.params.token},
+    'attributes': ['token', 'email'],
+    'include': [{
+      'model': fc.schemas.accounts,
+      'attributes': ['name'],
+      'include': [{
+        'model': fc.schemas.users,
+        'attributes': ['name']
+      }]
+    }]
+  }).then(function (record) {
+
+    if (record) {
+
+      res.send(record);
+
+    } else {
+      msg = messages('RECORD_NOT_FOUND');
+      res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
+    }
+
+  });
+});
+
+/**
  * @api {post} /shared/:token Accept Shared Account
  * @api Accounts
  */

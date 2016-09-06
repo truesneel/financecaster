@@ -105,6 +105,30 @@ router.post('/', function (req, res) {
   }}).then(function (record) {
     if (record) {
 
+      console.log(req.body);
+      if (req.body.account_token) {
+        console.log('looking up share');
+        fc.get('permissions', {'where': {'token': req.body.account_token}, 'include': [{'model': fc.schemas.accounts}]}).then(function (share) {
+
+
+          if (share) {
+            console.log('found share');
+            if (share.account.userId !== record.id) {
+              console.log('share not for own account');
+              share.email = '';
+              share.token = '';
+              share.userId = record.id;
+              share.save().then(function () {
+
+              }, function (err) {
+                console.log(err)
+              })
+            }
+          }
+
+        });
+      }
+
       if (record.changepw) {
         msg = messages('PASSWORD_CHANGE');
         res.status(msg.http_code).send({'error': msg.message, 'code': msg.code});
@@ -479,6 +503,21 @@ router.post('/newuser', function (req, res) {
 
       fc.create('users', req.body, res).then(function (record) {
 
+
+        if (req.body.account_token) {
+          fc.get('permissions', {'where': {'token': req.body.account_token}, 'include': [{'model': fc.schemas.accounts}]}).then(function (share) {
+
+            if (share) {
+              if (share.account.userId !== record.id) {
+                share.email = '';
+                share.token = '';
+                share.userId = record.id;
+                share.save()
+              }
+            }
+
+          });
+        }
 
         if (fc.config.users.verification) {
           var url = fc.config.web.url + '/#/Verify/' + record.verification;

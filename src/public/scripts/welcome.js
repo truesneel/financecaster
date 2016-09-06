@@ -8,11 +8,27 @@ welcome.config(function($stateProvider, $urlRouterProvider) {
       url: '/Welcome',
       templateUrl: 'views/welcome.html',
       controller: 'welcomeController',
+      resolve: {
+        'share': function () {
+          return '';
+        }
+      }
     })
     .state('welcomeshared', {
       url: '/Welcome/:token',
       templateUrl: 'views/welcome.html',
       controller: 'welcomeController',
+      resolve: {
+        'share': function ($q, $stateParams, Share) {
+          var defer = $q.defer();
+
+          share = Share.get({'token': $stateParams.token}, function () {
+            defer.resolve(share);
+          });
+
+          return defer.promise;
+        }
+      }
     })
     .state('forgotpassword', {
       url: '/ForgotPassword',
@@ -41,6 +57,10 @@ welcome.config(function($stateProvider, $urlRouterProvider) {
     });
 
 });
+
+welcome.factory('Share', ['$resource', function($resource) {
+  return $resource('/api/accounts/accept/:token', {token: '@token'});
+}]);
 
 welcome.factory('ForgotPassword', ['$resource', function($resource) {
   return $resource('/api/auth/forgot');
@@ -88,16 +108,17 @@ welcome.controller('verifyController', ['$scope', 'verified', function ($scope, 
   $scope.verified = verified;
 }]);
 
-welcome.controller('welcomeController', ['$scope', '$state', '$http', '$stateParams', 'financecaster', 'NewUser', 'ChangePw', function ($scope, $state, $http, $stateParams, financecaster, NewUser, ChangePw) {
+welcome.controller('welcomeController', ['$scope', '$state', '$http', '$stateParams', 'financecaster', 'NewUser', 'ChangePw', 'share', function ($scope, $state, $http, $stateParams, financecaster, NewUser, ChangePw, share) {
   financecaster.set_root($scope);
   $scope.messages = $scope.messages || [];
   $scope.newuser = new NewUser({'account_token': $stateParams.token});
-  $scope.user = {'account_token': $stateParams.token};
+  $scope.user = {'account_token': share.token};
   $scope.active = 0;
   $scope.creating = false;
   $scope.changing = false;
   $scope.changepw = undefined;
   $scope.auth = financecaster.config.auth;
+  $scope.share = share;
 
   $scope.username = '';
   $scope.password = '';
@@ -114,7 +135,7 @@ welcome.controller('welcomeController', ['$scope', '$state', '$http', '$statePar
   $scope.login = function () {
     $scope.error = null;
 
-    financecaster.login($scope.user.username, $scope.user.password).then(function () {
+    financecaster.login($scope.user.username, $scope.user.password, $scope.user.account_token).then(function () {
       $state.go('main.forecast');
     }, function (err) {
       if (err.status === 400) {

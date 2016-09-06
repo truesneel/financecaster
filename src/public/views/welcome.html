@@ -10,6 +10,7 @@
         </div>
       </div>
 
+      {{auth}}
       <uib-tabset active="active" ng-hide="auth && user.account_token">
         <uib-tab index="0" heading="Existing User">
 
@@ -25,7 +26,10 @@
                 <input class="form-control" id="password" type="password" placeholder="Password" ng-model="user.password">
                 <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="error"></span>
               </div>
-                <span id="helpBlock2" class="help-block pull-right"><small><a ui-sref="forgotpassword" style="cursor: pointer">Forgot Password?</a></small></span>
+
+              <div class="well well-sm clearfix" ng-show="share"><input type="checkbox" name="account_token" id="account_token" ng-true-value="'{{share.token}}'" ng-false-value="''" ng-model="user.account_token"><label for="account_token"><small>&nbsp;Accept Sharing Offer: {{share.account.name}} from {{share.account.user.name}}</small></label></div>
+
+              <span id="helpBlock2" class="help-block pull-right"><small><a ui-sref="forgotpassword" style="cursor: pointer">Forgot Password?</a></small></span>
               <button class="btn btn-primary" ng-click="login()"><span class="glyphicon glyphicon-log-in"></span> Login</button>
             </form>
 
@@ -88,6 +92,9 @@
                 <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="userFrm.password2.$valid && userFrm.password2.$dirty"></span>
                 <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="userFrm.password2.$invalid && userFrm.password2.$dirty"></span>
               </div>
+
+              <div class="well well-sm clearfix" ng-show="share"><input type="checkbox" name="account_token" id="account_token" ng-true-value="'{{share.token}}'" ng-false-value="''" ng-model="newuser.account_token"><label for="account_token"><small>&nbsp;Accept Sharing Offer: {{share.account.name}} from {{share.account.user.name}}</small></label></div>
+
               <span class="help-block" ng-class="{'text-danger': userFrm.$error.matches}" ng-show="userFrm.$error.matches">Passwords must match</span>
 
               <button class="btn btn-primary" ng-click="createaccount(userFrm)" ng-disabled="userFrm.$invalid || creating"><i class="icon-adduseralt
