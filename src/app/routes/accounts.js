@@ -649,7 +649,6 @@ router.post('/:accountId/permissions', fc.isAuth, function (req, res) {
           msg = messages('RECORD_CREATED');
           res.status(msg.http_code).send({'id': record.id, 'message': msg.message});
         }, function (err) {
-          console.log(err);
           record.destroy();
           msg = messages('PERMISSION_EMAIL_FAILURE');
           res.status(msg.http_code).send({'id': record.id, 'message': msg.message});
@@ -863,7 +862,6 @@ router.get('/:id/forecast', fc.isAuth, function (req, res) {
 
         zero_time(transaction.start);
 
-        console.log(transaction.start);
         //Skip one time transactions
         if (transaction.one_time) {
           return;
