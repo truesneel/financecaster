@@ -9,6 +9,9 @@ settings.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/main/settings.html',
       controller: 'settingsController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'user': function ($q, $stateParams, User) {
           var account,
             defer = $q.defer();
@@ -92,7 +95,7 @@ settings.controller('settingsController', ['$scope', '$state', '$timeout', 'fina
   $scope.delete_token = function (record) {
     record.$delete(function (result) {
       $scope.load_tokens();
-      financecaster.message(err.data, 'error');
+      financecaster.message(result.message);
     });
   };
 

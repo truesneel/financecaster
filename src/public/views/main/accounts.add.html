@@ -44,7 +44,7 @@
   </div>
   <div class="form-group has-feedback" ng-class="{'has-success': addAccount.forecast.$valid, 'has-error': addAccount.forecast.$invalid && addAccount.forecast.$dirty}">
     <label for="forecast">Forecast</label>
-    <input type="number" class="form-control" id="forecast" name="forecast" placeholder="Forecast" ng-model="account.forecast" step="1" min="1" max="1825" unsignedint required>
+    <select size="1" class="form-control" id="forecast" name="forecast" ng-model="account.forecast" required ng-options="forecast.value as forecast.name for forecast in forecast_range"></select>
     <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="addAccount.forecast.$valid"></span>
     <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.forecast.$invalid && addAccount.forecast.$dirty"></span>
     <span id="helpBlock2" class="help-block" ng-show="addAccount.forecast.$invalid && addAccount.forecast.$dirty">Forecast should be a number from 1 to 1825</span>

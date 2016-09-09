@@ -8,12 +8,20 @@ transactions.config(function($stateProvider, $urlRouterProvider) {
       url: '/Transactions',
       templateUrl: 'views/main/transactions.html',
       controller: 'transactionsController',
+      resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        }
+      }
     })
     .state('main.addtransactions', {
       url: '/Transactions/Add',
       templateUrl: 'views/main/transactions.add.html',
       controller: 'transactionsAddController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'myAccounts': function ($q, $stateParams, Accounts) {
           var account,
             defer = $q.defer();
@@ -31,6 +39,9 @@ transactions.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/main/transactions.edit.html',
       controller: 'transactionsEditController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'transaction': function ($q, $stateParams, Transactions) {
           var account,
             defer = $q.defer();
@@ -83,6 +94,7 @@ transactions.controller('transactionsAddController', ['$scope', '$http', 'financ
       form.$setUntouched();
 
       financecaster.message('Transaction Added');
+      $state.go('main.transactions');
       $scope.transaction = new Transactions({'one_time': true});
     }, function (err) {
       financecaster.message(err.data, 'error');
@@ -126,6 +138,7 @@ transactions.controller('transactionsEditController', ['$scope', '$state', '$htt
     $scope.transaction.$update().then(function (response) {
 
       financecaster.message('Transaction Saved Successfully');
+      $state.go('main.transactions');
     }, function (err) {
       financecaster.message(err.data, 'error');
       if (err.data.fields) {

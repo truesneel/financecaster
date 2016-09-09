@@ -9,6 +9,9 @@ forecast.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/main/forecast.html',
       controller: 'forecastController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'myAccounts': function ($q, $stateParams, Accounts) {
           var account,
             defer = $q.defer();
@@ -29,6 +32,9 @@ forecast.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/main/forecast.view.html',
       controller: 'forecastViewController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'myAccounts': function ($q, $stateParams, Accounts) {
           var account,
             defer = $q.defer();

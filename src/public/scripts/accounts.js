@@ -8,17 +8,30 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
       url: '/Accounts',
       templateUrl: 'views/main/accounts.html',
       controller: 'accountsController',
+      resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        }
+      }
     })
     .state('main.addaccounts', {
       url: '/Accounts/Add',
       templateUrl: 'views/main/accounts.add.html',
       controller: 'accountsAddController',
+      resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        }
+      }
     })
     .state('main.editaccount', {
       url: '/Accounts/:id',
       templateUrl: 'views/main/accounts.edit.html',
       controller: 'accountsEditController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'account': function ($q, $stateParams, Accounts) {
           var account,
             defer = $q.defer();
@@ -47,6 +60,9 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/main/accounts.edit.transactions.html',
       controller: 'accountTransactionsController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'account': function ($q, $stateParams, Accounts) {
           var account,
             defer = $q.defer();
@@ -74,6 +90,9 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/main/accounts.edit.transactions.add.html',
       controller: 'accountTransactionsAddController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'myAccounts': function ($q, $stateParams, Accounts) {
           var account,
             defer = $q.defer();
@@ -101,6 +120,9 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/main/accounts.edit.transactions.edit.html',
       controller: 'accountTransactionsEditController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'myAccounts': function ($q, $stateParams, Accounts) {
           var account,
             defer = $q.defer();
@@ -139,6 +161,9 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/main/accounts.edit.permissions.html',
       controller: 'accountPermissionsController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'account': function ($q, $stateParams, Accounts) {
           var account,
             defer = $q.defer();
@@ -166,6 +191,9 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/main/accounts.edit.permissions.add.html',
       controller: 'accountPermissionsAddController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'account': function ($q, $stateParams, Accounts) {
           var account,
             defer = $q.defer();
@@ -183,6 +211,9 @@ accounts.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: 'views/main/accounts.edit.permissions.edit.html',
       controller: 'accountPermissionsEditController',
       resolve: {
+        'auth': function ($injector, financecaster) {
+          return $injector.invoke(financecaster.is_authed);
+        },
         'account': function ($q, $stateParams, Accounts) {
           var account,
             defer = $q.defer();
@@ -241,8 +272,15 @@ accounts.controller('accountsController', ['$scope', '$http', 'financecaster', '
 accounts.controller('accountsAddController', ['$scope', '$http', 'financecaster', 'Accounts', function ($scope, $http, financecaster, Accounts) {
 
   $scope.response = {};
-  $scope.account = new Accounts();
+  $scope.account = new Accounts({'forecast': 365});
   $scope.account.balance_date = new Date();
+  $scope.forecast_range = [
+    {'name': '30 Days', 'value': 30},
+    {'name': '60 Days', 'value': 60},
+    {'name': '90 Days', 'value': 90},
+    {'name': '180 Days', 'value': 180},
+    {'name': '1 Year', 'value': 365}
+  ];
 
   $scope.save = function (form) {
     $scope.account.$save().then(function (response) {
@@ -250,6 +288,7 @@ accounts.controller('accountsAddController', ['$scope', '$http', 'financecaster'
       form.$setUntouched();
 
       financecaster.message('Account Added');
+      $state.go('main.accounts');
     }, function (err) {
         financecaster.message(err.data, 'error');
       if (err.data.fields) {
@@ -270,6 +309,13 @@ accounts.controller('accountsEditController', ['$scope', '$state', '$http', 'fin
   $scope.response = {};
   $scope.account = account;
   $scope.transactions = transactions;
+  $scope.forecast_range = [
+    {'name': '30 Days', 'value': 30},
+    {'name': '60 Days', 'value': 60},
+    {'name': '90 Days', 'value': 90},
+    {'name': '180 Days', 'value': 180},
+    {'name': '1 Year', 'value': 365}
+  ];
 
   $scope.delete = function (form ) {
     if (confirm('Are you sure you want to delete this account?')) {
@@ -293,6 +339,7 @@ accounts.controller('accountsEditController', ['$scope', '$state', '$http', 'fin
     $scope.account.$update().then(function (response) {
 
       financecaster.message('Account Saved Successfully');
+      $state.go('main.accounts');
 
     }, function (err) {
       financecaster.message(err.data, 'error');
@@ -334,6 +381,7 @@ accounts.controller('accountTransactionsAddController', ['$scope', '$state', '$s
       form.$setUntouched();
 
       financecaster.message('Transaction Added');
+      $state.go('main.editaccountTransactions', account);
       $scope.transaction = new Transactions({'accountId': account.id, 'one_time': true});
     }, function (err) {
       financecaster.message(err.data, 'error');
@@ -383,6 +431,7 @@ accounts.controller('accountTransactionsEditController', ['$scope', '$state', '$
 
       $scope.response = response;
       financecaster.message('Transaction Saved');
+      $state.go('main.editaccountTransactions', account);
     }, function (err) {
       financecaster.message(err.data, 'error');
       if (err.data.fields) {
@@ -425,6 +474,7 @@ accounts.controller('accountPermissionsAddController', ['$scope', '$state', '$st
       form.$setUntouched();
 
       financecaster.message('Permission Added');
+      $state.go('main.editaccountPermissions', account);
       $scope.permission = new Permissions({'accountId': account.id, 'balance': true, 'transactions': true, 'shares': false});
     }, function (err) {
       $scope.sending = false;
@@ -474,6 +524,7 @@ accounts.controller('accountPermissionsEditController', ['$scope', '$state', '$s
 
       $scope.response = response;
       financecaster.message('Permission Saved');
+      $state.go('main.editaccountPermissions', account);
     }, function (err) {
       financecaster.message(err.data, 'error');
       if (err.data.fields) {

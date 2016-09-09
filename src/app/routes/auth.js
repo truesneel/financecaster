@@ -149,7 +149,7 @@ router.post('/', function (req, res) {
         'expires': token_expiration,
         'userId': record.id
       }).then(function (token) {
-        res.status(200).send({'message': 'success', 'client_token': token.client_token, 'auth_token': token.auth_token, 'expires': token_expiration});
+        res.status(200).send({'message': 'success', 'client_token': token.client_token, 'auth_token': token.auth_token, 'expires': token_expiration, 'admin': record.admin, 'id': record.id});
       }, function (err) {
         res.status(500).send({'message': 'Authentication succeeded but an authentication token could not be obtained'});
       });
@@ -177,7 +177,7 @@ router.post('/', function (req, res) {
  */
 router.delete('/', fc.isAuth, function (req, res) {
 
-  fc.remove('tokens', {'where': {'id': req.auth.token_id}}).then(function (response) {
+  fc.remove('tokens', {'where': {'client_token': req.headers.client_token, 'auth_token': req.headers.auth_token}}).then(function (response) {
     res.send({'message': 'success'});
   });
 

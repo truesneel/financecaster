@@ -1,0 +1,59 @@
+<h1>
+  Add User
+  <button class="btn btn-default btn-lg pull-right hidden-xs" style="border: 0px;" ui-sref="main.users"><span class="glyphicon glyphicon-arrow-left"></span></button>
+</h1>
+
+<form name="record">
+  <div class="form-group has-feedback" ng-class="{'has-success': record.name.$valid, 'has-error': record.name.$invalid && record.name.$dirty}">
+    <label for="name">Name</label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="Name" ng-model="user.name" required>
+    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="record.name.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.name.$invalid && record.name.$dirty"></span>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': record.username.$valid, 'has-error': record.username.$invalid && record.username.$dirty}">
+    <label for="username">Username</label>
+    <input type="text" class="form-control" name="username" id="username" placeholder="Username" ng-model="user.username" required>
+    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="record.username.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.username.$invalid && record.username.$dirty"></span>
+  </div>
+  <div class="form-group has-feedback" ng-class="{'has-success': record.email.$valid, 'has-error': record.email.$invalid && record.email.$dirty}">
+    <label for="email">Email</label>
+    <input type="email" class="form-control" name="email" id="email" placeholder="Email" ng-model="user.email" required>
+    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="record.email.$valid"></span>
+    <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.email.$invalid && record.email.$dirty"></span>
+  </div>
+
+  <div class="form-group has-feedback" ng-class="{'has-success': record.newpassword.$valid && record.newpassword.$dirty, 'has-error': record.newpassword.$invalid && record.newpassword.$dirty}">
+  <label for="newpassword">Password</label>
+  <input type="password" name="newpassword" class="form-control" ng-model="user.password" matches="record.newpassword2.$viewValue" required>
+  <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="record.newpassword.$valid && record.newpassword.$dirty"></span>
+  <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.newpassword.$invalid && record.newpassword.$dirty"></span>
+  </div>
+
+  <div class="form-group has-feedback" ng-class="{'has-success': record.newpassword2.$valid && record.newpassword2.$dirty, 'has-error': record.newpassword2.$invalid && record.newpassword2.$dirty}">
+  <input type="password" name="newpassword2" class="form-control" ng-model="user.password2" matches="record.newpassword.$viewValue">
+  <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="record.newpassword2.$valid && record.newpassword2.$dirty"></span>
+  <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="record.newpassword2.$invalid && record.newpassword2.$dirty"></span>
+  </div>
+  <span class="help-block" ng-class="{'text-danger': record.$error.matches}" ng-show="record.$error.matches">Passwords must match</span>
+
+  <div class="well">
+    <div class="form-group">
+      <input type="checkbox" ng-true-value="true" ng-false-value="false" name="disabled" id="disabled" ng-model="user.disabled">
+      <label for="disabled">Disabled</label>
+    </div>
+    <div class="form-group">
+      <input type="checkbox" ng-true-value="true" ng-false-value="false" name="changepw" id="changepw" ng-model="user.changepw">
+      <label for="changepw">Change Password at Next Login</label>
+    </div>
+    <div class="form-group">
+      <input type="checkbox" ng-true-value="true" ng-false-value="false" name="admin" id="admin" ng-model="user.admin" ng-disabled="user.id == auth.id">
+      <label for="admin">Administrator</label>
+    </div>
+  </div>
+
+  <button class="btn btn-primary btn-lg visible-xs pull-right" style="font-size: 1.25em; " ng-click="save(record)" ng-disabled="record.$invalid"><i class="icon-save-floppy"></i></button>
+  <button class="btn btn-default btn-lg visible-xs" style="border: 0px; font-size: 1.25em; border-radius: 1.5em; width: 3em; height: 3em; " ui-sref="main.accounts"><span class="glyphicon glyphicon-arrow-left"></span></button>
+
+  <button class="btn btn-primary hidden-xs pull-right" ng-disabled="record.$invalid" ng-click="save(record)"><i class="icon-save-floppy"></i> Save</button>
+</form>

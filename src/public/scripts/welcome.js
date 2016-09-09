@@ -109,8 +109,9 @@ welcome.controller('verifyController', ['$scope', 'verified', function ($scope, 
 }]);
 
 welcome.controller('welcomeController', ['$scope', '$state', '$http', '$stateParams', 'financecaster', 'NewUser', 'ChangePw', 'share', function ($scope, $state, $http, $stateParams, financecaster, NewUser, ChangePw, share) {
+  $scope.messages = financecaster.messages;
   financecaster.set_root($scope);
-  $scope.messages = $scope.messages || [];
+  
   $scope.newuser = new NewUser({'account_token': $stateParams.token});
   $scope.user = {'account_token': share.token};
   $scope.active = 0;

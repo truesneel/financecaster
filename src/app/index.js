@@ -180,7 +180,7 @@ fc.check_token = function (req, res, next) {
       'include': [
         {
           'model': fc.schemas.users,
-          'attributes': ['id', 'name', 'email', 'username']
+          'attributes': ['id', 'name', 'email', 'username', 'admin']
         }
       ],
       'attributes': ['id', 'client_token', 'ip', 'geo_country', 'geo_region', 'geo_city', 'agent', 'agent_browser', 'agent_os', 'expires', 'userId'],
@@ -207,7 +207,7 @@ fc.check_token = function (req, res, next) {
 fc.isAdmin = function (req, res, next) {
   var now = new Date();
 
-  if (req.auth && req.auth.admin && now < req.auth.expires) {
+  if (req.auth && req.auth.user.admin && now < req.auth.expires) {
     next();
   } else {
     var msg = messages('ACCESS_DENIED');

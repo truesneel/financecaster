@@ -9,6 +9,7 @@ var financecaster = angular.module('financecaster', [
   'financecaster.accounts',
   'financecaster.transactions',
   'financecaster.settings',
+  'financecaster.users',
 ]);
 
 financecaster.directive('currency', function() {
@@ -111,6 +112,7 @@ financecaster.provider('financecaster', function ($httpProvider) {
   var headers = {};
 
   this.config = {};
+  this.messages = [];
 
 	this.load = function () {
     try {
@@ -141,7 +143,7 @@ financecaster.provider('financecaster', function ($httpProvider) {
       }, function (err) {
         financecaster.config = {};
         financecaster.save();
-        defer.reject({state: 'welcome'});
+        defer.reject({state: 'welcome', message: 'Login Expired'});
       });
     } else {
       defer.reject({state: 'welcome'});
@@ -196,14 +198,16 @@ financecaster.provider('financecaster', function ($httpProvider) {
   this.message = function (message, type) {
     var self = this;
 
-
-    self.rootScope.messages.push({
+    if (!self.messages) {
+      return false;
+    }
+    self.messages.push({
       'message': message,
       'type': type
     });
 
     $timeout(function () {
-      self.rootScope.messages.shift();
+      self.messages.shift();
       self.rootScope.$digest();
     }, 5000);
   };
@@ -238,6 +242,7 @@ financecaster.provider('financecaster', function ($httpProvider) {
         return defer.promise;
       },
       message: self.message,
+      messages: self.messages,
       set_root: self.set_root,
 		};
 	};
@@ -254,6 +259,7 @@ financecaster.config(function($stateProvider, $urlRouterProvider, financecasterP
 		.state('main', {
 			url: '',
 			templateUrl: "views/main/index.html",
+      controller: 'mainController',
 			resolve: {
 				auth: financecasterProvider.is_authed
 			}
@@ -261,11 +267,15 @@ financecaster.config(function($stateProvider, $urlRouterProvider, financecasterP
 
 });
 
-financecaster.controller('rootController', ['$rootScope', '$scope', '$state', '$timeout', 'financecaster', function ($rootScope, $scope, $state, $timeout, financecaster) {
+financecaster.controller('mainController', ['$scope', 'financecaster', 'auth', function ($scope, financecaster, auth) {
+  $scope.auth = auth;
   financecaster.set_root($scope);
+  $scope.messages = financecaster.messages;
 
-  $scope.messages = $scope.messages = [];
+}]);
 
+financecaster.controller('rootController', ['$rootScope', '$scope', '$state', '$timeout', 'financecaster', function ($rootScope, $scope, $state, $timeout, financecaster) {
+  
 	$rootScope.loading = false;
 
 	$rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, error) {
@@ -280,6 +290,8 @@ financecaster.controller('rootController', ['$rootScope', '$scope', '$state', '$
 
     if (error.state !== 'welcome') {
       financecaster.message('Error Loading Page', 'error');
+    } else if (error.message) {
+      financecaster.message(error.message, 'error');
     }
 		$rootScope.loading = false;
 		event.preventDefault();

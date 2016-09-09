@@ -79,6 +79,7 @@
     <div class="form-group">
       <label for="num_transactions">Number of Transactions</label>
       <input type="number" class="form-control" id="num_transactions" name="num_transactions" placeholder="Number of Transactions" min=1 step=1 unsignedint ng-model="transaction.num_transactions">
+      <span ng-show="transaction.num_transactions"><small>Total: {{transaction.num_transactions * transaction.amount | currency}}</small></span>
     </div>
   </div>
 
