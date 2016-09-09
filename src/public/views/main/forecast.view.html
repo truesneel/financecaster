@@ -39,15 +39,34 @@
       <span class="pull-right">{{forecast.today | currency}}</span>
       Estimated Balance
     </uib-accordion-heading>
-    <ul class="list-group">
-      <li class="list-group-item" ng-repeat="day in forecast.previous">
-        <div class="row">
-          <div class="col-xs-5"><small>{{day.date | date:'EEE, MMM d'}}</small></div>
-          <div class="col-xs-3 text-right" ><small>{{day.trasnactions_total | currency}}</small></div>
-          <div class="col-xs-4 text-right"><small><span ng-class="{'text-danger': transaction.amount < 0}">{{day.balance | currency}}</span></small></div>
-        </div>
-      </li>
-    </ul>
+
+
+    <uib-accordion ng-repeat="day in forecast.previous">
+      <div uib-accordion-group class="panel-default">
+        <uib-accordion-heading>
+          <div class="row">
+            <div class="col-xs-5"><small ng-class="{'text-danger': day.balance < 0}">{{day.date | date:'EEE, MMM d'}}</small></div>
+            <div class="col-xs-3 text-right" ><small ng-class="{'text-danger': day.transactions_total < 0}">{{day.transactions_total | currency}}</small></div>
+            <div class="col-xs-4 text-right"><small><span ng-class="{'text-danger': day.balance < 0}">{{day.balance | currency}}</span></small></div>
+          </div>
+        </uib-accordion-heading>
+        <ul class="list-group">
+          <li class="list-group-item" ng-show="day.transactions.length === 0">No Transactions for this Day</li>
+          <li class="list-group-item" ng-repeat="transaction in day.transactions">
+            <span class="pull-right" ng-class="{'text-danger': transaction.amount < 0}"><small>{{transaction.amount | currency}}</small></span>
+            <a ui-sref="main.edittransactions({ id: transaction.id })">{{transaction.name}}</a> <span ng-show="transaction.num_transactions_total"><small>({{transaction.num_transactions_current}} of {{transaction.num_transactions_total}})</small></span>
+            <div ng-show="!transaction.one_time">
+              <button popover-animation="false" popover-placement="top-right" ng-show="transaction.amount_paid < 0 && transaction.amount_remaining" uib-popover="{{transaction.amount_paid | currency}} Paid with {{transaction.amount_remaining | currency}} Remaining" type="button" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-info-sign"></span></button>
+              <button popover-animation="false" popover-placement="top-right" ng-show="transaction.amount_paid > 0 && transaction.amount_remaining" uib-popover="{{transaction.amount_paid | currency}} Received with {{transaction.amount_remaining | currency}} Remaining" type="button" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-info-sign"></span></button>
+              <button popover-animation="false" popover-placement="top-right" ng-show="transaction.amount_paid < 0 && !transaction.amount_remaining" uib-popover="{{transaction.amount_paid | currency}} Paid" type="button" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-info-sign"></span></button>
+              <button popover-animation="false" popover-placement="top-right" ng-show="transaction.amount_paid > 0 && !transaction.amount_remaining" uib-popover="{{transaction.amount_paid | currency}} Received" type="button" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-info-sign"></span></button>
+
+              <small><i class="icon-repeatone"></i> every {{transaction.every_num}} {{transaction.every_type}}[s]</small>
+              </div>
+          </li>
+        </ul>
+      </div>
+    </uib-accordion>
   </div>
 </uib-accordion>
 
@@ -57,7 +76,9 @@
       <div class="row">
         <div class="col-xs-5"><small ng-class="{'text-danger': day.balance < 0}">{{day.date | date:'EEE, MMM d'}}</small></div>
         <div class="col-xs-3 text-right" ><small ng-class="{'text-danger': day.transactions_total < 0}">{{day.transactions_total | currency}}</small></div>
-        <div class="col-xs-4 text-right"><small><span ng-class="{'text-danger': day.balance < 0}">{{day.balance | currency}}</span></small></div>
+        <div class="col-xs-4 text-right">
+          <small><span ng-class="{'text-danger': day.balance < 0}">{{day.balance | currency}}</span></small>
+        </div>
       </div>
     </uib-accordion-heading>
     <ul class="list-group">
@@ -65,7 +86,15 @@
       <li class="list-group-item" ng-repeat="transaction in day.transactions">
         <span class="pull-right" ng-class="{'text-danger': transaction.amount < 0}"><small>{{transaction.amount | currency}}</small></span>
         <a ui-sref="main.edittransactions({ id: transaction.id })">{{transaction.name}}</a> <span ng-show="transaction.num_transactions_total"><small>({{transaction.num_transactions_current}} of {{transaction.num_transactions_total}})</small></span>
-        <div ng-show="!transaction.one_time"><small><i class="icon-repeatone"></i> every {{transaction.every_num}} {{transaction.every_type}}[s]</small></div>
+        
+        <div ng-show="!transaction.one_time">
+          <button popover-animation="false" popover-placement="top-right" ng-show="transaction.amount_paid < 0 && transaction.amount_remaining" uib-popover="{{transaction.amount_paid | currency}} Paid with {{transaction.amount_remaining | currency}} Remaining" type="button" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-info-sign"></span></button>
+          <button popover-animation="false" popover-placement="top-right" ng-show="transaction.amount_paid > 0 && transaction.amount_remaining" uib-popover="{{transaction.amount_paid | currency}} Received with {{transaction.amount_remaining | currency}} Remaining" type="button" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-info-sign"></span></button>
+          <button popover-animation="false" popover-placement="top-right" ng-show="transaction.amount_paid < 0 && !transaction.amount_remaining" uib-popover="{{transaction.amount_paid | currency}} Paid" type="button" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-info-sign"></span></button>
+          <button popover-animation="false" popover-placement="top-right" ng-show="transaction.amount_paid > 0 && !transaction.amount_remaining" uib-popover="{{transaction.amount_paid | currency}} Received" type="button" class="btn btn-default btn-xs pull-right"><span class="glyphicon glyphicon-info-sign"></span></button>
+
+          <small><i class="icon-repeatone"></i> every {{transaction.every_num}} {{transaction.every_type}}[s]</small>
+        </div>
       </li>
     </ul>
   </div>
