@@ -40,6 +40,9 @@ module.exports = function(grunt) {
         options: {
           cwd: 'src',
           watch: ['app/**/*.js', 'server.js', 'config.ini'],
+          env: {
+            'FC_DB_LOGGING': '1',
+          }
         }
       },
       syncdb: {
