@@ -13,75 +13,81 @@ var emails = require('./emails').get;
 var fc = {};
 
 fc.init  = function () {
-	var defer = q.defer();
+  var defer = q.defer();
 
-	log4js.configure({
-	 appenders: [
-	   { type: 'console' },
-	  ]
-	});
+  log4js.configure({
+   appenders: [
+     { type: 'console' },
+    ]
+  });
 
-	fc.log = log4js.getLogger('financecaster');
-	fc.log.setLevel('INFO');
-	fc.config_path = process.env.FC_CONFIG || 'config.ini';
+  fc.log = log4js.getLogger('financecaster');
+  fc.log.setLevel('INFO');
+  fc.config_path = process.env.FC_CONFIG || 'config.ini';
 
-	var init_account = function () {
-		fc.schemas.users.find({'where': {'username': 'admin'}})
-		.then(function (user) {
+  var init_account = function () {
+    fc.schemas.users.find({'where': {'username': 'admin'}})
+    .then(function (user) {
 
-			if (!user) {
-				var pwd = process.env.FC_ADMIN_PASS || 'admin';
-				//var hash = crypto.createHmac('sha512', fc.config.salt).update(pwd).digest('base64');
+      if (!user) {
+        var pwd = process.env.FC_ADMIN_PASS || 'admin';
+        //var hash = crypto.createHmac('sha512', fc.config.salt).update(pwd).digest('base64');
 
-				fc.schemas.users.create({
-					'username': 'admin',
-					'email': 'admin@localhost',
-					'password': pwd,
-					'name': 'Admin',
-					'admin': true
-				})
-				.then(function (user) {
-					fc.log.info(messages('DEFAULT_USER_CREATED').message);
-					defer.resolve();
-				});
-			} else {
-				defer.resolve();
-			}
+        fc.schemas.users.create({
+          'username': 'admin',
+          'email': 'admin@localhost',
+          'password': pwd,
+          'name': 'Admin',
+          'admin': true
+        })
+        .then(function (user) {
+          fc.log.info(messages('DEFAULT_USER_CREATED').message);
+          defer.resolve();
+        });
+      } else {
+        defer.resolve();
+      }
 
-		});
-	};
+    });
+  };
 
-	var init_db = function () {
+  var init_db = function () {
 
-		fc.config.database.dialect = process.env.FC_DB_DIALECT || fc.config.database.dialect || 'sqlite';
-		fc.config.database.storage = process.env.FC_DB_SQLITE_PATH || fc.config.database.storage || 'financecaster.sqlite';
-		fc.config.database.logging = process.env.FC_DB_LOGGING || fc.config.database.logging || false;
-		fc.config.database.logging = (fc.config.database.logging !== false) ? console.log : console.log;
-		fc.db = new Sequelize(fc.config.database.database, fc.config.database.username, fc.config.database.password, fc.config.database);
+    fc.config.database.dialect = process.env.FC_DB_DIALECT || fc.config.database.dialect || 'sqlite';
+    fc.config.database.storage = process.env.FC_DB_SQLITE_PATH || fc.config.database.storage || 'financecaster.sqlite';
+    if (process.env.FC_DB_LOGGING !== undefined) {
+      fc.config.database.logging = (process.env.FC_DB_LOGGING == 1);
+    } else if (fc.config.database.logging !== undefined) {
+      fc.config.database.logging = fc.config.database.logging;
+    } else {
+      fc.config.database.logging = false;
+    }
+    fc.config.database.logging = (fc.config.database.logging !== false) ? console.log : undefined;
+    fc.db = new Sequelize(fc.config.database.database, fc.config.database.username, fc.config.database.password, fc.config.database);
 
-		require('./schemas')(process.env.FC_DB_FORCE_SYNC).then(function (schemas) {
-			fc.schemas = schemas;
+    require('./schemas')(process.env.FC_DB_FORCE_SYNC).then(function (schemas) {
+      fc.schemas = schemas;
 
-			init_account();
-		}, function (err) {
-			defer.reject(err);
-		});
+      init_account();
+    }, function (err) {
+      defer.reject(err);
+    });
 
-	};
+  };
 
-	var init_config = function () {
-		fs.access(fc.config_path, fs.F_R, function (err) {
-			if (err) {
-				defer.reject(messages('CONFIG_NOT_FOUND', {'config_path': fc.config_path}));
-				return;
-			}
+  var init_config = function () {
+    fs.access(fc.config_path, fs.F_R, function (err) {
+      if (err) {
+        defer.reject(messages('CONFIG_NOT_FOUND', {'config_path': fc.config_path}));
+        return;
+      }
 
-			try {
-				fc.config = ini.parse(fs.readFileSync(fc.config_path, 'utf-8'));
-			} catch (e) {
-				defer.reject(messages('CONFIG_NOT_PARSED', {'reason': e}));
-				return;
-			}
+      try {
+        fc.config = ini.parse(fs.readFileSync(fc.config_path, 'utf-8'));
+      } catch (e) {
+        defer.reject(messages('CONFIG_NOT_PARSED', {'reason': e}));
+        return;
+      }
 
       fc.config.users = fc.config.users || {};
       fc.config.users.unverified_stale_age = process.env.FC_UNVERIFIED_USER_AGE || fc.config.users.unverified_stale_age || 2;
@@ -100,13 +106,13 @@ fc.init  = function () {
         fc.config.users.allow_new = true;
       }
 
-			fc.config.web = fc.config.web || {};
+      fc.config.web = fc.config.web || {};
       fc.config.web.port = process.env.FC_PORT || fc.config.web.port || 9001;
       fc.config.web.address = process.env.FC_ADDRESS || fc.config.web.address || '0.0.0.0';
       fc.config.web.url = process.env.FC_URL || fc.config.web.url || 'http://localhost:' + fc.config.web.port;
 
-			fc.config.database = fc.config.database || {};
-			fc.config.salt = process.env.FC_SALT || fc.config.salt || '0123456789abcdefghij';
+      fc.config.database = fc.config.database || {};
+      fc.config.salt = process.env.FC_SALT || fc.config.salt || '0123456789abcdefghij';
 
       fc.config.mail = fc.config.mail || {};
       fc.config.mail.host = process.env.FC_MAIL_HOST || fc.config.mail.host;
@@ -138,23 +144,23 @@ fc.init  = function () {
         fc.log.warn('Mail not configured');
       }
 
-			init_db();
-		});
-	};
+      init_db();
+    });
+  };
 
-	init_config();
+  init_config();
 
-	return defer.promise;
+  return defer.promise;
 };
 
 fc.start = function () {
-	fc.app = express();
+  fc.app = express();
 
-	fc.app.use(log4js.connectLogger(fc.log, { level: log4js.levels.INFO }));
-	fc.app.use(express.static('public'));
-	fc.app.use(bodyParser.json());
-	fc.app.use(fc.check_token);
-	fc.app.use('/api', require('./routes'));
+  fc.app.use(log4js.connectLogger(fc.log, { level: log4js.levels.INFO }));
+  fc.app.use(express.static('public'));
+  fc.app.use(bodyParser.json());
+  fc.app.use(fc.check_token);
+  fc.app.use('/api', require('./routes'));
 
   fc.expire_tokens();
   fc.user_cleaner();
@@ -162,9 +168,9 @@ fc.start = function () {
   fc.token_cleaner = setInterval(fc.expire_tokens, 1000 * 60);
   fc.user_cleaner = setInterval(fc.user_cleaner, 1000 * 60);
 
-	fc.app.listen(fc.config.web.port, fc.config.web.address, function () {
-		fc.log.info('Listening on %s:%s', fc.config.web.address, fc.config.web.port);
-	});
+  fc.app.listen(fc.config.web.port, fc.config.web.address, function () {
+    fc.log.info('Listening on %s:%s', fc.config.web.address, fc.config.web.port);
+  });
 };
 
 fc.check_token = function (req, res, next) {
