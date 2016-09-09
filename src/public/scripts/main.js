@@ -141,9 +141,16 @@ financecaster.provider('financecaster', function ($httpProvider) {
       $http.get('/api/auth').then(function (response) {
         defer.resolve(financecaster.config.auth);
       }, function (err) {
-        financecaster.config = {};
-        financecaster.save();
-        defer.reject({state: 'welcome', message: 'Login Expired'});
+        if (err.status === 403) {
+          err.state = 'welecome';
+          err.message = 'Login Expired';
+          financecaster.config = {};
+          financecaster.save();
+        } else if (err.status === -1) {
+          delete err.state;
+          err.message = 'Server Went Away';
+        }
+        defer.reject(err);
       });
     } else {
       defer.reject({state: 'welcome'});
@@ -288,10 +295,8 @@ financecaster.controller('rootController', ['$rootScope', '$scope', '$state', '$
 
 	$rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
 
-    if (error.state !== 'welcome') {
-      financecaster.message('Error Loading Page', 'error');
-    } else if (error.message) {
-      financecaster.message(error.message, 'error');
+    if (error.message || error.state !== 'welcome') {
+      financecaster.message(error.message || 'Error Loading Page', 'error');
     }
 		$rootScope.loading = false;
 		event.preventDefault();
