@@ -16,7 +16,7 @@ module.exports = function(grunt) {
       },
       scripts: {
         files: ['src/app/**/*.js', 'src/server.js', 'Gruntfile.js', 'src/public/scripts/**/*.js'],
-        tasks: ['jshint','exec'],
+        tasks: ['jshint'],
         options: {
           interrupt: true,
           livereload: true,
