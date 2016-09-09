@@ -9,31 +9,31 @@ var schemas = {};
 var types = ['day', 'week', 'month', 'year'];
 
 schemas.users = fc.db.define('user', {
-	'name': {
-		'type': Sequelize.STRING,
-		'allowNull': false
-	},
-	'username': {
-		'type': Sequelize.STRING,
-		'unique': true,
-		'allowNull': false
-	},
-	'password': {
-		'type': Sequelize.STRING,
-		'allowNull': false,
+  'name': {
+    'type': Sequelize.STRING,
+    'allowNull': false
+  },
+  'username': {
+    'type': Sequelize.STRING,
+    'unique': true,
+    'allowNull': false
+  },
+  'password': {
+    'type': Sequelize.STRING,
+    'allowNull': false,
     'set': function (value) {
       this.setDataValue('password', crypto.createHmac('sha512', fc.config.salt).update(value).digest('base64'));
     }
-	},
-	'email': {
-		'type': Sequelize.STRING,
-		'unique': true,
-		'allowNull': false
-	},
-	'admin': {
-		'type': Sequelize.BOOLEAN,
-		'defaultValue': false
-	},
+  },
+  'email': {
+    'type': Sequelize.STRING,
+    'unique': true,
+    'allowNull': false
+  },
+  'admin': {
+    'type': Sequelize.BOOLEAN,
+    'defaultValue': false
+  },
   'changepw': {
     'type': Sequelize.BOOLEAN,
     'defaultValue': false
@@ -48,48 +48,48 @@ schemas.users = fc.db.define('user', {
   }
 });
 schemas.accounts = fc.db.define('accounts', {
-	'name': {
-		'type': Sequelize.STRING,
+  'name': {
+    'type': Sequelize.STRING,
     'allowNull': false,
     'unique': 'useraccount'
-	},
+  },
   'owner': {
     'type': Sequelize.INTEGER,
     'allowNull': false,
     'unique': 'useraccount'
   },
-	'forecast': {
-		'type': Sequelize.INTEGER,
+  'forecast': {
+    'type': Sequelize.INTEGER,
     'defaultValue': 365
-	},
-	'balance': {
-		'type': Sequelize.FLOAT,
+  },
+  'balance': {
+    'type': Sequelize.FLOAT,
     'defaultValue': 0
-	},
+  },
   'balance_date': {
     'type': Sequelize.DATE,
     'allowNull': false,
   },
-	'limit': {
-		'type': Sequelize.FLOAT,
+  'limit': {
+    'type': Sequelize.FLOAT,
     'defaultValue': 0
-	},
+  },
   'userId': {
     'type': Sequelize.INTEGER
   }
 });
 schemas.transactions = fc.db.define('transactions', {
-	'name': {
-		'type': Sequelize.STRING,
+  'name': {
+    'type': Sequelize.STRING,
     'allowNull': false,
     'unique': 'accounttransaction'
-	},
-	'start': {
-		'type': Sequelize.DATE,
+  },
+  'start': {
+    'type': Sequelize.DATE,
     'allowNull': false,
-	},
-	'every_num': {
-		'type': Sequelize.INTEGER,
+  },
+  'every_num': {
+    'type': Sequelize.INTEGER,
     'validate': {
       every_num: function (value) {
         if (value === undefined) {
@@ -97,9 +97,9 @@ schemas.transactions = fc.db.define('transactions', {
         }
       }
     }
-	},
-	'every_type': {
-		'type': Sequelize.STRING,
+  },
+  'every_type': {
+    'type': Sequelize.STRING,
     'validate': {
       every_type: function (value) {
         if (types.indexOf(value) === -1 ) {
@@ -107,9 +107,9 @@ schemas.transactions = fc.db.define('transactions', {
         }
       }
     },
-	},
-	'num_transactions': {
-		'type': Sequelize.INTEGER,
+  },
+  'num_transactions': {
+    'type': Sequelize.INTEGER,
     'validate': {
       num_transactions: function (value) {
         if (value === undefined) {
@@ -117,9 +117,9 @@ schemas.transactions = fc.db.define('transactions', {
         }
       }
     }
-	},
-	'amount': {
-		'type': Sequelize.FLOAT,
+  },
+  'amount': {
+    'type': Sequelize.FLOAT,
     'allowNull': false,
     'validate': {
       amount: function (value) {
@@ -130,7 +130,7 @@ schemas.transactions = fc.db.define('transactions', {
         }
       }
     }
-	},
+  },
   'one_time': {
     'type': Sequelize.BOOLEAN,
     'allowNull': false,
@@ -173,21 +173,21 @@ schemas.transactions = fc.db.define('transactions', {
 });
 
 schemas.permissions = fc.db.define('permissions', {
-	'balance': {
-		'type': Sequelize.BOOLEAN,
-		'allowNull': false,
+  'balance': {
+    'type': Sequelize.BOOLEAN,
+    'allowNull': false,
     'defaultValue': false,
-	},
-	'transactions': {
-		'type': Sequelize.BOOLEAN,
-		'allowNull': false,
+  },
+  'transactions': {
+    'type': Sequelize.BOOLEAN,
+    'allowNull': false,
     'defaultValue': false,
-	},
-	'shares': {
-		'type': Sequelize.BOOLEAN,
-		'allowNull': false,
+  },
+  'shares': {
+    'type': Sequelize.BOOLEAN,
+    'allowNull': false,
     'defaultValue': false,
-	},
+  },
   'email': {
     'type': Sequelize.STRING,
     'allowNull': false
@@ -201,24 +201,24 @@ schemas.permissions = fc.db.define('permissions', {
 });
 
 schemas.tokens = fc.db.define('tokens', {
-	'client_token': {
-		'type': Sequelize.STRING,
-		'allowNull': false,
+  'client_token': {
+    'type': Sequelize.STRING,
+    'allowNull': false,
     'set': function (value) {
       this.setDataValue('client_token', hat(bits=256, base=16));
     }
-	},
-	'auth_token': {
-		'type': Sequelize.STRING,
-		'allowNull': false,
+  },
+  'auth_token': {
+    'type': Sequelize.STRING,
+    'allowNull': false,
     'set': function () {
       this.setDataValue('auth_token', hat(bits=512, base=32));
     }
-	},
-	'ip': {
-		'type': Sequelize.STRING,
-		'allowNull': false
-	},
+  },
+  'ip': {
+    'type': Sequelize.STRING,
+    'allowNull': false
+  },
   'geo_country': {
     'type': Sequelize.STRING
   },
@@ -228,19 +228,19 @@ schemas.tokens = fc.db.define('tokens', {
   'geo_city': {
     'type': Sequelize.STRING
   },
-	'agent': {
-		'type': Sequelize.STRING,
-	},
+  'agent': {
+    'type': Sequelize.STRING,
+  },
   'agent_browser': {
     'type': Sequelize.STRING
   },
   'agent_os': {
     'type': Sequelize.STRING
   },
-	'expires': {
-		'type': Sequelize.DATE,
-		'allowNull': false
-	},
+  'expires': {
+    'type': Sequelize.DATE,
+    'allowNull': false
+  },
 });
 
 
@@ -257,22 +257,22 @@ schemas.users.hasMany(schemas.tokens);
 
 
 module.exports = function (force) {
-	var defer = q.defer();
-	var sync_defers = [];
+  var defer = q.defer();
+  var sync_defers = [];
 
-	Object.keys(schemas).forEach(function (schema) {
-		var defer = q.defer();
-		sync_defers.push(defer.promise);
+  Object.keys(schemas).forEach(function (schema) {
+    var defer = q.defer();
+    sync_defers.push(defer.promise);
 
-		fc.log.debug(messages('SCHEMA_SYNC', {'schema': schema, 'force': (force !== undefined)}).message);
-		schemas[schema].sync({force: (force !== undefined)}).then(defer.resolve, function (err) {
-			console.log(err);
-		});
+    fc.log.debug(messages('SCHEMA_SYNC', {'schema': schema, 'force': (force !== undefined)}).message);
+    schemas[schema].sync({force: (force !== undefined)}).then(defer.resolve, function (err) {
+      console.log(err);
+    });
 
-	});
+  });
 
-	q.allSettled(sync_defers).then(function () {
-		defer.resolve(schemas);
-	});
-	return defer.promise;
+  q.allSettled(sync_defers).then(function () {
+    defer.resolve(schemas);
+  });
+  return defer.promise;
 };
