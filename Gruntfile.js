@@ -45,6 +45,7 @@ module.exports = function(grunt) {
           watch: ['app/**/*.js', 'server.js', 'config.ini'],
           env: {
             'FC_DB_LOGGING': '1',
+            'FC_PORT': '9002'
           }
         }
       },
@@ -53,7 +54,8 @@ module.exports = function(grunt) {
         options: {
           cwd: 'src',
           env: {
-            'FC_DB_FORCE_SYNC': '1'
+            'FC_DB_FORCE_SYNC': '1',
+            'FC_PORT': '9002'
           },
           watch: ['app/**/*.js', 'server.js'],
         }
