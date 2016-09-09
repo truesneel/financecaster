@@ -168,7 +168,6 @@ router.put('/:id', fc.isAuth, function (req, res) {
  * @api {delete} /transactions/:id Delete Transaction
  * @apiVersion 0.0.1
  * @apiGroup Transactions
- * @apiPermissions user
  *
  * @apiSuccess {String} message
  * @apiSuccessExample

@@ -33,6 +33,9 @@ module.exports = function(grunt) {
       apidoc: {
         cmd: 'node_modules/apidoc/bin/apidoc -e node_modules/ -e src/public/vendor/ -o src/public/apidoc'
       },
+      markdown: {
+        cmd: 'node_modules/apidoc-markdown/index.js -o apidoc.md -p src/public/apidoc/'
+      }
     },
     nodemon: {
       dev: {

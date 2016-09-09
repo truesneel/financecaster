@@ -67,11 +67,11 @@ router.get('/', fc.isAuth, function (req, res) {
  * @apiGroup Accounts
  * @apiPermission user
  *
- * @apiParam (Request Data) {String} name
- * @apiParam (Request Data) {Integer} forecast=365
- * @apiParam (Request Data) {Float} balance=0
- * @apiParam (Request Data) {DateTime} balance_date
- * @apiParam (Request Data) {Float} limit=0
+ * @apiParam  {String} name
+ * @apiParam {Integer} forecast=365
+ * @apiParam {Float} balance=0
+ * @apiParam {DateTime} balance_date
+ * @apiParam {Float} limit=0
  * @apiParamExample {json} Request Data Example
  * {
  *   "name" "Checking",
@@ -89,13 +89,13 @@ router.get('/', fc.isAuth, function (req, res) {
  *     "message": "Record Created Successfully"
  * }
  *
- * @apiError (Field Validation Error) {String} error Error Message
- * @apiError (Field Validation Error) {String} code Error Code
- * @apiError (Field Validation Error) {Array} fields
- * @apiError (Field Validation Error) {String} fields.message
- * @apiError (Field Validation Error) {String} fields.type
- * @apiError (Field Validation Error) {String} fields.path
- * @apiError (Field Validation Error) {String} fields.value
+ * @apiError  {String} error Error Message
+ * @apiError {String} code Error Code
+ * @apiError {Array} fields
+ * @apiError {String} fields.message
+ * @apiError {String} fields.type
+ * @apiError {String} fields.path
+ * @apiError {String} fields.value
  * @apiErrorExample Field Validation Error Example
  *  {
  *    "error": "Field Validation Error",
@@ -198,11 +198,11 @@ router.get('/:id', fc.isAuth, function (req, res) {
  * @apiGroup Accounts
  * @apiPermission user
  *
- * @apiParam (Request Data) {String} name
- * @apiParam (Request Data) {Integer} forecast=365
- * @apiParam (Request Data) {Float} balance=0
- * @apiParam (Request Data) {DateTime} balance_date
- * @apiParam (Request Data) {Float} limit=0
+ * @apiParam {String} name
+ * @apiParam {Integer} forecast=365
+ * @apiParam {Float} balance=0
+ * @apiParam {DateTime} balance_date
+ * @apiParam {Float} limit=0
  * @apiParamExample {json} Request Data Example
  * {
  *   "name" "Checking",
@@ -295,7 +295,6 @@ router.put('/:id', fc.isAuth, function (req, res) {
 /**
  * @api {delete} /accounts/:id Delete Account
  * @apiGroup Accounts
- * @apiPermissions user
  *
  * @apiSuccess {String} message
  * @apiSuccessExample
@@ -1034,7 +1033,7 @@ router.get('/:id/forecast', fc.isAuth, function (req, res) {
 
 /**
  * @api {get} /shared/:token Get Shared Account Details
- * @api Accounts
+ * @apiGroup Accounts
  */
 router.get('/accept/:token', function (req, res) {
   var msg;
@@ -1066,7 +1065,7 @@ router.get('/accept/:token', function (req, res) {
 
 /**
  * @api {post} /shared/:token Accept Shared Account
- * @api Accounts
+ * @apiGroup Accounts
  */
 router.post('/accept/:token', fc.isAuth, function (req, res) {
   var msg;

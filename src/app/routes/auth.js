@@ -42,8 +42,8 @@ var messages = require('../messages').get;
  *     "admin": true
  *    }
  *
- * @apiError (Access Denied) {String} error Error Message
- * @apiError (Access Denied) {String} code Error Code
+ * @apiError {String} error Error Message
+ * @apiError {String} code Error Code
  * @apiErrorExample
  *  HTTP/1.1 403 Forbidden
  *  {
@@ -63,8 +63,8 @@ router.get('/', fc.isAuth, function (req, res) {
  * @apiPermission any
  *
  *
- * @apiParam (Post Data) {String} username Username to attempt a log in with
- * @apiParam (Post Data) {String} password Password to attempt a log in with
+ * @apiParam {String} username Username to attempt a log in with
+ * @apiParam {String} password Password to attempt a log in with
  * @apiParamExample Post Data
  * {
  *   "username": "admin",

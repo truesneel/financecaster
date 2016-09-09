@@ -533,6 +533,16 @@ define({ "api": [
     "name": "GetAccountsIdTransactionsTransactionid"
   },
   {
+    "type": "get",
+    "url": "/shared/:token",
+    "title": "Get Shared Account Details",
+    "group": "Accounts",
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "groupTitle": "Accounts",
+    "name": "GetSharedToken"
+  },
+  {
     "type": "post",
     "url": "/:accountId/permissions",
     "title": "Create Account Permission",
@@ -556,16 +566,16 @@ define({ "api": [
     ],
     "parameter": {
       "fields": {
-        "Request Data": [
+        "Parameter": [
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "name",
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "Integer",
             "optional": false,
             "field": "forecast",
@@ -573,7 +583,7 @@ define({ "api": [
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "Float",
             "optional": false,
             "field": "balance",
@@ -581,14 +591,14 @@ define({ "api": [
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "DateTime",
             "optional": false,
             "field": "balance_date",
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "Float",
             "optional": false,
             "field": "limit",
@@ -634,51 +644,51 @@ define({ "api": [
     },
     "error": {
       "fields": {
-        "Field Validation Error": [
+        "Error 4xx": [
           {
-            "group": "Field Validation Error",
+            "group": "Error 4xx",
             "type": "String",
             "optional": false,
             "field": "error",
             "description": "<p>Error Message</p>"
           },
           {
-            "group": "Field Validation Error",
+            "group": "Error 4xx",
             "type": "String",
             "optional": false,
             "field": "code",
             "description": "<p>Error Code</p>"
           },
           {
-            "group": "Field Validation Error",
+            "group": "Error 4xx",
             "type": "Array",
             "optional": false,
             "field": "fields",
             "description": ""
           },
           {
-            "group": "Field Validation Error",
+            "group": "Error 4xx",
             "type": "String",
             "optional": false,
             "field": "fields.message",
             "description": ""
           },
           {
-            "group": "Field Validation Error",
+            "group": "Error 4xx",
             "type": "String",
             "optional": false,
             "field": "fields.type",
             "description": ""
           },
           {
-            "group": "Field Validation Error",
+            "group": "Error 4xx",
             "type": "String",
             "optional": false,
             "field": "fields.path",
             "description": ""
           },
           {
-            "group": "Field Validation Error",
+            "group": "Error 4xx",
             "type": "String",
             "optional": false,
             "field": "fields.value",
@@ -710,6 +720,16 @@ define({ "api": [
     "name": "PostAccountsIdTransactions"
   },
   {
+    "type": "post",
+    "url": "/shared/:token",
+    "title": "Accept Shared Account",
+    "group": "Accounts",
+    "version": "0.0.0",
+    "filename": "./src/app/routes/accounts.js",
+    "groupTitle": "Accounts",
+    "name": "PostSharedToken"
+  },
+  {
     "type": "put",
     "url": "/:accountId/permissions/:id",
     "title": "Update Account Permissions",
@@ -733,16 +753,16 @@ define({ "api": [
     ],
     "parameter": {
       "fields": {
-        "Request Data": [
+        "Parameter": [
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "name",
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "Integer",
             "optional": false,
             "field": "forecast",
@@ -750,7 +770,7 @@ define({ "api": [
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "Float",
             "optional": false,
             "field": "balance",
@@ -758,14 +778,14 @@ define({ "api": [
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "DateTime",
             "optional": false,
             "field": "balance_date",
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "Float",
             "optional": false,
             "field": "limit",
@@ -1033,16 +1053,16 @@ define({ "api": [
     },
     "error": {
       "fields": {
-        "Access Denied": [
+        "Error 4xx": [
           {
-            "group": "Access Denied",
+            "group": "Error 4xx",
             "type": "String",
             "optional": false,
             "field": "error",
             "description": "<p>Error Message</p>"
           },
           {
-            "group": "Access Denied",
+            "group": "Error 4xx",
             "type": "String",
             "optional": false,
             "field": "code",
@@ -1338,16 +1358,16 @@ define({ "api": [
     ],
     "parameter": {
       "fields": {
-        "Post Data": [
+        "Parameter": [
           {
-            "group": "Post Data",
+            "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "username",
             "description": "<p>Username to attempt a log in with</p>"
           },
           {
-            "group": "Post Data",
+            "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "password",
@@ -2127,6 +2147,13 @@ define({ "api": [
     "title": "Delete User",
     "version": "0.0.1",
     "group": "Users",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
@@ -2355,6 +2382,13 @@ define({ "api": [
     "title": "Get User",
     "version": "0.0.1",
     "group": "Users",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
@@ -2595,6 +2629,13 @@ define({ "api": [
     "title": "Get User Token",
     "version": "0.0.1",
     "group": "Users",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
     "success": {
       "fields": {
         "Success 200": [
@@ -2710,37 +2751,37 @@ define({ "api": [
     ],
     "parameter": {
       "fields": {
-        "Request Data": [
+        "Parameter": [
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "name",
             "description": "<p>Name of the User</p>"
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "username",
             "description": "<p>Username of the User</p>"
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "email",
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "password",
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "Boolean",
             "optional": false,
             "field": "admin",
@@ -2748,7 +2789,7 @@ define({ "api": [
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "Boolean",
             "optional": false,
             "field": "changepw",
@@ -2756,7 +2797,7 @@ define({ "api": [
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "Boolean",
             "optional": false,
             "field": "disabled",
@@ -2764,7 +2805,7 @@ define({ "api": [
             "description": ""
           },
           {
-            "group": "Request Data",
+            "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "verification",
@@ -2878,8 +2919,14 @@ define({ "api": [
     "type": "put",
     "url": "/users/:id",
     "title": "Update User",
-    "version": "0.0.1",
     "group": "Users",
+    "permission": [
+      {
+        "name": "admin",
+        "title": "Admin Access Required",
+        "description": "<p>Access is restricted to an authorized user with admin rights</p>"
+      }
+    ],
     "error": {
       "fields": {
         "Error 4xx": [
@@ -2947,29 +2994,10 @@ define({ "api": [
         }
       ]
     },
+    "version": "0.0.0",
     "filename": "./src/app/routes/users.js",
     "groupTitle": "Users",
     "name": "PutUsersId"
-  },
-  {
-    "type": "",
-    "url": "Accounts",
-    "title": "",
-    "version": "0.0.0",
-    "filename": "./src/app/routes/accounts.js",
-    "group": "_home_scott_git_financecaster_new_src_app_routes_accounts_js",
-    "groupTitle": "_home_scott_git_financecaster_new_src_app_routes_accounts_js",
-    "name": "Accounts"
-  },
-  {
-    "type": "",
-    "url": "Accounts",
-    "title": "",
-    "version": "0.0.0",
-    "filename": "./src/app/routes/accounts.js",
-    "group": "_home_scott_git_financecaster_new_src_app_routes_accounts_js",
-    "groupTitle": "_home_scott_git_financecaster_new_src_app_routes_accounts_js",
-    "name": "Accounts"
   },
   {
     "success": {

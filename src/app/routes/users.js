@@ -62,14 +62,14 @@ router.get('/', fc.isAdmin, function (req, res) {
  * @apiGroup Users
  * @apiPermission admin
  *
- * @apiParam (Request Data) {String} name Name of the User
- * @apiParam (Request Data) {String} username Username of the User
- * @apiParam (Request Data) {String} email
- * @apiParam (Request Data) {String} password
- * @apiParam (Request Data) {Boolean} admin=false
- * @apiParam (Request Data) {Boolean} changepw=false
- * @apiParam (Request Data) {Boolean} disabled=false
- * @apiParam (Request Data) {String} verification="[none]"
+ * @apiParam {String} name Name of the User
+ * @apiParam {String} username Username of the User
+ * @apiParam {String} email
+ * @apiParam {String} password
+ * @apiParam {Boolean} admin=false
+ * @apiParam {Boolean} changepw=false
+ * @apiParam {Boolean} disabled=false
+ * @apiParam {String} verification="[none]"
  * @apiParamExample {json} Request Data Example
  * {
  *   "name" "User",
@@ -125,7 +125,7 @@ router.post('/', fc.isAdmin, function (req, res) {
  * @api {get} /users/:id Get User
  * @apiVersion 0.0.1
  * @apiGroup Users
- * @apiPermissions admin
+ * @apiPermission admin
  *
  * @apiSuccess {Integer} id
  * @apiSuccess {String} name Name of the User
@@ -182,8 +182,8 @@ router.get('/:id', fc.isAdmin, function (req, res) {
 
 /**
  * @api {put} /users/:id Update User
- * @apiVersion 0.0.1
  * @apiGroup Users
+ * @apiPermission admin
  *
  * @apiError {String} error Error Message
  * @apiError {String} code Error Code
@@ -237,7 +237,7 @@ router.put('/:id', fc.isAdmin, function (req, res) {
  * @api {delete} /users/:id Delete User
  * @apiVersion 0.0.1
  * @apiGroup Users
- * @apiPermissions admin
+ * @apiPermission admin
  *
  * @apiSuccess {String} message
  * @apiSuccessExample
@@ -332,6 +332,7 @@ router.get('/:id/tokens', fc.isAdmin, function (req, res) {
  * @api {get} /users/:id/tokens/:tokenid Get User Token
  * @apiVersion 0.0.1
  * @apiGroup Users
+ * @apiPermission admin
  *
  * @apiSuccess {Integer} id
  * @apiSuccess {Integer} userId
