@@ -1,0 +1,12 @@
+[Unit]
+Description=FinanceCaster Container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run --name financecaster -v /var/lib/financecaster:/data -p 9001:9001 --rm sneel/financecaster
+ExecStop=/usr/bin/docker stop -t 2 financecaster
+
+[Install]
+WantedBy=local.target
