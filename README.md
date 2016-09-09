@@ -3,7 +3,7 @@
 ### Docker
 The easiest way is to run FinanceCaster from the docker container.
 ```
-docker run --rm -it -p 9001:9001 sneel/financecaster
+docker run --name financecaster --rm -it -p 9001:9001 sneel/financecaster
 ```
 Then point your browser at http://localhost:9001 to get started.  It's helpful to mount a volume at /data which contains the configuration file and default sqlite database.
 
