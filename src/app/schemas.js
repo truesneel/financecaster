@@ -162,7 +162,7 @@ schemas.transactions = fc.db.define('transactions', {
           options.skip.splice(options.skip.indexOf('every_num'), 1);
         }
         if (record.num_transactions === null || record.num_transactions === undefined) {
-          record.num_transactions = 'asd';
+          record.num_transactions = '';
           options.fields.push('num_transactions');
           options.skip.splice(options.skip.indexOf('num_transactions'), 1);
         }

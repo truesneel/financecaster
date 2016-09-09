@@ -861,6 +861,9 @@ router.get('/:id/forecast', fc.isAuth, function (req, res) {
 
         zero_time(transaction.start);
 
+        //Set a counter for the transaction
+        transaction.amount_paid = (transaction.amount_paid !== undefined) ? transaction.amount_paid : transaction.amount;
+
         //Skip one time transactions
         if (transaction.one_time) {
           return;
@@ -871,12 +874,17 @@ router.get('/:id/forecast', fc.isAuth, function (req, res) {
           transaction.transaction_num = transaction.transaction_num || 1;
         }
 
+
         //If the transaction date is before now, lets increment it
         while (transaction.start < date) {
+
+          //Add to our transaction running total
+          transaction.amount_paid += transaction.amount;
 
           //If we have a transaction limit, increment our counter
           if (transaction.num_transactions > 0) {
             transaction.transaction_num += 1;
+            transaction.amount_remaining = (transaction.num_transactions - transaction.transaction_num) * transaction.amount;
           }
 
           //Get our transaction date
@@ -935,8 +943,10 @@ router.get('/:id/forecast', fc.isAuth, function (req, res) {
         day.transactions.push({
           'id': transaction.id,
           'name': transaction.name,
-          'num_transactions_total': transaction.num_transactions,
-          'num_transactions_current': transaction.transaction_num,
+          'num_transactions_total': Number.isInteger(transaction.num_transactions) ? transaction.num_transactions : undefined,
+          'num_transactions_current': Number.isInteger(transaction.transaction_num) ? transaction.transaction_num : undefined,
+          'amount_paid': Number(transaction.amount_paid.toFixed(2)),
+          'amount_remaining': (transaction.amount_remaining !== undefined) ? Number(transaction.amount_remaining.toFixed(2)): undefined,
           'amount': transaction.amount,
           'every_num': transaction.every_num,
           'every_type': transaction.every_type,
