@@ -142,7 +142,7 @@ financecaster.provider('financecaster', function ($httpProvider) {
         defer.resolve(financecaster.config.auth);
       }, function (err) {
         if (err.status === 403) {
-          err.state = 'welecome';
+          err.state = 'welcome';
           err.message = 'Login Expired';
           financecaster.config = {};
           financecaster.save();
@@ -282,7 +282,7 @@ financecaster.controller('mainController', ['$scope', 'financecaster', 'auth', f
 }]);
 
 financecaster.controller('rootController', ['$rootScope', '$scope', '$state', '$timeout', 'financecaster', function ($rootScope, $scope, $state, $timeout, financecaster) {
-  
+
 	$rootScope.loading = false;
 
 	$rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams, error) {
