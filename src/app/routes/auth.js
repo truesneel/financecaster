@@ -127,7 +127,7 @@ router.post('/', function (req, res) {
       }
 
       var token_expiration = new Date();
-      token_expiration.setDate(token_expiration.getDate() + 1);
+      token_expiration.setDate(token_expiration.getDate() + fc.config.users.token_expiration);
 
       var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
       var geo = geoip.lookup(ip);

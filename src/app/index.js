@@ -90,6 +90,7 @@ fc.init  = function () {
       }
 
       fc.config.users = fc.config.users || {};
+      fc.config.users.token_expiration = process.env.FC_TOKEN_EXPIRATION || fc.config.users.token_expiration || 90;
       fc.config.users.unverified_stale_age = process.env.FC_UNVERIFIED_USER_AGE || fc.config.users.unverified_stale_age || 2;
       if (process.env.FC_USER_VERIFICATION !== undefined) {
         fc.config.users.verification = process.env.FC_USER_VERIFICATION;
@@ -110,6 +111,8 @@ fc.init  = function () {
       fc.config.web.port = process.env.FC_PORT || fc.config.web.port || 9001;
       fc.config.web.address = process.env.FC_ADDRESS || fc.config.web.address || '0.0.0.0';
       fc.config.web.url = process.env.FC_URL || fc.config.web.url || 'http://localhost:' + fc.config.web.port;
+
+
 
       fc.config.database = fc.config.database || {};
       fc.config.salt = process.env.FC_SALT || fc.config.salt || '0123456789abcdefghij';
@@ -191,7 +194,7 @@ fc.check_token = function (req, res, next) {
     }).then(function (record) {
       if (record) {
         var token_expiration = new Date();
-        token_expiration.setDate(token_expiration.getDate() + 1);
+        token_expiration.setDate(token_expiration.getDate() + fc.config.users.token_expiration);
 
         req.auth = record;
         record.expires = token_expiration;
