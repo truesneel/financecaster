@@ -136,6 +136,15 @@ forecast.controller('forecastViewController', ['$scope', '$uibModal', '$timeout'
     $scope.accounts = myAccounts;
     $scope.transaction = new Transactions({'accountId': account.id, 'one_time': true, 'start': new Date()});
 
+    $scope.update_date = function (field) {
+      $scope.account.balance_date = new Date();
+      $scope.account.balance_date.setHours(0);
+      $scope.account.balance_date.setMinutes(0);
+      $scope.account.balance_date.setSeconds(0);
+      $scope.account.balance_date.setMilliseconds(0);
+      field.$setDirty();
+    };
+
     $scope.addTransaction = function () {
       $scope.transaction.$save().then(function (response) {
         $uibModalInstance.close();
