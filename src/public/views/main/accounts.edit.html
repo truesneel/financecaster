@@ -31,6 +31,9 @@
         <div class="form-group has-feedback" ng-class="{'has-success': addAccount.balance.$valid, 'has-error': addAccount.balance.$invalid && addAccount.balance.$dirty}">
           <label for="balance">Balance</label>
           <input type="number" class="form-control" id="balance" name="balance" placeholder="Balance" currency ng-model="account.balance" step="0.01" required>
+          <h5 ng-show="addAccount.balance.$dirty && addAccount.balance.$valid && addAccount.balance_date.$pristine">
+            Would you like to update the balance date to today? <button class="btn btn-sm btn-primary" ng-click="update_date(addAccount.balance_date)">Update</button>
+          </h5>
           <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="addAccount.balance.$valid"></span>
           <span class="glyphicon glyphicon-remove form-control-feedback" ng-show="addAccount.balance.$invalid && addAccount.balance.$dirty"></span>
           <span id="helpBlock2" class="help-block" ng-show="addAccount.balance.$invalid && addAccount.balance.$dirty">Balance should be a dollar amount either positive or negative</span>
@@ -39,7 +42,7 @@
           <label for="start">Balance Date</label>
           <p class="input-group">
 
-            <input type="text" class="form-control" uib-datepicker-popup ng-model="account.balance_date" is-open="popup.opened" ng-required="true" close-text="Close" />
+            <input type="text" class="form-control" uib-datepicker-popup ng-model="account.balance_date" name="balance_date" is-open="popup.opened" ng-required="true" close-text="Close" />
             <span class="input-group-btn">
               <button type="button" class="btn btn-default" ng-click="popup.opened = true"><i class="glyphicon glyphicon-calendar"></i></button>
             </span>

@@ -317,6 +317,15 @@ accounts.controller('accountsEditController', ['$scope', '$state', '$http', 'fin
     {'name': '1 Year', 'value': 365}
   ];
 
+  $scope.update_date = function (field) {
+    $scope.account.balance_date = new Date();
+    $scope.account.balance_date.setHours(0);
+    $scope.account.balance_date.setMinutes(0);
+    $scope.account.balance_date.setSeconds(0);
+    $scope.account.balance_date.setMilliseconds(0);
+    field.$setDirty();
+  };
+
   $scope.delete = function (form ) {
     if (confirm('Are you sure you want to delete this account?')) {
       $scope.account.$delete().then(function (response) {
