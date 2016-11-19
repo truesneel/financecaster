@@ -8,11 +8,21 @@ docker run --name financecaster --rm -it -p 9001:9001 sneel/financecaster
 Then point your browser at http://localhost:9001 to get started.  It's helpful to mount a volume at /data which contains the configuration file and default sqlite database.
 
 ### Locally
-To run FinanceCaster locally, clone the repo locally and then run the following:
+#### Requirements
+* NodeJS
+* NPM
+#### Installation
+Clone the git repo and running the following:
+
 ```
 $ npm install
+```
+#### Starting
+Once all modules are installed, start Financecaster by running the following:
+```
 $ npm start
 ```
+The default configuration will start listening on port 9001.  Launch a browser and points it at http://localhost:9001!
 
 Grunt has also been configured so once npm and bower modules are installed you can also run `grunt` to start the application
 
