@@ -1,5 +1,10 @@
 # FinanceCaster
+FinanceCaster is a finance tracking application.  It allows you to add accounts and the various transactions that regularly happen, such as pay checks or bills.  Once entered, you will be able to forecast your account balances and track how your account will look in the future.  Additionally, if you want to share accounts, with say your significant other, you can send a sharing request for any of your accounts and give varrying levels of access to them.
+
+Want a better experience?  Once installed and running, visit your instance on your Andriod Chrome browser, goto the browser menu an select "Add to Home screen".  You will now have application shortcut on your phone for quick and easy access to your accounts!
+
 ## Running
+As described below you can configure the initial password however the default username and password once setup will be `admin`.
 ### Docker
 The easiest way is to run FinanceCaster from the docker container.
 ```
@@ -27,6 +32,7 @@ The default configuration will start listening on port 9001.  Launch a browser a
 Grunt has also been configured so once npm and bower modules are installed you can also run `grunt` to start the application
 
 ## Configuration
+
 ### General Settings
 #### Config Path
 **Default:** ./config.ini
