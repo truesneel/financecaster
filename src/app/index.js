@@ -5,6 +5,7 @@ var crypto = require('crypto');
 var log4js = require('log4js');
 var express = require('express');
 var Sequelize = require('sequelize');
+var Op = Sequelize.Op;
 var nodemailer = require('nodemailer');
 var bodyParser = require('body-parser');
 var messages = require('./messages').get;
@@ -26,7 +27,7 @@ fc.init  = function () {
   fc.config_path = process.env.FC_CONFIG || 'config.ini';
 
   var init_account = function () {
-    fc.schemas.users.find({'where': {'username': 'admin'}})
+    fc.schemas.users.findOne({'where': {'username': 'admin'}})
     .then(function (user) {
 
       if (!user) {
@@ -48,6 +49,8 @@ fc.init  = function () {
         defer.resolve();
       }
 
+    }, function (err) {
+      fc.log.error(err);
     });
   };
 
@@ -237,7 +240,7 @@ fc.query = function (schema, options, req) {
 
 fc.get = function (schema, options, req) {
 
-  return fc.schemas[schema].find(options);
+  return fc.schemas[schema].findOne(options);
 
 };
 
@@ -309,7 +312,7 @@ fc.user_cleaner = function () {
       'updatedAt': {
         $lt: user_age
       },
-      'verification': { '$ne': '' }
+      'verification': { [Op.ne]: '' }
     }
   }).then(function (response) {
     if (response > 0) {

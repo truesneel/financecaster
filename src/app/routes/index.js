@@ -13,7 +13,11 @@ router.get('/', function (req, res) {
 
 router.use('/users', require('./users'));
 router.use('/accounts', require('./accounts'));
+try {
 router.use('/transactions', require('./transactions'));
+} catch (e) {
+  console.log(e);
+}
 router.use('/permissions', require('./permissions'));
 router.use('/tokens', require('./tokens'));
 router.use('/auth', require('./auth'));

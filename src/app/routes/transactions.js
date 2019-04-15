@@ -5,6 +5,9 @@ var crypto = require('crypto');
 var express = require('express');
 var router = express.Router();
 var messages = require('../messages').get;
+var Sequelize = require('sequelize');
+var Op = Sequelize.Op;
+var col = Sequelize.col;
 
 /**
  * @api {get} /transactions Get Accounts
@@ -14,10 +17,10 @@ router.get('/', fc.isAuth, function (req, res) {
 
   fc.query('transactions', {
     'where': {
-      '$or': {
-        '$account.userId$': req.auth.userId,
-        '$account.permissions.userId$': req.auth.userId
-      }
+      [Op.or]: [
+        {'$account.userId$': req.auth.userId},
+        {'$account.permissions.userId$': req.auth.userId}
+      ]
     },
     'include': [{
       'model': fc.schemas.accounts,
@@ -25,7 +28,7 @@ router.get('/', fc.isAuth, function (req, res) {
       'include': [{
         'model': fc.schemas.permissions,
         'attributes': [],
-        'required': false,
+        'required': false
       }]
     }]
   }).then(function (results) {
@@ -44,13 +47,15 @@ router.post('/', fc.isAuth, function (req, res) {
   fc.get('accounts', {
     'where': {
       'id': req.body.accountId,
-      '$or': {
-        'userId': req.auth.userId,
-        '$and': {
-          '$permissions.userId$': req.auth.userId,
-          '$permissions.transactions$': true
+      [Op.or]: [
+        {'userId': req.auth.userId},
+        {
+          [Op.and]: [
+            {'$permissions.userId$': req.auth.userId},
+            {'$permissions.transactions$': true}
+          ]
         }
-      }
+      ]
     },
     'include': [{
       'model': fc.schemas.permissions,
@@ -86,10 +91,10 @@ router.get('/:id', fc.isAuth, function (req, res) {
   fc.get('transactions', {
       'where': {
         'id': req.params.id,
-        '$or': {
-          '$account.userId$': req.auth.userId,
-          '$account.permissions.userId$': req.auth.userId
-        }
+        [Op.or]: [
+          {'$account.userId$': req.auth.userId},
+          {'$account.permissions.userId$': req.auth.userId}
+        ]
       },
       'include': [{
           'model': fc.schemas.accounts,
@@ -125,13 +130,15 @@ router.put('/:id', fc.isAuth, function (req, res) {
   fc.get('transactions', {
       'where': {
         'id': req.params.id,
-        '$or': {
-          '$account.userId$': req.auth.userId,
-          '$and': {
-            '$account.permissions.userId$': req.auth.userId,
-            '$account.permissions.transactions$': true
+        [Op.or]: [
+          {'$account.userId$': req.auth.userId},
+          {
+            [Op.and]: [
+              {'$account.permissions.userId$': req.auth.userId},
+              {'$account.permissions.transactions$': true}
+            ]
           }
-        }
+        ]
       },
       'include': [{
           'model': fc.schemas.accounts,
@@ -191,13 +198,15 @@ router.delete('/:id', fc.isAuth, function (req, res) {
   fc.get('transactions', {
       'where': {
         'id': req.params.id,
-        '$or': {
-          '$account.userId$': req.auth.userId,
-          '$and': {
-            '$account.permissions.userId$': req.auth.userId,
-            '$account.permissions.transactions$': true
+        [Op.or]: [
+          {'$account.userId$': req.auth.userId},
+          {
+            [Op.and]: [
+              {'$account.permissions.userId$': req.auth.userId},
+              {'$account.permissions.transactions$': true}
+            ]
           }
-        }
+        ]
       },
       'include': [{
           'model': fc.schemas.accounts,

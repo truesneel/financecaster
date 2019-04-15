@@ -25,7 +25,7 @@
     "log4js": "^0.6.38",
     "nodemailer": "^2.5.0",
     "q": "^1.4.1",
-    "sequelize": "^4.43.2",
+    "sequelize": "^5.4.0",
     "sequelize-cli": "^5.4.0",
     "sqlite3": "^4.0.4",
     "string-template": "^1.0.0",

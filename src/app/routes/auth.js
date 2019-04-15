@@ -97,7 +97,7 @@ router.get('/', fc.isAuth, function (req, res) {
 router.post('/', function (req, res) {
   var msg;
 
-  fc.schemas.users.find({'where': {
+  fc.schemas.users.findOne({'where': {
     'username': req.body.username,
     'password': crypto.createHmac('sha512', fc.config.salt).update(req.body.password).digest('base64'),
     'disabled': false,
@@ -236,6 +236,9 @@ router.get('/tokens', fc.isAuth, function (req, res) {
       var msg = messages('RECORD_NOT_FOUND');
       res.status(msg.http_code).send({'message': msg.message});
     }
+  }, function (err) {
+    fc.log.error(err);
+    res.status(500).send({'message': 'Unknown error occured'});
   });
 
 });
@@ -465,7 +468,7 @@ router.post('/newuser', function (req, res) {
 
   fc.get('users', {
     'where': {
-      '$or': [
+      [Op.or]: [
         {'username': req.body.username},
         {'email': req.body.email}
       ]

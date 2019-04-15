@@ -5,6 +5,7 @@ var crypto = require('crypto');
 var express = require('express');
 var router = express.Router();
 var Sequelize = require('sequelize');
+var Op = Sequelize.Op;
 
 var messages = require('../messages').get;
 
@@ -42,10 +43,10 @@ router.get('/', fc.isAuth, function (req, res) {
 
   fc.query('accounts', {
     'where': {
-      '$or': {
-        'userId': req.auth.userId,
-        '$permissions.userId$': req.auth.userId
-      },
+      [Op.or]: [
+        {'userId': req.auth.userId},
+        {'$permissions.userId$': req.auth.userId}
+      ],
     },
     'attributes': ['id', 'name', 'forecast', 'balance', 'balance_date', 'limit', 'createdAt', 'updatedAt'],
     'include': [
@@ -58,6 +59,9 @@ router.get('/', fc.isAuth, function (req, res) {
     ]
   }).then(function (results) {
     res.send(results);
+  }, function (err) {
+    fc.log.error(err);
+    res.status(500).send({'message': 'Unknown error occured'});
   });
 
 });
@@ -168,10 +172,10 @@ router.get('/:id', fc.isAuth, function (req, res) {
   fc.get('accounts', {
       'where': {
         'id': req.params.id,
-        '$or': {
-          'userId': req.auth.userId,
-          '$permissions.userId$': req.auth.userId
-        },
+        [Op.or]: [
+          {'userId': req.auth.userId},
+          {'$permissions.userId$': req.auth.userId}
+        ],
       },
       'attributes': ['id', 'name', 'forecast', 'balance', 'balance_date', 'limit', 'createdAt', 'updatedAt'],
       'include': [
@@ -260,13 +264,15 @@ router.put('/:id', fc.isAuth, function (req, res) {
   fc.get('accounts', {
       'where': {
         'id': req.params.id,
-        '$or': {
-          'userId': req.auth.userId,
-          '$and': {
-            '$permissions.userId$': req.auth.userId,
-            '$permissions.balance$': true,
+        [Op.or]: [
+          {'userId': req.auth.userId},
+          {
+            [Op.and]: [
+              {'$permissions.userId$': req.auth.userId},
+              {'$permissions.balance$': true},
+            ]
           }
-        },
+        ],
       },
       'attributes': ['id', 'userId', 'name', 'forecast', 'balance', 'balance_date', 'limit', 'createdAt', 'updatedAt'],
       'include': [
@@ -366,10 +372,10 @@ router.get('/:id/transactions', fc.isAuth, function (req, res) {
   fc.query('transactions', {
     'where': {
       'accountId': req.params.id,
-      '$or': {
-        '$account.userId$': req.auth.userId,
-        '$account.permissions.userId$': req.auth.userId
-      }
+      [Op.or]: [
+        {'$account.userId$': req.auth.userId},
+        {'$account.permissions.userId$': req.auth.userId}
+      ]
     },
     'include': [{
       'model': fc.schemas.accounts,
@@ -398,13 +404,15 @@ router.post('/:id/transactions', fc.isAuth, function (req, res) {
   fc.get('accounts', {
       'where': {
         'id': req.params.id,
-        '$or': {
-          'userId': req.auth.userId,
-          '$and': {
-            '$permissions.userId$': req.auth.userId,
-            '$permissions.transactions$': true,
+        [Op.or]: [
+          {'userId': req.auth.userId},
+          {
+            [Op.and]: [
+              {'$permissions.userId$': req.auth.userId},
+              {'$permissions.transactions$': true},
+            ]
           }
-        },
+        ],
       },
       'include': [
         {
@@ -442,10 +450,10 @@ router.get('/:id/transactions/:transactionid', fc.isAuth, function (req, res) {
     'where': {
       'id': req.params.transactionid,
       'accountId': req.params.id,
-      '$or': {
-        '$account.userId$': req.auth.userId,
-        '$account.permissions.userId$': req.auth.userId,
-      }
+      [Op.or]: [
+        {'$account.userId$': req.auth.userId},
+        {'$account.permissions.userId$': req.auth.userId},
+      ]
     },
     'include': [{
       'model': fc.schemas.accounts,
@@ -480,13 +488,15 @@ router.put('/:id/transactions/:transactionid', fc.isAuth, function (req, res) {
     'where': {
       'id': req.params.transactionid,
       'accountId': req.params.id,
-      '$or': {
-        '$account.userId$': req.auth.userId,
-        '$and': {
-          '$account.permissions.userId$': req.auth.userId,
-          '$account.permissions.transactions$': true,
+      [Op.or]: [
+        {'$account.userId$': req.auth.userId},
+        {
+          [Op.and]: [
+            {'$account.permissions.userId$': req.auth.userId},
+            {'$account.permissions.transactions$': true}
+          ]
         }
-      }
+      ]
     },
     'include': [{
       'model': fc.schemas.accounts,
@@ -532,13 +542,15 @@ router.delete('/:id/transactions/:transactionid', fc.isAuth, function (req, res)
     'where': {
       'id': req.params.transactionid,
       'accountId': req.params.id,
-      '$or': {
-        '$account.userId$': req.auth.userId,
-        '$and': {
-          '$account.permissions.userId$': req.auth.userId,
-          '$account.permissions.transactions$': true,
+      [Op.or]: [
+        {'$account.userId$': req.auth.userId},
+        {
+          [Op.and]: [
+            {'$account.permissions.userId$': req.auth.userId},
+            {'$account.permissions.transactions$': true},
+          ]
         }
-      }
+      ]
     },
     'include': [{
       'model': fc.schemas.accounts,
@@ -581,10 +593,10 @@ router.get('/:accountId/permissions', fc.isAuth, function (req, res) {
   fc.query('permissions', {
     'where': {
       'accountId': req.params.accountId,
-      '$or': {
-        'userId': req.auth.userId,
-        '$account.userId$': req.auth.userId
-      }
+      [Op.or]: [
+        {'userId': req.auth.userId},
+        {'$account.userId$': req.auth.userId}
+      ]
     },
     'attributes': ['id', 'accountId', 'email', 'token', 'balance', 'transactions', 'shares', 'updatedAt', 'createdAt'],
     'include': [
@@ -617,13 +629,15 @@ router.post('/:accountId/permissions', fc.isAuth, function (req, res) {
   fc.get('accounts', {
       'where': {
         'id': req.params.accountId,
-        '$or': {
-          'userId': req.auth.userId,
-          '$and': {
-            '$permissions.userId$': req.auth.userId,
-            '$permissions.shares$': true,
+        [Op.or]: [
+          {'userId': req.auth.userId},
+          {
+            [Op.and]: [
+              {'$permissions.userId$': req.auth.userId},
+              {'$permissions.shares$': true}
+            ]
           }
-        },
+        ],
       },
       'attributes': ['id', 'userId', 'name', 'forecast', 'balance', 'balance_date', 'limit', 'createdAt', 'updatedAt'],
       'include': [
@@ -675,12 +689,10 @@ router.get('/:accountId/permissions/:id', fc.isAuth, function (req, res) {
     'where': {
       'id': req.params.id,
       'accountId': req.params.accountId,
-      '$or': {
-        '$and': {
-          'userId': req.auth.userId
-        },
-        '$account.userId$': req.auth.userId
-      }
+      [Op.or]: [
+        {'userId': req.auth.userId},
+        {'$account.userId$': req.auth.userId}
+      ]
     },
     'attributes': ['id', 'accountId', 'email', 'token', 'balance', 'transactions', 'shares', 'updatedAt', 'createdAt'],
     'include': [
@@ -713,13 +725,15 @@ router.put('/:accountId/permissions/:id', fc.isAuth, function (req, res) {
   fc.get('accounts', {
       'where': {
         'id': req.params.accountId,
-        '$or': {
-          'userId': req.auth.userId,
-          '$and': {
-            '$permissions.userId$': req.auth.userId,
-            '$permissions.shares$': true,
+        [Op.or]: [
+          {'userId': req.auth.userId},
+          {
+            [Op.and]: [
+              {'$permissions.userId$': req.auth.userId},
+              {'$permissions.shares$': true},
+            ]
           }
-        },
+        ],
       },
       'attributes': ['id', 'userId', 'name', 'forecast', 'balance', 'balance_date', 'limit', 'createdAt', 'updatedAt'],
       'include': [
@@ -760,13 +774,15 @@ router.delete('/:accountId/permissions/:id', fc.isAuth, function (req, res) {
     'where': {
       'id': req.params.id,
       'accountId': req.params.accountId,
-      '$or': {
-        '$and': {
-          'userId': req.auth.userId,
-          'shares': true,
+      [Op.or]: [
+        {
+          [Op.and]: [
+            {'userId': req.auth.userId},
+            {'shares': true},
+          ]
         },
-        '$account.userId$': req.auth.userId
-      }
+        {'$account.userId$': req.auth.userId}
+      ]
     },
     'attributes': ['id', 'accountId', 'email', 'token', 'balance', 'transactions', 'shares', 'updatedAt', 'createdAt'],
     'include': [
@@ -777,7 +793,7 @@ router.delete('/:accountId/permissions/:id', fc.isAuth, function (req, res) {
       {
         'model': fc.schemas.accounts,
         'attributes': []
-      },
+      }
     ]
   }).then(function (record) {
       if (record) {
@@ -1014,10 +1030,10 @@ router.get('/:id/forecast', fc.isAuth, function (req, res) {
   fc.get('accounts', {
       'where': {
         'id': req.params.id,
-        '$or': {
-          'userId': req.auth.userId,
-          '$permissions.userId$': req.auth.userId,
-        },
+        [Op.or]: [
+          {'userId': req.auth.userId},
+          {'$permissions.userId$': req.auth.userId},
+        ],
       },
       'attributes': ['id', 'userId', 'name', 'forecast', 'balance', 'balance_date', 'limit', 'createdAt', 'updatedAt'],
       'include': [
