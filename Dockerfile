@@ -1,7 +1,7 @@
 FROM fedora:latest
 
 RUN dnf update -y
-RUN dnf install -y nodejs
+RUN dnf install -y nodejs sqlite python
 
 RUN mkdir /app /data; \
     useradd financecaster; \
