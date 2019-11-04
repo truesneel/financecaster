@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM fedora:30
 
 RUN dnf update -y
 RUN dnf install -y nodejs sqlite python
